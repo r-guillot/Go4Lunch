@@ -2,7 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.guillot.go4lunch">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the "MyLocation" functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <permission
+        android:name="com.guillot.go4lunch.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
 
     <application
         android:allowBackup="true"
@@ -11,9 +22,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".MainActivity">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB3o6so9QZ4VMEXE96QQx1ctsWAe7nlIGk" />
+
+        <activity android:name=".activities.SignInActivity" />
+        <activity android:name=".activities.CoreActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,16 +45,23 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_application_id"/>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges= "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name="com.facebook.CustomTabActivity" android:exported="true">
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>

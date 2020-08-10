@@ -1,4 +1,4 @@
-package com.guillot.go4lunch;
+package com.guillot.go4lunch.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -31,12 +30,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ActivitySignInBinding;
 
 public class SignInActivity extends AppCompatActivity {
     private ActivitySignInBinding binding;
 
-    private static final int RC_SIGN_IN = 100;
+    private static final int RC_SIGN_IN = 1337;
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth mAuth;
     private CallbackManager fbCallback;
@@ -56,7 +56,7 @@ public class SignInActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this);
     }
 
-    public void viewBinding() {
+    private void viewBinding() {
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -118,7 +118,7 @@ public class SignInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("SignInActivity", "signInGoogleWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent mapActivityIntent = new Intent(getBaseContext(), MapActivity.class);
+                            Intent mapActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
                             startActivity(mapActivityIntent);
                             finish();
                         } else {
@@ -170,7 +170,7 @@ public class SignInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("SignInActivity", "signInFBWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent mapActivityIntent = new Intent(getBaseContext(), MapActivity.class);
+                            Intent mapActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
                             startActivity(mapActivityIntent);
                             finish();
                         } else {
