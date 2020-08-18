@@ -1,8 +1,6 @@
 package com.guillot.go4lunch.Restaurant;
 
 import com.guillot.go4lunch.CONSTANTS;
-import com.guillot.go4lunch.Models.Restaurant;
-import com.guillot.go4lunch.authentication.User;
 
 import java.util.List;
 

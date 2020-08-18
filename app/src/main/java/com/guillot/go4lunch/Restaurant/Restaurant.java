@@ -1,4 +1,4 @@
-package com.guillot.go4lunch.Models;
+package com.guillot.go4lunch.Restaurant;
 
 import android.net.Uri;
 

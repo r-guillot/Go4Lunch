@@ -7,7 +7,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,18 +23,13 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.guillot.go4lunch.authentication.User;
 import com.guillot.go4lunch.viewmodel.UserLocationViewModel;
-
-import java.util.Objects;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener {
@@ -61,7 +55,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.blank_fragment, container, false);
+        mView = inflater.inflate(R.layout.maps_fragment, container, false);
         return mView;
     }
 
