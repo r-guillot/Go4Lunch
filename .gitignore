@@ -12,3 +12,5 @@
 /captures
 .externalNativeBuild
 .cxx
+/app/src/main/AndroidManifest.xml
+/app/src/main/java/com/guillot/go4lunch/CONSTANTS.java

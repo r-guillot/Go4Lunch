@@ -35,9 +35,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB3o6so9QZ4VMEXE96QQx1ctsWAe7nlIGk" />
 
-        <activity android:name=".activities.SignInActivity" />
+        <activity android:name=".authentication.SignInActivity" />
         <activity android:name=".activities.CoreActivity" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

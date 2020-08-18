@@ -9,16 +9,21 @@ import android.os.Handler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.authentication.SignInActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
     private FirebaseUser user;
+//    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+//        Intent intent = new Intent(getBaseContext(), SignInActivity.class);
+//        startActivity(intent);
 
         checkIfUserIsConnected();
     }
