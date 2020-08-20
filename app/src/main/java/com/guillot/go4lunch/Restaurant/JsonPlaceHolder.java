@@ -1,6 +1,10 @@
 package com.guillot.go4lunch.Restaurant;
 
+import android.content.SharedPreferences;
+
 import com.guillot.go4lunch.CONSTANTS;
+import com.guillot.go4lunch.authentication.User;
+import com.guillot.go4lunch.viewmodel.UserLocationViewModel;
 
 import java.util.List;
 

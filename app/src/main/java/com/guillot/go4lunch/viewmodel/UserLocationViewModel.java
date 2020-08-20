@@ -14,7 +14,7 @@ import com.guillot.go4lunch.authentication.User;
 
 public class UserLocationViewModel extends AndroidViewModel {
     private UserLocationRepository mUserLocationRepository;
-    public LiveData<User> locationUserLiveData;
+    public LiveData<User> locationUserUpdateLiveData;
 
     public UserLocationViewModel(@NonNull Application application) {
         super(application);
@@ -22,7 +22,7 @@ public class UserLocationViewModel extends AndroidViewModel {
         mUserLocationRepository = new UserLocationRepository();
     }
 
-    public void setLocationUserLiveData(LatLng location) {
-        locationUserLiveData = mUserLocationRepository.SetLocationUser(location);
+    public void setLocationUserLiveData(User user, LatLng location) {
+        locationUserUpdateLiveData = mUserLocationRepository.SetLocationUser(user, location);
     }
 }

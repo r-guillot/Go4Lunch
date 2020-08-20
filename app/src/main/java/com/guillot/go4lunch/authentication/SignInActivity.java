@@ -135,8 +135,9 @@ public class SignInActivity extends AppCompatActivity {
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
                 Log.d("SignInActivity", "signInGoogleWithCredential:success");
-                Intent mapActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                startActivity(mapActivityIntent);
+                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
+                coreActivityIntent.putExtra(CONSTANTS.USER_INTENT, authenticatedUser);
+                startActivity(coreActivityIntent);
                 saveData();
                 finish();
             } else {
@@ -183,8 +184,9 @@ public class SignInActivity extends AppCompatActivity {
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
                 Log.d("SignInActivity", "signInFacebookWithCredential:success");
-                Intent mapActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                startActivity(mapActivityIntent);
+                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
+                coreActivityIntent.putExtra(CONSTANTS.USER_INTENT, authenticatedUser);
+                startActivity(coreActivityIntent);
                 saveData();
                 finish();
             } else {

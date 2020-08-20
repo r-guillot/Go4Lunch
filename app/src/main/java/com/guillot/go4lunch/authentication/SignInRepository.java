@@ -3,6 +3,7 @@ package com.guillot.go4lunch.authentication;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.guillot.go4lunch.CONSTANTS;
 
 class SignInRepository {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private User user;
 
     MutableLiveData<User> firebaseAuthWithGoogle(AuthCredential googleCredential) {
         MutableLiveData<User> authenticatedUserMutableLIveData = new MutableLiveData<>();
@@ -28,7 +30,7 @@ class SignInRepository {
                     String username = firebaseUser.getDisplayName();
                     Uri urlProfilePicture = firebaseUser.getPhotoUrl();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
-                    User user = new User(id, username, urlProfilePicture, userLocation);
+                    user = new User(id, username, urlProfilePicture, userLocation);
                     authenticatedUserMutableLIveData.setValue(user);
                 }
             }else {
@@ -47,7 +49,8 @@ class SignInRepository {
                     String id = firebaseUser.getUid();
                     String username = firebaseUser.getDisplayName();
                     Uri urlProfilePicture = firebaseUser.getPhotoUrl();
-                    User user = new User(id, username, urlProfilePicture, null);
+                    LatLng userLocation = new LatLng(45.833641, 6.864594);
+                    user = new User(id, username, urlProfilePicture, userLocation);
                     authenticatedUserMutableLIveData.setValue(user);
                 }
             }else {
@@ -69,5 +72,10 @@ class SignInRepository {
 //
 //        editor.putString()
 //    }
+
+    public void userIntent() {
+        Intent intent = new Intent();
+        intent.putExtra(CONSTANTS.USER_INTENT, user);
+    }
 
 }

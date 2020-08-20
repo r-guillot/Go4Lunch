@@ -7,6 +7,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,7 +30,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.guillot.go4lunch.authentication.User;
 import com.guillot.go4lunch.viewmodel.UserLocationViewModel;
+
+import java.util.Objects;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener {
@@ -41,9 +45,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private MapView mMapView;
     private FusedLocationProviderClient mFusedLocationClient;
     private LatLng userLocation;
+    private User mUser;
 
-    public static MapsFragment newInstance() {
-        return new MapsFragment();
+    public MapsFragment(User user) {
+        mUser = user;
+    }
+
+    public static MapsFragment newInstance(User user) {
+        return new MapsFragment(user);
     }
 
     @Override
@@ -120,7 +129,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f));
 
-//                mViewModel.setLocationUserLiveData(userLocation);
+                mViewModel.setLocationUserLiveData(mUser, userLocation);
+                saveData();
             }
         });
     }
@@ -133,6 +143,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         rLP.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rLP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rLP.setMargins(0,0,30,180);
+    }
+
+    public void saveData() {
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(CONSTANTS.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(CONSTANTS.USER_LOCATION, Objects.requireNonNull(mViewModel.locationUserUpdateLiveData.getValue()).getUserLocation().toString()).apply();
     }
 
 }

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.guillot.go4lunch.authentication.User;
 import com.guillot.go4lunch.databinding.ListFragmentBinding;
 
 
