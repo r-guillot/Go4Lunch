@@ -1,4 +1,4 @@
-package com.guillot.go4lunch;
+package com.guillot.maps;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,15 +30,18 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.guillot.go4lunch.CONSTANTS;
+import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.Restaurant.RestaurantViewModel;
 import com.guillot.go4lunch.authentication.User;
-import com.guillot.go4lunch.viewmodel.UserLocationViewModel;
 
 import java.util.Objects;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener {
 
-    private UserLocationViewModel mViewModel;
+    private UserLocationViewModel mUserLocationViewModel;
+    private RestaurantViewModel mRestaurantViewModel;
     private Context context;
     private GoogleMap mMap;
     private View mView;
@@ -46,13 +49,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private FusedLocationProviderClient mFusedLocationClient;
     private LatLng userLocation;
     private User mUser;
+    private int radius = 1000;
+    private String type = "restaurant";
+    private String key = "AIzaSyB3o6so9QZ4VMEXE96QQx1ctsWAe7nlIGk";
 
-    public MapsFragment(User user) {
-        mUser = user;
-    }
 
-    public static MapsFragment newInstance(User user) {
-        return new MapsFragment(user);
+    public static MapsFragment newInstance() {
+        return new MapsFragment();
     }
 
     @Override
@@ -84,7 +87,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void initViewModel() {
-        mViewModel = new ViewModelProvider(this).get(UserLocationViewModel.class);
+        mUserLocationViewModel = new ViewModelProvider(this).get(UserLocationViewModel.class);
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
     }
 
     @Override
@@ -92,7 +96,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         mMap = googleMap;
 
 //        mViewModel.locationUserUpdate.observe(this, locationUser -> {
-        locationUpdate();
+//        locationUpdate();
 
         enableLocationUser(mMap);
         locationButtonDesign();
@@ -129,7 +133,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f));
 
-                mViewModel.setLocationUserLiveData(mUser, userLocation);
+//                mUserLocationViewModel.setLocationUser(userLocation);
+                mRestaurantViewModel.setRetrofit(userLocation, radius, type, key);
+                mRestaurantViewModel.getRestaurants();
                 saveData();
             }
         });
@@ -149,7 +155,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         SharedPreferences sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(CONSTANTS.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
         @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putString(CONSTANTS.USER_LOCATION, Objects.requireNonNull(mViewModel.locationUserUpdateLiveData.getValue()).getUserLocation().toString()).apply();
+        editor.putString(CONSTANTS.USER_LOCATION, Objects.requireNonNull(mUserLocationViewModel.locationUserUpdateLiveData.getValue()).getUserLocation().toString()).apply();
     }
 
 }

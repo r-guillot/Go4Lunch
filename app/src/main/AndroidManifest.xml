@@ -33,7 +33,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB3o6so9QZ4VMEXE96QQx1ctsWAe7nlIGk" />
+            android:value="@string/google_api_key" />
 
         <activity android:name=".authentication.SignInActivity" />
         <activity android:name=".activities.CoreActivity" />

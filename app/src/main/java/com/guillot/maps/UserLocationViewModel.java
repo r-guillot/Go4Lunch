@@ -1,7 +1,6 @@
-package com.guillot.go4lunch.viewmodel;
+package com.guillot.maps;
 
 import android.app.Application;
-import android.location.Location;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,7 +8,8 @@ import androidx.lifecycle.LiveData;
 
 
 import com.google.android.gms.maps.model.LatLng;
-import com.guillot.go4lunch.UserLocationRepository;
+import com.guillot.go4lunch.CONSTANTS;
+import com.guillot.maps.UserLocationRepository;
 import com.guillot.go4lunch.authentication.User;
 
 public class UserLocationViewModel extends AndroidViewModel {
@@ -22,7 +22,4 @@ public class UserLocationViewModel extends AndroidViewModel {
         mUserLocationRepository = new UserLocationRepository();
     }
 
-    public void setLocationUserLiveData(User user, LatLng location) {
-        locationUserUpdateLiveData = mUserLocationRepository.SetLocationUser(user, location);
-    }
 }

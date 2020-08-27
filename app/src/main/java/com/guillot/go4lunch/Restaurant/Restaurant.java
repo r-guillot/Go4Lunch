@@ -2,27 +2,30 @@ package com.guillot.go4lunch.Restaurant;
 
 import android.net.Uri;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class Restaurant {
-    private String placeId;
+    private String place_id;
     private Uri uriIcon;
     private String name;
     private double priceLevel;
     private double rating;
     private String address;
+    private double lat;
+    private double lng;
 
-//    public Restaurant(String placeId, Uri uriIcon, String name,double priceLevel,double rating,String address) {
-//        this.placeId = placeId;
-//        this.uriIcon = uriIcon;
-//        this.name = name;
-//        this.priceLevel = priceLevel;
-//        this.rating = rating;
-//        this.address = address;
-//    }
+    public Restaurant(String place_id, Uri uriIcon, String name, double priceLevel,
+                      double rating, String address, double lat, double lng) {
+        this.place_id = place_id;
+        this.uriIcon = uriIcon;
+        this.name = name;
+        this.priceLevel = priceLevel;
+        this.rating = rating;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
+    }
 
     //Getters//
-    public String getPlaceId() { return placeId;
+    public String getPlace_id() { return place_id;
     }
 
     public Uri getUriIcon() { return uriIcon;
@@ -40,7 +43,13 @@ public class Restaurant {
     public String getAddress() { return address;
     }
 
-//    //Setters//
+    public double getLat() { return lat;
+    }
+
+    public double getLng() { return lng;
+    }
+
+    //    //Setters//
 //    public void setPlaceId(String placeId) { this.placeId = placeId;
 //    }
 //
