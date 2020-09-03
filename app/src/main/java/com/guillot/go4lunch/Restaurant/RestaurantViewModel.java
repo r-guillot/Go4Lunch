@@ -4,12 +4,16 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.guillot.go4lunch.CONSTANTS;
+
+import java.util.List;
 
 public class RestaurantViewModel extends AndroidViewModel {
     private RestaurantRepository mRestaurantRepository;
+    public LiveData<Restaurant> RestaurantLiveData;
+
     public RestaurantViewModel(@NonNull Application application) {
         super(application);
         mRestaurantRepository = new RestaurantRepository();
@@ -20,6 +24,6 @@ public class RestaurantViewModel extends AndroidViewModel {
     }
 
     public void getRestaurants() {
-        mRestaurantRepository.getRestaurants();
+        RestaurantLiveData = mRestaurantRepository.getRestaurants();
     }
 }

@@ -2,30 +2,45 @@ package com.guillot.go4lunch.Restaurant;
 
 import android.net.Uri;
 
-public class Restaurant {
-    private String place_id;
-    private Uri uriIcon;
-    private String name;
-    private double priceLevel;
-    private double rating;
-    private String address;
-    private double lat;
-    private double lng;
+import com.squareup.moshi.Json;
 
-    public Restaurant(String place_id, Uri uriIcon, String name, double priceLevel,
-                      double rating, String address, double lat, double lng) {
-        this.place_id = place_id;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Restaurant {
+    @Json(name = "place_id")
+    private String placeId;
+    @Json(name ="icon")
+    private Uri uriIcon;
+    @Json(name ="name")
+    private String name;
+//    private double priceLevel;
+//    private double rating;
+//    private String address;
+    private Geometry geometry;
+
+    public List<Restaurant> restaurantList;
+
+    public Restaurant(String placeId, Uri uriIcon, String name,
+//                      double priceLevel,
+//                      double rating, String address,
+                      Geometry geometry
+    ) {
+        this.placeId = placeId;
         this.uriIcon = uriIcon;
         this.name = name;
-        this.priceLevel = priceLevel;
-        this.rating = rating;
-        this.address = address;
-        this.lat = lat;
-        this.lng = lng;
+        this.geometry = geometry;
+//        this.priceLevel = priceLevel;
+//        this.rating = rating;
+//        this.address = address;
+    }
+
+    public Restaurant(List<Restaurant> restaurantList) {
+        this.restaurantList = restaurantList;
     }
 
     //Getters//
-    public String getPlace_id() { return place_id;
+    public String getPlaceId() { return placeId;
     }
 
     public Uri getUriIcon() { return uriIcon;
@@ -33,23 +48,25 @@ public class Restaurant {
 
     public String getName() { return name;
     }
+//
+//    public double getPriceLevel() { return priceLevel;
+//    }
+//
+//    public double getRating() { return rating;
+//    }
+//
+//    public String getAddress() { return address;
+//    }
+//
 
-    public double getPriceLevel() { return priceLevel;
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    public double getRating() { return rating;
-    }
-
-    public String getAddress() { return address;
-    }
-
-    public double getLat() { return lat;
-    }
-
-    public double getLng() { return lng;
-    }
-
+//
     //    //Setters//
+
+
 //    public void setPlaceId(String placeId) { this.placeId = placeId;
 //    }
 //

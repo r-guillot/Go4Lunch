@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 
 public interface JsonPlaceHolderApi {
     @GET("maps/api/place/nearbysearch/json?")
-    Call<List<Restaurant>> getRestaurants(@Query("location") String location,
+    Call<DetailReponse> getRestaurants(@Query("location") String location,
                                           @Query("radius") int radius,
                                           @Query("type") String type,
                                           @Query("key") String key);

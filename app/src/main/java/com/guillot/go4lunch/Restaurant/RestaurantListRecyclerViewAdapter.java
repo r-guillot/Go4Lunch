@@ -1,6 +1,7 @@
 package com.guillot.go4lunch.Restaurant;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.databinding.RestaurantRecyclerviewBinding;
 
 import java.util.List;
@@ -29,8 +31,8 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         private MyViewHolder(@NonNull RestaurantRecyclerviewBinding b) {
             super(b.getRoot());
             binding = b;
-        }
 
+        }
     }
 
     // inflates the row layout from xml when needed
@@ -44,8 +46,13 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final Restaurant currentRestaurant = mRestaurants.get(position);
+        Log.d("RecyclerViewAdapter", "currentRestaurant " + currentRestaurant);
         // TODO: 18/08/2020 hold when we have info
-    }
+        Glide.with(holder.binding.imageViewRestaurant.getContext())
+                .load(currentRestaurant.getUriIcon())
+                .into(holder.binding.imageViewRestaurant);
+        holder.binding.textViewName.setText(currentRestaurant.getName());
+}
 
     // total number of rows
     @Override

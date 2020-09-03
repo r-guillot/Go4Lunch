@@ -2,7 +2,6 @@ package com.guillot.go4lunch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.ListFragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +11,8 @@ import android.view.View;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.guillot.go4lunch.CONSTANTS;
-import com.guillot.maps.MapsFragment;
+import com.guillot.go4lunch.Restaurant.ListFragment;
+import com.guillot.go4lunch.maps.MapsFragment;
 import com.guillot.go4lunch.MatesFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.authentication.User;
