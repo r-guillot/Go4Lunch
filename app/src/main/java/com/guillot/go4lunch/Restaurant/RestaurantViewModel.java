@@ -12,7 +12,7 @@ import java.util.List;
 
 public class RestaurantViewModel extends AndroidViewModel {
     private RestaurantRepository mRestaurantRepository;
-    public LiveData<Restaurant> RestaurantLiveData;
+    public LiveData<List<Restaurant>> RestaurantListLiveData;
 
     public RestaurantViewModel(@NonNull Application application) {
         super(application);
@@ -24,6 +24,6 @@ public class RestaurantViewModel extends AndroidViewModel {
     }
 
     public void getRestaurants() {
-        RestaurantLiveData = mRestaurantRepository.getRestaurants();
+        RestaurantListLiveData = mRestaurantRepository.getRestaurants();
     }
 }

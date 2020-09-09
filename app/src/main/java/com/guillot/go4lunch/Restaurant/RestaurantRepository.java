@@ -33,6 +33,7 @@ public class RestaurantRepository {
     Call<DetailReponse> call;
     GoogleMap mMap;
     String baseUrl = "https://maps.googleapis.com/";
+    List<Restaurant> restaurantList;
 
     public void setRetrofit(LatLng location, int radius, String type,String key) {
         String userLocation = String.valueOf(location.latitude).concat(",").concat(String.valueOf(location.longitude));
@@ -47,8 +48,8 @@ public class RestaurantRepository {
         Log.d("list", "parametre repo :" + userLocation + " " + radius + " " + type + " " + key);
     }
 
-    MutableLiveData<Restaurant> getRestaurants() {
-        MutableLiveData<Restaurant> RestaurantLiveData = new MutableLiveData<>();
+    MutableLiveData<List<Restaurant>> getRestaurants() {
+        MutableLiveData<List<Restaurant>> RestaurantListLiveData = new MutableLiveData<>();
         Log.d("list", "getRestaurants: ");
         call.enqueue(new Callback<DetailReponse>() {
             @Override
@@ -62,8 +63,9 @@ public class RestaurantRepository {
                    Geometry geometry = restaurant.getGeometry();
 
                    Restaurant markerRestaurant = new Restaurant(id, logo, name, geometry);
-                   RestaurantLiveData.setValue(markerRestaurant);
+                   restaurantList.add(markerRestaurant);
                 }
+                RestaurantListLiveData.setValue(restaurantList);
             }
 
             @Override
@@ -71,6 +73,6 @@ public class RestaurantRepository {
                 Log.d("list", "error :" + t.getLocalizedMessage());
             }
         });
-        return RestaurantLiveData;
+        return RestaurantListLiveData;
     }
 }
