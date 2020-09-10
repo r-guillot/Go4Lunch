@@ -53,8 +53,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback,
     private GoogleMap mMap;
     private View mView;
     private MapView mMapView;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private LatLng userLocation;
+//    private FusedLocationProviderClient mFusedLocationClient;
+//    private LatLng userLocation;
 //    private int radius = 500;
 //    private String type = "restaurant";
 //    private String key = "AIzaSyB3o6so9QZ4VMEXE96QQx1ctsWAe7nlIGk";
@@ -84,20 +84,20 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback,
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
     }
 
-//    public void initViewModel() {
-//        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
-//    }
+    public void initViewModel() {
+        mRestaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        enableLocationUser(mMap);
-        locationUpdate();
+        getWebService();
+//        locationUpdate();
         locationButtonDesign();
         createMarker();
     }
@@ -126,23 +126,16 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
 
-//    @SuppressLint("MissingPermission")
-//    private void locationUpdate() {
-//        mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-//            if (location != null) {
-//                Log.d("list", "location :" + location);
-//                userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//                // TODO: 27/08/2020 check if i can create to string with lat and long
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 18f));
-//                Log.d("list", "parametre :" + userLocation);
+    @SuppressLint("MissingPermission")
+    private void getWebService() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LocationUser, 18f));
+                Log.d("list", "parametre :" + LocationUser);
 
-//                mRestaurantViewModel.setRetrofit(userLocation, radius, type, key);
-//                Log.d("list", "parametre fragment :" + userLocation + " " + radius + " " + type + " " + key);
-//                mRestaurantViewModel.getRestaurants();
-//                createMarker();
-//            }
-//        });
-//    }
+                mRestaurantViewModel.setRetrofit(LocationUser, radius, type, key);
+                Log.d("list", "parametre fragment :" + LocationUser + " " + radius + " " + type + " " + key);
+                mRestaurantViewModel.getRestaurants();
+                createMarker();
+    }
 
     private void createMarker() {
         Bitmap markerRestaurantGreen = BitmapFactory.decodeResource(getResources(), R.drawable.marker_restaurant_green);

@@ -64,6 +64,7 @@ public class RestaurantRepository {
 
                    Restaurant markerRestaurant = new Restaurant(id, logo, name, geometry);
                    restaurantList.add(markerRestaurant);
+                    Log.d("list", "list size B: " + restaurants.size());
                 }
                 RestaurantListLiveData.setValue(restaurantList);
             }

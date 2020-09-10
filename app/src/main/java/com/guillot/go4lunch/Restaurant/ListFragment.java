@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.guillot.go4lunch.BaseFragment;
@@ -53,9 +54,9 @@ public class ListFragment extends BaseFragment {
         return view;
     }
 
-//    private void initViewModel() {
-//        mViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
-//    }
+    private void initViewModel() {
+        mViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+    }
 
 //    @SuppressLint("FragmentLiveDataObserve")
 //    private void createList() {
