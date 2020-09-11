@@ -8,28 +8,20 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.guillot.go4lunch.CONSTANTS;
-import com.guillot.go4lunch.authentication.User;
-import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.moshi.MoshiConverterFactory;
-
-import static com.guillot.go4lunch.CONSTANTS.*;
 
 
 public class RestaurantRepository {
+    private final String TAG = RestaurantRepository.class.getSimpleName();
+
     Call<DetailReponse> call;
     GoogleMap mMap;
     String baseUrl = "https://maps.googleapis.com/";
@@ -45,17 +37,19 @@ public class RestaurantRepository {
 
         JsonPlaceHolderApi mJsonPlaceHolderApi = mRetrofit.create(JsonPlaceHolderApi.class);
         call = mJsonPlaceHolderApi.getRestaurants(userLocation, radius, type, key);
-        Log.d("list", "parametre repo :" + userLocation + " " + radius + " " + type + " " + key);
+        Log.d(TAG, "parametre repo :" + userLocation + " " + radius + " " + type + " " + key);
     }
 
-    MutableLiveData<List<Restaurant>> getRestaurants() {
+    public MutableLiveData<List<Restaurant>> getRestaurants() {
         MutableLiveData<List<Restaurant>> RestaurantListLiveData = new MutableLiveData<>();
-        Log.d("list", "getRestaurants: ");
+        Log.d(TAG, "getRestaurants: ");
         call.enqueue(new Callback<DetailReponse>() {
             @Override
             public void onResponse(Call<DetailReponse> call, Response<DetailReponse> response) {
+                Log.d(TAG, "onResponse: ");
                 List<Restaurant> restaurants = response.body().getResults();
-                Log.d("list", "list size: " + restaurants.size());
+                Log.d(TAG, "list size: " + restaurants.size());
+                restaurantList = new ArrayList<>();
                 for (Restaurant restaurant: restaurants) {
                     String id = restaurant.getPlaceId();
                     Uri logo = restaurant.getUriIcon();
@@ -63,15 +57,17 @@ public class RestaurantRepository {
                    Geometry geometry = restaurant.getGeometry();
 
                    Restaurant markerRestaurant = new Restaurant(id, logo, name, geometry);
+                    Log.d(TAG, "markerRestaurant " + markerRestaurant.getName());
                    restaurantList.add(markerRestaurant);
-                    Log.d("list", "list size B: " + restaurants.size());
+                    Log.d(TAG, "list size B: " + restaurantList.size());
                 }
                 RestaurantListLiveData.setValue(restaurantList);
+                Log.d(TAG, "LiveDataSize " + RestaurantListLiveData);
             }
 
             @Override
             public void onFailure(Call<DetailReponse> call, Throwable t) {
-                Log.d("list", "error :" + t.getLocalizedMessage());
+                Log.d(TAG, "error :" + t.getLocalizedMessage());
             }
         });
         return RestaurantListLiveData;

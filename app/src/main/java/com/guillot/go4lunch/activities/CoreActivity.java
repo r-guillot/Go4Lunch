@@ -11,7 +11,7 @@ import android.view.View;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.guillot.go4lunch.CONSTANTS;
-import com.guillot.go4lunch.Restaurant.ListFragment;
+import com.guillot.go4lunch.restaurantlist.ListFragment;
 import com.guillot.go4lunch.maps.MapsFragment;
 import com.guillot.go4lunch.MatesFragment;
 import com.guillot.go4lunch.R;

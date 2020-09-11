@@ -1,8 +1,10 @@
-package com.guillot.go4lunch.Restaurant;
+package com.guillot.go4lunch.restaurantlist;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +15,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.guillot.go4lunch.BaseFragment;
+import com.guillot.go4lunch.Restaurant.DetailsRestaurant;
+import com.guillot.go4lunch.Restaurant.Restaurant;
 import com.guillot.go4lunch.databinding.ListFragmentBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class ListFragment extends BaseFragment {
-    private RestaurantViewModel mViewModel;
+    private ListRestaurantViewModel mViewModel;
     private ListFragmentBinding binding;
     private RestaurantListRecyclerViewAdapter mAdapter;
-//    public List<Restaurant> restaurantList;
+    private List<Restaurant> restaurantList;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -48,34 +51,35 @@ public class ListFragment extends BaseFragment {
         View view = binding.getRoot();
         Context context = view.getContext();
         initViewModel();
-//        createList();
 
         binding.restaurantList.setLayoutManager(new LinearLayoutManager(context));
         return view;
     }
 
     private void initViewModel() {
-        mViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(ListRestaurantViewModel.class);
     }
 
-//    @SuppressLint("FragmentLiveDataObserve")
-//    private void createList() {
-//        List<Restaurant>list = new ArrayList<>();
-//        mRestaurantViewModel.RestaurantLiveData.observe(this, markerRestaurant -> {
-//            if (markerRestaurant != null) {
-//                list.add(markerRestaurant);
-//            }
-//        });
-//        restaurantList = list;
-//    }
     private void initList() {
-//        mRestaurantViewModel.RestaurantLiveData.observe(this, markerRestaurant -> {
-//            if (markerRestaurant != null) {
-//                restaurantListRV.add(markerRestaurant);
-//            }
-//        });
+        mViewModel.setRetrofit(LocationUser, radius, type, key);
+        mViewModel.getRestaurants();
+        mViewModel.RestaurantListLiveData.observe(this, liveDataListRestaurant -> {
+            Log.d("locationUpdate", "observer");
+            if (liveDataListRestaurant != null) {
+                restaurantList = liveDataListRestaurant;
+                Log.d("locationUpdate", "list size base " + restaurantList.size());
+            }
 
-        mAdapter = new RestaurantListRecyclerViewAdapter(restaurantListRV, context);
+        mAdapter = new RestaurantListRecyclerViewAdapter(restaurantList, context, this::onItemClick);
 
         binding.restaurantList.setAdapter(mAdapter);
-    }}
+        });
+    }
+
+    public void onItemClick(int position) {
+        Intent detailIntent = new Intent(getActivity(), DetailsRestaurant.class);
+        detailIntent.putExtra("Restaurant", String.valueOf(restaurantList.get(position)));
+        startActivity(detailIntent);
+
+    }
+}
