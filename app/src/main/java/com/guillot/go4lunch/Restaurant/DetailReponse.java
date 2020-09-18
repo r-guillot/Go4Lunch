@@ -1,5 +1,6 @@
 package com.guillot.go4lunch.Restaurant;
 
+import com.guillot.go4lunch.Restaurant.model.Restaurant;
 import com.squareup.moshi.Json;
 
 import java.util.List;

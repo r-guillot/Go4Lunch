@@ -23,14 +23,28 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView_restaurant" />
 
     <TextView
-        android:id="@+id/textViewAdress"
+        android:id="@+id/textViewAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-
         android:textColor="@color/lightGrey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_name" />
+
+<!--    android:theme="@style/RatingBar"-->
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="3"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+
+
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView_name"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_restaurant" />
+
 
     <TextView
         android:id="@+id/textView_distance"
@@ -39,10 +53,10 @@
         android:layout_marginEnd="10dp"
 
         android:textColor="@color/lightGrey"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewAdress"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toEndOf="@+id/textViewAdress" />
+        app:layout_constraintStart_toEndOf="@+id/textViewAddress" />
 
 
 

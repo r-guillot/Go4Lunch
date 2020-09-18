@@ -3,7 +3,6 @@ package com.guillot.go4lunch.restaurantlist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.guillot.go4lunch.BaseFragment;
 import com.guillot.go4lunch.Restaurant.DetailsRestaurant;
-import com.guillot.go4lunch.Restaurant.Restaurant;
+import com.guillot.go4lunch.Restaurant.model.Restaurant;
 import com.guillot.go4lunch.databinding.ListFragmentBinding;
 
 import java.util.List;
@@ -61,7 +60,7 @@ public class ListFragment extends BaseFragment {
     }
 
     private void initList() {
-        mViewModel.setRetrofit(LocationUser, radius, type, key);
+        mViewModel.setRetrofit(LocationUser, radius, type, fields, key);
         mViewModel.getRestaurants();
         mViewModel.RestaurantListLiveData.observe(this, liveDataListRestaurant -> {
             Log.d("locationUpdate", "observer");

@@ -1,4 +1,4 @@
-package com.guillot.go4lunch.Restaurant;
+package com.guillot.go4lunch.Restaurant.model;
 
 public class Location {
     private double lat;

@@ -34,6 +34,7 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
     public int radius = 500;
     public String type = "restaurant";
     public String key = "AIzaSyB3o6so9QZ4VMEXE96QQx1ctsWAe7nlIGk";
+    public String fields = "formatted_phone_number";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

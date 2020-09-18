@@ -1,17 +1,22 @@
 package com.guillot.go4lunch.restaurantlist;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.guillot.go4lunch.Restaurant.Restaurant;
+import com.bumptech.glide.request.RequestOptions;
+import com.guillot.go4lunch.CONSTANTS;
+import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.Restaurant.model.Restaurant;
 import com.guillot.go4lunch.databinding.RestaurantRecyclerviewBinding;
 
 import java.util.List;
@@ -65,10 +70,22 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Rest
         Log.d("RecyclerViewAdapter", "currentRestaurant " + currentRestaurant);
         // TODO: 18/08/2020 hold when we have info
         Glide.with(holder.binding.imageViewRestaurant.getContext())
-                .load(currentRestaurant.getUriIcon())
+                .load(getPhotoRestaurant(currentRestaurant.getPhotos().get(0).photoReference))
+                .apply(RequestOptions.centerCropTransform())
                 .into(holder.binding.imageViewRestaurant);
+
         holder.binding.textViewName.setText(currentRestaurant.getName());
+        holder.binding.textViewAddress.setText(currentRestaurant.getVicinity());
+
+        LayerDrawable stars = (LayerDrawable) holder.binding.ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(ContextCompat.getColor(context, R.color.orange), PorterDuff.Mode.SRC_ATOP);
+        holder.binding.ratingBar.setRating(currentRestaurant.ratingOnThree());
 }
+
+    public String getPhotoRestaurant(String photoReference){
+        return String.format("%splace/photo?maxwidth=400&photoreference=%s&key=%s",
+                "https://maps.googleapis.com/maps/api/", photoReference, CONSTANTS.GOOGLE_API_KEY);
+    }
 
     // total number of rows
     @Override

@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.guillot.go4lunch.Restaurant.model.Geometry;
+import com.guillot.go4lunch.Restaurant.model.Photos;
+import com.guillot.go4lunch.Restaurant.model.Restaurant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,7 @@ public class RestaurantRepository {
     String baseUrl = "https://maps.googleapis.com/";
     List<Restaurant> restaurantList;
 
-    public void setRetrofit(LatLng location, int radius, String type,String key) {
+    public void setRetrofit(LatLng location, int radius, String type, String fields, String key) {
         String userLocation = String.valueOf(location.latitude).concat(",").concat(String.valueOf(location.longitude));
 
         Retrofit mRetrofit = new Retrofit.Builder()
@@ -36,7 +39,7 @@ public class RestaurantRepository {
                 .build();
 
         JsonPlaceHolderApi mJsonPlaceHolderApi = mRetrofit.create(JsonPlaceHolderApi.class);
-        call = mJsonPlaceHolderApi.getRestaurants(userLocation, radius, type, key);
+        call = mJsonPlaceHolderApi.getRestaurants(userLocation, radius, type, fields, key);
         Log.d(TAG, "parametre repo :" + userLocation + " " + radius + " " + type + " " + key);
     }
 
@@ -55,9 +58,13 @@ public class RestaurantRepository {
                     Uri logo = restaurant.getUriIcon();
                    String name = restaurant.getName();
                    Geometry geometry = restaurant.getGeometry();
+                   List<Photos> photos = restaurant.getPhotos();
+                   float rating = restaurant.getRating();
+                   String vicinity = restaurant.getVicinity();
 
-                   Restaurant markerRestaurant = new Restaurant(id, logo, name, geometry);
+                   Restaurant markerRestaurant = new Restaurant(id, logo, name, geometry, photos, rating, vicinity);
                     Log.d(TAG, "markerRestaurant " + markerRestaurant.getName());
+                    Log.d(TAG, "photo " + markerRestaurant.getPhotos());
                    restaurantList.add(markerRestaurant);
                     Log.d(TAG, "list size B: " + restaurantList.size());
                 }
@@ -72,4 +79,9 @@ public class RestaurantRepository {
         });
         return RestaurantListLiveData;
     }
+
+//    public String getPhotoRestaurant(String photoReference){
+//        return String.format("%splace/photo?maxwidth=400&photoreference=%s&key=%s",
+//                "https://maps.googleapis.com/maps/api/", photoReference, CONSTANTS.GOOGLE_API_KEY);
+//    }
 }

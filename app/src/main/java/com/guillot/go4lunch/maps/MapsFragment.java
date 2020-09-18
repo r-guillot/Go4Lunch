@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.guillot.go4lunch.BaseFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.Restaurant.DetailsRestaurant;
-import com.guillot.go4lunch.Restaurant.Restaurant;
+import com.guillot.go4lunch.Restaurant.model.Restaurant;
 import com.guillot.go4lunch.Utils;
 
 import java.util.List;
@@ -112,7 +112,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback,
                 mMap.setMyLocationEnabled(true);
                 Log.d("list", "parametre :" + LocationUser);
 
-                mMapsViewModel.setRetrofit(LocationUser, radius, type, key);
+                mMapsViewModel.setRetrofit(LocationUser, radius, type, fields, key);
                 Log.d("list", "parametre fragment :" + LocationUser + " " + radius + " " + type + " " + key);
                 mMapsViewModel.getRestaurants();
                 createMarker();
@@ -120,7 +120,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback,
 
     private void createMarker() {
         Bitmap markerRestaurantGreen = BitmapFactory.decodeResource(getResources(), R.drawable.marker_restaurant_green);
-        markerRestaurantGreen = Utils.scaleBitmap(markerRestaurantGreen, 288, 168);
+        markerRestaurantGreen = Utils.scaleBitmap(markerRestaurantGreen, 260, 152);
         Bitmap finalMarkerRestaurantGreen = markerRestaurantGreen;
         mMapsViewModel.RestaurantListLiveData.observe(this, liveDataListRestaurant -> {
                 Log.d("locationUpdate", "observer");
