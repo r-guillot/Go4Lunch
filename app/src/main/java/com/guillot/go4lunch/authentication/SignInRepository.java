@@ -1,10 +1,6 @@
 package com.guillot.go4lunch.authentication;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
@@ -14,7 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.guillot.go4lunch.CONSTANTS;
+import com.guillot.go4lunch.common.Constants;
+import com.guillot.go4lunch.model.User;
 
 class SignInRepository {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -75,7 +72,7 @@ class SignInRepository {
 
     public void userIntent() {
         Intent intent = new Intent();
-        intent.putExtra(CONSTANTS.USER_INTENT, user);
+        intent.putExtra(Constants.USER_INTENT, user);
     }
 
 }

@@ -1,15 +1,12 @@
 package com.guillot.go4lunch.authentication;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.google.firebase.auth.AuthCredential;
-import com.guillot.go4lunch.CONSTANTS;
+import com.guillot.go4lunch.model.User;
 
 public class SignInViewModel extends AndroidViewModel {
     private SignInRepository mSignInRepository;
