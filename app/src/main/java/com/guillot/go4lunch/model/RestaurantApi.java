@@ -10,10 +10,15 @@ public class RestaurantApi {
     private String placeId;
     @SerializedName("name")
     private String name;
+    @SerializedName("geometry")
     private Geometry geometry;
+    @SerializedName("photos")
     private List<Photos> photos;
+    @SerializedName("rating")
     private float rating;
+    @SerializedName("vicinity")
     private String vicinity;
+    @SerializedName("website")
     private String website;
     @SerializedName("international_phone_number")
     private String phoneNumber;
@@ -50,10 +55,4 @@ public class RestaurantApi {
         return phoneNumber;
     }
 
-    @Override
-    public String toString() {
-        return "RestaurantApi{" +
-                "rating=" + rating +
-                '}';
-    }
 }

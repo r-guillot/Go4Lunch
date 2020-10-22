@@ -49,8 +49,9 @@ public class RestaurantListFragment extends BaseFragment {
 
     @Override
     public void getLocationUser(LatLng locationUser) {
-        viewModel.init(locationUser);
-        viewModel.getRestaurantsRepository().observe(this, this::initRestaurantList);
+        viewModel.init();
+        viewModel.executeNetworkRequest(locationUser);
+        viewModel.getRestaurantsList().observe(this, this::initRestaurantList);
     }
 
     private void configureBinding(View view) {

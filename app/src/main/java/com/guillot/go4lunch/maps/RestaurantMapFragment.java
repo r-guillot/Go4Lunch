@@ -75,8 +75,9 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
     @Override
     public void getLocationUser(LatLng locationUser) {
         centerCameraOnGPSLocation(locationUser);
-        viewModel.init(locationUser);
-        viewModel.getRestaurantsRepository().observe(this, this::initRestaurantList);
+        viewModel.init();
+        viewModel.executeNetworkRequest(locationUser);
+        viewModel.getRestaurantsList().observe(this, this::initRestaurantMarker);
         locationButtonDesign();
     }
 
@@ -85,7 +86,7 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
         this.googleMap = googleMap;
     }
 
-    private void initRestaurantList(List<Restaurant> restaurants) {
+    private void initRestaurantMarker(List<Restaurant> restaurants) {
         if (googleMap != null) {
             googleMap.clear();
             for (Restaurant restaurant : restaurants) {

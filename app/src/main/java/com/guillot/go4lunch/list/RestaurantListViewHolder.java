@@ -6,6 +6,8 @@ import android.graphics.drawable.LayerDrawable;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
@@ -22,11 +24,17 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
     private ItemRestaurantBinding binding;
     private Context context;
+    private RestaurantListViewModel viewModel;
 
     RestaurantListViewHolder(@NonNull ItemRestaurantBinding binding, Context context) {
         super(binding.getRoot());
         this.binding = binding;
         this.context = context;
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = new ViewModelProvider((ViewModelStoreOwner) this).get(RestaurantListViewModel.class);
     }
 
     public void updateRestaurantInfo(Restaurant restaurant, RequestManager glide){
@@ -52,6 +60,8 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         stars.getDrawable(2).setColorFilter(ContextCompat.getColor(context, R.color.orange),
                 PorterDuff.Mode.SRC_ATOP);
         binding.ratingBar.setRating(restaurant.getRating());
+
+        binding.imageViewRestaurant.setImageResource(viewModel.getPhotoRestaurant(restaurant.getUrlPhoto()));
     }
 
 }
