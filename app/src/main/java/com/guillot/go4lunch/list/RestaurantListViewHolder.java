@@ -24,18 +24,18 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
     private ItemRestaurantBinding binding;
     private Context context;
-    private RestaurantListViewModel viewModel;
+//    private RestaurantListViewModel viewModel;
 
     RestaurantListViewHolder(@NonNull ItemRestaurantBinding binding, Context context) {
         super(binding.getRoot());
         this.binding = binding;
         this.context = context;
-        initViewModel();
+//        initViewModel();
     }
 
-    private void initViewModel() {
-        viewModel = new ViewModelProvider((ViewModelStoreOwner) this).get(RestaurantListViewModel.class);
-    }
+//    private void initViewModel() {
+//        viewModel = new ViewModelProvider((ViewModelStoreOwner) this).get(RestaurantListViewModel.class);
+//    }
 
     public void updateRestaurantInfo(Restaurant restaurant, RequestManager glide){
         binding.textViewName.setText(restaurant.getName());
@@ -49,19 +49,19 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         }
         binding.textViewDistance.setText(distanceToDisplay);
 
-        if(restaurant.getUrlPhoto() != null){
-            glide.load(restaurant.getUrlPhoto()).into(binding.imageViewRestaurant);
-        }
-
-        glide.load(restaurant.getUrlPhoto()).apply(RequestOptions.centerCropTransform())
-                .into(binding.imageViewRestaurant);
+//        if(restaurant.getUrlPhoto() != null){
+//            glide.load(restaurant.getUrlPhoto()).into(binding.imageViewRestaurant);
+//        }
+//
+//        glide.load(restaurant.getUrlPhoto()).apply(RequestOptions.centerCropTransform())
+//                .into(binding.imageViewRestaurant);
 
         LayerDrawable stars = (LayerDrawable) binding.ratingBar.getProgressDrawable();
         stars.getDrawable(2).setColorFilter(ContextCompat.getColor(context, R.color.orange),
                 PorterDuff.Mode.SRC_ATOP);
         binding.ratingBar.setRating(restaurant.getRating());
 
-        binding.imageViewRestaurant.setImageResource(viewModel.getPhotoRestaurant(restaurant.getUrlPhoto()));
+//        binding.imageViewRestaurant.setImageResource(.getPhotoRestaurant(restaurant.getUrlPhoto()));
     }
 
 }

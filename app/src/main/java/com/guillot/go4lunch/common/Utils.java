@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 public class Utils {
 
@@ -47,4 +48,6 @@ public class Utils {
         }
         return null;
     }
+
+
 }

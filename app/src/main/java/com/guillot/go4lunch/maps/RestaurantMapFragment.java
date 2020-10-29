@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.RestaurantMapFragmentBinding;
 import com.guillot.go4lunch.model.Restaurant;
-import com.guillot.go4lunch.restaurant.RestaurantDetailActivity;
+import com.guillot.go4lunch.restaurantDetails.RestaurantDetailActivity;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
     private final String TAG = RestaurantMapFragment.class.getSimpleName();
 
     private final float ZOOM_USER_LOCATION_VALUE = 15;
+    public final static String RESTAURANT = "RESTAURANT_ID";
 
     private RestaurantMapFragmentBinding binding;
     private RestaurantMapViewModel viewModel;
@@ -131,12 +133,11 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 String markerId = marker.getId();
-                String markerName = marker.getTitle();
+                Log.d(TAG, "onMarkerClick: " + markerId);
 
                 Intent detailIntent = new Intent(getActivity(), RestaurantDetailActivity.class);
 
-                detailIntent.putExtra("markerId", markerId);
-                detailIntent.putExtra("markerName", markerName);
+                detailIntent.putExtra(RESTAURANT, markerId);
                 startActivity(detailIntent);
                 return false;
             }

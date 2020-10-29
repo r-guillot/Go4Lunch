@@ -18,7 +18,7 @@ import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.common.ItemClickListener;
 import com.guillot.go4lunch.databinding.RestaurantListFragmentBinding;
 import com.guillot.go4lunch.model.Restaurant;
-import com.guillot.go4lunch.restaurant.RestaurantDetailActivity;
+import com.guillot.go4lunch.restaurantDetails.RestaurantDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,5 @@
 package com.guillot.go4lunch.maps;
 
-import android.util.Log;
-
-import androidx.lifecycle.MutableLiveData;
-
 import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.api.ApiDetails;
 import com.guillot.go4lunch.api.ApiInterface;
@@ -12,20 +8,15 @@ import com.guillot.go4lunch.model.ApiDetailsRestaurantResponse;
 import com.guillot.go4lunch.model.ApiRestaurantResponse;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.RestaurantApi;
-import com.guillot.go4lunch.model.details.OpeningHours;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableSource;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
 
 public class RestaurantMapRepository {
 
@@ -47,34 +38,6 @@ public class RestaurantMapRepository {
         apiInterface = RetrofitService.getInterface();
         apiDetails = RetrofitService.getDetails();
     }
-
-//    public MutableLiveData<List<Restaurant>> getRestaurantList(String location) {
-//        MutableLiveData<List<Restaurant>> restaurantList = new MutableLiveData<>();
-//        apiInterface
-//                .getRestaurants(location)
-//                .enqueue(new Callback<ApiResponse>() {
-//                    @Override
-//                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-//                        Log.i(TAG, "onResponse");
-//
-//                        List<Restaurant> restaurants = new ArrayList<>();
-//                        if (response.isSuccessful()) {
-//                            for (RestaurantApi restaurantApi :
-//                                    response.body().getResults()) {
-//                                restaurants.add(createRestaurant(restaurantApi));
-//                            }
-//                            restaurantList.setValue(restaurants);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<ApiResponse> call, Throwable t) {
-//                        Log.i(TAG, "onFailure: " + t.getLocalizedMessage());
-//                        restaurantList.setValue(null);
-//                    }
-//                });
-//        return restaurantList;
-//    }
 
     public Observable<ApiRestaurantResponse> streamFetchRestaurantsCloseToMe(String location){
         return apiInterface.getRestaurants(location)

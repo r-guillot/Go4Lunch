@@ -11,6 +11,6 @@ import retrofit2.http.Query;
 
 public interface ApiDetails {
 
-    @GET("place/details/json?&fields=opening_hours&key=" + BuildConfig.ApiPlaceKey)
+    @GET("place/details/json?&fields=vicinity,name,place_id,id,geometry,opening_hours,international_phone_number,website,rating,photo&key=" + BuildConfig.ApiPlaceKey)
     Observable<ApiDetailsRestaurantResponse> getRestaurantDetails(@Query("place_id") String placeId);
 }
