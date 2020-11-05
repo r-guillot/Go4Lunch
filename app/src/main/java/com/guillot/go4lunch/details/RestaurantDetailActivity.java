@@ -1,10 +1,8 @@
-package com.guillot.go4lunch.restaurantDetails;
+package com.guillot.go4lunch.details;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

@@ -1,7 +1,6 @@
 package com.guillot.go4lunch.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.squareup.moshi.Json;
 
 import java.util.List;
 

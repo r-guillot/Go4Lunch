@@ -1,4 +1,4 @@
-package com.guillot.go4lunch.restaurantDetails;
+package com.guillot.go4lunch.details;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

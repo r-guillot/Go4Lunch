@@ -24,7 +24,7 @@ import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.RestaurantMapFragmentBinding;
 import com.guillot.go4lunch.model.Restaurant;
-import com.guillot.go4lunch.restaurantDetails.RestaurantDetailActivity;
+import com.guillot.go4lunch.details.RestaurantDetailActivity;
 
 import java.util.List;
 

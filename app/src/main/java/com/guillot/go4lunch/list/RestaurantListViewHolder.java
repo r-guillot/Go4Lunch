@@ -2,14 +2,20 @@ package com.guillot.go4lunch.list;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
 import com.guillot.go4lunch.maps.RestaurantRepository;
@@ -21,6 +27,7 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
     private ItemRestaurantBinding binding;
     private Context context;
+    private final String TAG = RestaurantListViewHolder.class.getSimpleName();
 
     RestaurantListViewHolder(@NonNull ItemRestaurantBinding binding, Context context) {
         super(binding.getRoot());
@@ -40,10 +47,23 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         binding.textViewDistance.setText(distanceToDisplay);
 
         Glide.with(context)
-                .load(RestaurantRepository.getInstance().getPhotoRestaurant(restaurant.getPhotoReference()))
+                .load("https://upload.wikimedia.org/wikipedia/commons/4/4b/Ursidae-01.jpg")
                 .centerCrop()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.d(TAG, "onLoadFailed: " + e.getMessage());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d(TAG, "onResourceReady: ");
+                        return false;
+                    }
+                })
                 .into(binding.imageViewRestaurant);
-        Log.d("photo", "photo reference " + restaurant.getPhotoReference());
+        Log.d(TAG, "photo reference " + RestaurantRepository.getInstance().getPhotoRestaurant(restaurant.getPhotoReference()));
 
 
         LayerDrawable stars = (LayerDrawable) binding.ratingBar.getProgressDrawable();

@@ -22,7 +22,7 @@ import com.guillot.go4lunch.maps.RestaurantMapFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ActivityCoreBinding;
 import com.guillot.go4lunch.mates.MatesFragment;
-import com.guillot.go4lunch.restaurantDetails.RestaurantDetailActivity;
+import com.guillot.go4lunch.details.RestaurantDetailActivity;
 
 import java.util.Arrays;
 import java.util.List;

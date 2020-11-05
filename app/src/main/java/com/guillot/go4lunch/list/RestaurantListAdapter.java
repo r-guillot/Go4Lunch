@@ -17,8 +17,9 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListVi
     private List<Restaurant> restaurantList;
     private Context context;
 
-    public RestaurantListAdapter(List<Restaurant> restaurants) {
+    public RestaurantListAdapter(List<Restaurant> restaurants, Context context) {
         this.restaurantList = restaurants;
+        this.context = context;
     }
 
     @Override
