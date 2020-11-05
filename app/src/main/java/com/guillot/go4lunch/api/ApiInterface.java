@@ -3,10 +3,7 @@ package com.guillot.go4lunch.api;
 import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.model.ApiRestaurantResponse;
 
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 

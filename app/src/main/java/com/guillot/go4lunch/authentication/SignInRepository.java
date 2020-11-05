@@ -10,6 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.model.User;
 
@@ -27,8 +29,11 @@ class SignInRepository {
                     String username = firebaseUser.getDisplayName();
                     Uri urlProfilePicture = firebaseUser.getPhotoUrl();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
-                    user = new User(id, username, urlProfilePicture, userLocation);
+                    user = new User(id, username, urlProfilePicture, userLocation, null, null);
                     authenticatedUserMutableLIveData.setValue(user);
+                    if (UserHelper.getUser(id) == null){
+                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, null, null);
+                    }
                 }
             }else {
                     Log.e("error", "errorFirebaseAuthWithGoogle:" + authTask.getException().getMessage());
@@ -47,8 +52,11 @@ class SignInRepository {
                     String username = firebaseUser.getDisplayName();
                     Uri urlProfilePicture = firebaseUser.getPhotoUrl();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
-                    user = new User(id, username, urlProfilePicture, userLocation);
+                    user = new User(id, username, urlProfilePicture, userLocation, null, null);
                     authenticatedUserMutableLIveData.setValue(user);
+                    if (UserHelper.getUser(id) == null){
+                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, null, null);
+                    }
                 }
             }else {
                 Log.e("error", "errorFirebaseAuthWithFacebook:" + authTask.getException().getMessage());

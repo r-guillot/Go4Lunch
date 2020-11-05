@@ -6,21 +6,19 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
-import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
+import com.guillot.go4lunch.model.Restaurant;
+
 
 import java.util.List;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListViewHolder> {
 
     private List<Restaurant> restaurantList;
-    private RequestManager glide;
     private Context context;
 
-    public RestaurantListAdapter(List<Restaurant> restaurants, RequestManager glide) {
+    public RestaurantListAdapter(List<Restaurant> restaurants) {
         this.restaurantList = restaurants;
-        this.glide = glide;
     }
 
     @Override
@@ -33,7 +31,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListVi
     @Override
     public void onBindViewHolder(RestaurantListViewHolder holder, int position) {
         final Restaurant restaurant = restaurantList.get(position);
-        holder.updateRestaurantInfo(restaurant, this.glide);
+        holder.updateRestaurantInfo(restaurant);
     }
 
     @Override

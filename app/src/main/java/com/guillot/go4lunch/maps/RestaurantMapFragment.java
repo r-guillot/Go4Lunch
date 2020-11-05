@@ -99,7 +99,7 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
                         .position(positionRestaurant)
                         .title(restaurant.getName())
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
-                marker.setTag(restaurant.getUid());
+                marker.setTag(restaurant.getRestaurantID());
             }
             onMarkerClick();
         }
@@ -132,12 +132,12 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String markerId = marker.getId();
-                Log.d(TAG, "onMarkerClick: " + markerId);
+                String placeId = (String) marker.getTag();
+                Log.d(TAG, "onMarkerClick: " + placeId);
 
                 Intent detailIntent = new Intent(getActivity(), RestaurantDetailActivity.class);
 
-                detailIntent.putExtra(RESTAURANT, markerId);
+                detailIntent.putExtra(RESTAURANT, placeId);
                 startActivity(detailIntent);
                 return false;
             }

@@ -19,9 +19,9 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.list.RestaurantListFragment;
 import com.guillot.go4lunch.maps.RestaurantMapFragment;
-import com.guillot.go4lunch.mate.MatesFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ActivityCoreBinding;
+import com.guillot.go4lunch.mates.MatesFragment;
 import com.guillot.go4lunch.restaurantDetails.RestaurantDetailActivity;
 
 import java.util.Arrays;

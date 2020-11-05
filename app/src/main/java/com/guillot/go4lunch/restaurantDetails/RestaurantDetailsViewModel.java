@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.guillot.go4lunch.common.Utils;
+import com.guillot.go4lunch.maps.RestaurantRepository;
 import com.guillot.go4lunch.model.ApiDetailsRestaurantResponse;
 import com.guillot.go4lunch.model.Restaurant;
-
-import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -18,13 +15,13 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class RestaurantDetailsViewModel extends ViewModel {
 
-    private RestaurantDetailRepository mRestaurantRepository;
+    private RestaurantRepository mRestaurantRepository;
     private Disposable disposable;
     private Restaurant restaurant;
     private MutableLiveData<Restaurant> restaurantDetail = new MutableLiveData<>();
 
     public void init() {
-        mRestaurantRepository = RestaurantDetailRepository.getInstance();
+        mRestaurantRepository = RestaurantRepository.getInstance();
     }
 
     public LiveData<Restaurant> getRestaurants(){

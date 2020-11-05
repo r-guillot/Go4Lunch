@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.base.BaseFragment;
@@ -32,6 +31,7 @@ public class RestaurantListFragment extends BaseFragment {
     private RestaurantListViewModel viewModel;
     private List<Restaurant> restaurants;
     private RestaurantListAdapter adapter;
+    public final static String RESTAURANT = "RESTAURANT_ID";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class RestaurantListFragment extends BaseFragment {
 
     private void configureRecycleView() {
         restaurants = new ArrayList<>();
-        adapter = new RestaurantListAdapter(restaurants, Glide.with(this));
+        adapter = new RestaurantListAdapter(restaurants);
         binding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.restaurantRecyclerView.setAdapter(adapter);
     }
@@ -80,7 +80,7 @@ public class RestaurantListFragment extends BaseFragment {
                 .addTo(binding.restaurantRecyclerView, R.layout.item_restaurant)
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     Intent detailIntent = new Intent(getActivity(), RestaurantDetailActivity.class);
-                    detailIntent.putExtra("Restaurant", String.valueOf(restaurants.get(position)));
+                    detailIntent.putExtra(RESTAURANT, restaurants.get(position).getRestaurantID());
                     startActivity(detailIntent);
                 });
     }

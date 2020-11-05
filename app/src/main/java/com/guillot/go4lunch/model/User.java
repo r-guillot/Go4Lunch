@@ -6,18 +6,27 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import javax.annotation.Nullable;
+
 public class User implements Parcelable {
 
     private String id;
     private String username;
     private Uri urlProfilePicture;
     private LatLng userLocation;
+    @Nullable
+    private String restaurantId;
+    @Nullable
+    private String restaurantName;
 
-    public User(String id, String username, Uri urlProfilePicture, LatLng userLocation) {
+
+    public User(String id, String username, Uri urlProfilePicture, LatLng userLocation, String restaurantId, String restaurantName) {
         this.id = id;
         this.username = username;
         this.urlProfilePicture = urlProfilePicture;
         this.userLocation = userLocation;
+        this.restaurantId = restaurantId;
+        this.restaurantName = restaurantName;
     }
 
     protected User(Parcel in) {
@@ -43,11 +52,18 @@ public class User implements Parcelable {
     public String getUsername() { return username; }
     public Uri getUrlProfilePicture() { return urlProfilePicture; }
     public LatLng getUserLocation() {return userLocation;}
+    @Nullable
+    public String getRestaurantId() {return restaurantId;}
+    @Nullable
+    public String getRestaurantName() { return restaurantName;}
 
-    public void setId(String id) { this.id = id; }
-    public void setUsername(String username) { this.username = username; }
-    public void setUrlProfilePicture(Uri urlProfilePicture) { this.urlProfilePicture = urlProfilePicture; }
+
+    public void setId(String id) { this.id = id;}
+    public void setUsername(String username) { this.username = username;}
+    public void setUrlProfilePicture(Uri urlProfilePicture) { this.urlProfilePicture = urlProfilePicture;}
     public void setUserLocation(LatLng userLocation) {this.userLocation = userLocation;}
+    public void setRestaurantId(@Nullable String restaurantId) { this.restaurantId = restaurantId;}
+    public void setRestaurantName(@Nullable String restaurantName) { this.restaurantName = restaurantName;}
 
     @Override
     public int describeContents() {
@@ -60,5 +76,6 @@ public class User implements Parcelable {
         dest.writeString(username);
         urlProfilePicture.writeToParcel(dest, flags);
         dest.writeParcelable(userLocation, flags);
+        dest.writeString(restaurantId);
     }
 }

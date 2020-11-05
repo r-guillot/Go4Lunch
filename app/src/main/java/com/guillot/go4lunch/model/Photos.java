@@ -44,12 +44,4 @@ public class Photos {
     public void setHeight(int height) {
         this.height = height;
     }
-
-    @Override
-    public String toString() {
-        return "Photos{" +
-                "photoReference='" + photoReference + '\'' +
-                ", width=" + width +
-                '}';
-    }
 }

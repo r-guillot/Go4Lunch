@@ -18,13 +18,13 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class RestaurantMapViewModel extends ViewModel {
 
-    private  RestaurantMapRepository mRestaurantRepository;
+    private RestaurantRepository mRestaurantRepository;
     private Disposable disposable;
     private List<Restaurant> mRestaurants;
     private MutableLiveData<List<Restaurant>> restaurantsList = new MutableLiveData<>();
 
     public void init() {
-        mRestaurantRepository = RestaurantMapRepository.getInstance();
+        mRestaurantRepository = RestaurantRepository.getInstance();
     }
 
     public LiveData<List<Restaurant>> getRestaurantsList(){

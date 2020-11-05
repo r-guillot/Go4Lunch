@@ -7,40 +7,40 @@ import java.util.List;
 
 public class Restaurant {
 
-    private String uid;
+    private String restaurantID;
     private String name;
     private Double latitude;
     private Double longitude;
     private String address;
     private int openingHours;
     private Integer distance;
-    private String urlPhoto;
+    private String photoReference;
     private float rating;
     private String phoneNumber;
     private String webSite;
     private List<User> usersEatingHere;
 
-    public Restaurant(String uid, String name, Double latitude, Double longitude, @Nullable String address,
-                      @Nullable String urlPhoto, @Nullable float rating, String phoneNumber, String webSite) {
-        this.uid = uid;
+    public Restaurant(String restaurantID, String name, Double latitude, Double longitude, @Nullable String address,
+                      @Nullable String photoReference, @Nullable float rating, String phoneNumber, String webSite) {
+        this.restaurantID = restaurantID;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
         this.openingHours = openingHours;
-        this.urlPhoto = urlPhoto;
+        this.photoReference = photoReference;
         this.rating = rating;
         this.phoneNumber = phoneNumber;
         this.webSite = webSite;
         usersEatingHere = new ArrayList<>();
     }
 
-    public String getUid() {
-        return uid;
+    public String getRestaurantID() {
+        return restaurantID;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setRestaurantID(String restaurantID) {
+        this.restaurantID = restaurantID;
     }
 
     public String getName() {
@@ -91,12 +91,12 @@ public class Restaurant {
         this.distance = distance;
     }
 
-    public String getUrlPhoto() {
-        return urlPhoto;
+    public String getPhotoReference() {
+        return photoReference;
     }
 
-    public void setUrlPhoto(String urlPhoto) {
-        this.urlPhoto = urlPhoto;
+    public void setPhotoReference(String photoReference) {
+        this.photoReference = photoReference;
     }
 
     public void setUserGoingEating(List<User> users) {

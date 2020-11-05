@@ -18,23 +18,23 @@ import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
-public class RestaurantMapRepository {
+public class RestaurantRepository {
 
-    private final String TAG = RestaurantMapRepository.class.getSimpleName();
+    private final String TAG = RestaurantRepository.class.getSimpleName();
 
     private ApiInterface apiInterface;
     private ApiDetails apiDetails;
 
-    private static RestaurantMapRepository newsRepository;
+    private static RestaurantRepository newsRepository;
 
-    public static RestaurantMapRepository getInstance() {
+    public static RestaurantRepository getInstance() {
         if (newsRepository == null) {
-            newsRepository = new RestaurantMapRepository();
+            newsRepository = new RestaurantRepository();
         }
         return newsRepository;
     }
 
-    public RestaurantMapRepository() {
+    public RestaurantRepository() {
         apiInterface = RetrofitService.getInterface();
         apiDetails = RetrofitService.getDetails();
     }
@@ -67,7 +67,7 @@ public class RestaurantMapRepository {
                         if (results != null && !results.isEmpty()) {
                             return Observable.fromIterable(results)
                                     .concatMap((Function<RestaurantApi, Observable<ApiDetailsRestaurantResponse>>) (RestaurantApi result) ->{
-                                        return RestaurantMapRepository.this.streamFetchRestaurantDetails(result.getPlaceId());
+                                        return RestaurantRepository.this.streamFetchRestaurantDetails(result.getPlaceId());
                                     })
                                     .toList()
                                     .toObservable();
@@ -78,9 +78,8 @@ public class RestaurantMapRepository {
                 });
     }
 
-
     public String getPhotoRestaurant(String photoReference) {
-        return String.format("%splace/photo?maxwidth=400&photoreference=%s&key=%s",
+        return String.format("%splace/photo?maxwidth=500&photoreference=%s&key=%s",
                 BuildConfig.ApiPlaceBase, photoReference, BuildConfig.ApiPlaceKey);
     }
 
@@ -89,7 +88,7 @@ public class RestaurantMapRepository {
         String name = result.getName();
         Double latitude = result.getGeometry().getLocation().getLat();
         Double longitude = result.getGeometry().getLocation().getLng();
-        String photo = (result.getPhotos() != null) ? getPhotoRestaurant(result.getPhotos().get(0).getPhotoReference()) : null;
+        String photo = result.getPhotos().get(0).getPhotoReference();
         String address = result.getVicinity();
         String webSite = result.getWebsite();
         String phoneNumber = result.getPhoneNumber();
