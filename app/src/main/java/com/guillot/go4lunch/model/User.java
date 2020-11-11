@@ -14,17 +14,19 @@ public class User implements Parcelable {
     private String username;
     private Uri urlProfilePicture;
     private LatLng userLocation;
+    private String userMail;
     @Nullable
     private String restaurantId;
     @Nullable
     private String restaurantName;
 
 
-    public User(String id, String username, Uri urlProfilePicture, LatLng userLocation, String restaurantId, String restaurantName) {
+    public User(String id, String username, Uri urlProfilePicture, LatLng userLocation, String userMail, String restaurantId, String restaurantName) {
         this.id = id;
         this.username = username;
         this.urlProfilePicture = urlProfilePicture;
         this.userLocation = userLocation;
+        this.userMail = userMail;
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
     }
@@ -48,22 +50,60 @@ public class User implements Parcelable {
         }
     };
 
-    public String getId() { return id; }
-    public String getUsername() { return username; }
-    public Uri getUrlProfilePicture() { return urlProfilePicture; }
-    public LatLng getUserLocation() {return userLocation;}
+    public String getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Uri getUrlProfilePicture() {
+        return urlProfilePicture;
+    }
+
+    public LatLng getUserLocation() {
+        return userLocation;
+    }
+
+    public String getUserMail() {
+        return userMail;
+    }
+
     @Nullable
-    public String getRestaurantId() {return restaurantId;}
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
     @Nullable
-    public String getRestaurantName() { return restaurantName;}
+    public String getRestaurantName() {
+        return restaurantName;
+    }
 
 
-    public void setId(String id) { this.id = id;}
-    public void setUsername(String username) { this.username = username;}
-    public void setUrlProfilePicture(Uri urlProfilePicture) { this.urlProfilePicture = urlProfilePicture;}
-    public void setUserLocation(LatLng userLocation) {this.userLocation = userLocation;}
-    public void setRestaurantId(@Nullable String restaurantId) { this.restaurantId = restaurantId;}
-    public void setRestaurantName(@Nullable String restaurantName) { this.restaurantName = restaurantName;}
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setUrlProfilePicture(Uri urlProfilePicture) {
+        this.urlProfilePicture = urlProfilePicture;
+    }
+
+    public void setUserLocation(LatLng userLocation) {
+        this.userLocation = userLocation;
+    }
+
+    public void setRestaurantId(@Nullable String restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public void setRestaurantName(@Nullable String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
 
     @Override
     public int describeContents() {

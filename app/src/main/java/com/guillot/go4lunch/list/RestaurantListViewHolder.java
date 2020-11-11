@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,10 +13,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.util.FixedPreloadSizeProvider;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
 import com.guillot.go4lunch.maps.RestaurantRepository;
@@ -48,6 +51,8 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
         Glide.with(context)
                 .load("https://upload.wikimedia.org/wikipedia/commons/4/4b/Ursidae-01.jpg")
+                .placeholder(android.R.drawable.progress_indeterminate_horizontal)
+                .error(android.R.drawable.stat_notify_error)
                 .centerCrop()
                 .listener(new RequestListener<Drawable>() {
                     @Override

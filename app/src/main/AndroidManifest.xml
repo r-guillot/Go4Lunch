@@ -35,8 +35,9 @@
             android:value="@string/google_api_key" />
 
         <activity android:name=".authentication.SignInActivity" />
-        <activity android:name=".main.SplashActivity" />
-        <activity android:name=".main.CoreActivity">
+        <activity android:name=".main.CoreActivity" />
+        <activity android:name=".main.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

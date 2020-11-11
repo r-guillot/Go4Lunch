@@ -28,7 +28,7 @@ public class MatesFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.restaurant_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_mates, container, false);
         configureBinding(view);
         initViewModel();
         return view;

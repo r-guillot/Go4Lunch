@@ -14,6 +14,7 @@ import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.authentication.SignInActivity;
 
 public class SplashActivity extends AppCompatActivity {
+    private final String TAG = SplashActivity.class.getSimpleName();
     private FirebaseUser user;
     private SharedPreferences mSharedPreferences;
     private String userId;
@@ -38,10 +39,12 @@ public class SplashActivity extends AppCompatActivity {
      * himself,else the maps activity opens
      */
     private void checkIfUserIsConnected() {
+        Log.d(TAG, "checkIfUserIsConnected: ");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "user: " +user);
                 Intent intent = (user != null )? new Intent(getBaseContext(), CoreActivity.class):
                         new Intent(getBaseContext(), SignInActivity.class);
                 startActivity(intent);

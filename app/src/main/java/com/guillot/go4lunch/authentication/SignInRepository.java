@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,7 +16,7 @@ import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.model.User;
 
-class SignInRepository {
+public class SignInRepository {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private User user;
 
@@ -29,10 +30,11 @@ class SignInRepository {
                     String username = firebaseUser.getDisplayName();
                     Uri urlProfilePicture = firebaseUser.getPhotoUrl();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
-                    user = new User(id, username, urlProfilePicture, userLocation, null, null);
+                    String userName = firebaseUser.getEmail();
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
                     authenticatedUserMutableLIveData.setValue(user);
                     if (UserHelper.getUser(id) == null){
-                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, null, null);
+                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userName, null, null);
                     }
                 }
             }else {
@@ -52,10 +54,11 @@ class SignInRepository {
                     String username = firebaseUser.getDisplayName();
                     Uri urlProfilePicture = firebaseUser.getPhotoUrl();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
-                    user = new User(id, username, urlProfilePicture, userLocation, null, null);
+                    String userName = firebaseUser.getEmail();
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
                     authenticatedUserMutableLIveData.setValue(user);
                     if (UserHelper.getUser(id) == null){
-                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, null, null);
+                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userName,  null, null);
                     }
                 }
             }else {
@@ -64,6 +67,11 @@ class SignInRepository {
         });
         return authenticatedUserMutableLIveData;
     }
+
+    public void logOut() {
+        mAuth.getCurrentUser();
+        mAuth.signOut();}
+
 
 //    public static SharedPreferences sharedPreferences (Context context) {
 //        return context.getSharedPreferences(CONSTANTS.SHARED_PREFERENCES_USER, 0);
