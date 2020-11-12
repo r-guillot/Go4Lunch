@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.authentication.SignInActivity;
 
 public class SplashActivity extends AppCompatActivity {

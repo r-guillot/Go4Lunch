@@ -1,11 +1,15 @@
 package com.guillot.go4lunch.authentication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -14,9 +18,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.common.Constants;
+import com.guillot.go4lunch.main.SplashActivity;
 import com.guillot.go4lunch.model.User;
 
 public class SignInRepository {
+    private final String TAG = SignInRepository.class.getSimpleName();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private User user;
 
@@ -28,14 +34,12 @@ public class SignInRepository {
                 if(firebaseUser != null) {
                     String id = firebaseUser.getUid();
                     String username = firebaseUser.getDisplayName();
-                    Uri urlProfilePicture = firebaseUser.getPhotoUrl();
+                    String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
                     String userName = firebaseUser.getEmail();
                     user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
+                    createUserInFirestore(firebaseUser);
                     authenticatedUserMutableLIveData.setValue(user);
-                    if (UserHelper.getUser(id) == null){
-                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userName, null, null);
-                    }
                 }
             }else {
                     Log.e("error", "errorFirebaseAuthWithGoogle:" + authTask.getException().getMessage());
@@ -52,14 +56,12 @@ public class SignInRepository {
                 if(firebaseUser != null) {
                     String id = firebaseUser.getUid();
                     String username = firebaseUser.getDisplayName();
-                    Uri urlProfilePicture = firebaseUser.getPhotoUrl();
+                    String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
                     LatLng userLocation = new LatLng(45.833641, 6.864594);
                     String userName = firebaseUser.getEmail();
                     user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
+                    createUserInFirestore(firebaseUser);
                     authenticatedUserMutableLIveData.setValue(user);
-                    if (UserHelper.getUser(id) == null){
-                        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userName,  null, null);
-                    }
                 }
             }else {
                 Log.e("error", "errorFirebaseAuthWithFacebook:" + authTask.getException().getMessage());
@@ -68,9 +70,15 @@ public class SignInRepository {
         return authenticatedUserMutableLIveData;
     }
 
-    public void logOut() {
-        mAuth.getCurrentUser();
-        mAuth.signOut();}
+    private void createUserInFirestore(FirebaseUser firebaseUser){
+        String id = firebaseUser.getUid();
+        String username = firebaseUser.getDisplayName();
+        String urlProfilePicture = (firebaseUser.getPhotoUrl() != null) ? firebaseUser.getPhotoUrl().toString() : null;
+        LatLng userLocation = new LatLng(45.833641, 6.864594);
+        String userName = firebaseUser.getEmail();
+
+        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userName,  null, null);
+    }
 
 
 //    public static SharedPreferences sharedPreferences (Context context) {

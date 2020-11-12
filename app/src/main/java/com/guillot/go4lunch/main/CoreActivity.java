@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
@@ -103,7 +105,8 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             case R.id.logout:
-                viewModel.logOutUser();
+                AuthUI.getInstance()
+                        .signOut(this);
                 intent = new Intent(this, SignInActivity.class);
                 break;
         }

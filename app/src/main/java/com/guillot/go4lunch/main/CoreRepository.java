@@ -34,7 +34,7 @@ class CoreRepository {
         return user.getUserMail();
     }
 
-    public Uri GetProfilePic() {
+    public String GetProfilePic() {
         return user.getUrlProfilePicture();
     }
 }

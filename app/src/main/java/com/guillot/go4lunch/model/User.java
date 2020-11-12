@@ -12,7 +12,7 @@ public class User implements Parcelable {
 
     private String id;
     private String username;
-    private Uri urlProfilePicture;
+    private String urlProfilePicture;
     private LatLng userLocation;
     private String userMail;
     @Nullable
@@ -21,7 +21,7 @@ public class User implements Parcelable {
     private String restaurantName;
 
 
-    public User(String id, String username, Uri urlProfilePicture, LatLng userLocation, String userMail, String restaurantId, String restaurantName) {
+    public User(String id, String username, String urlProfilePicture, LatLng userLocation, String userMail, String restaurantId, String restaurantName) {
         this.id = id;
         this.username = username;
         this.urlProfilePicture = urlProfilePicture;
@@ -58,7 +58,7 @@ public class User implements Parcelable {
         return username;
     }
 
-    public Uri getUrlProfilePicture() {
+    public String getUrlProfilePicture() {
         return urlProfilePicture;
     }
 
@@ -89,7 +89,7 @@ public class User implements Parcelable {
         this.username = username;
     }
 
-    public void setUrlProfilePicture(Uri urlProfilePicture) {
+    public void setUrlProfilePicture(String urlProfilePicture) {
         this.urlProfilePicture = urlProfilePicture;
     }
 
@@ -114,7 +114,7 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(username);
-        urlProfilePicture.writeToParcel(dest, flags);
+        dest.writeString(urlProfilePicture);
         dest.writeParcelable(userLocation, flags);
         dest.writeString(restaurantId);
     }

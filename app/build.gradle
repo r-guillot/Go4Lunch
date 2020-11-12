@@ -38,7 +38,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.2.1'
@@ -53,6 +52,8 @@ dependencies {
 
     //FireBase//
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
+    implementation 'com.google.firebase:firebase-core:18.0.0'
+
 
     //FireStore//
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'

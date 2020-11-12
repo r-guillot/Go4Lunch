@@ -1,6 +1,7 @@
 package com.guillot.go4lunch.main;
 
 import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
 
 import androidx.lifecycle.ViewModel;
@@ -23,7 +24,7 @@ public class CoreViewModel extends ViewModel {
         return coreRepository.getChosenRestaurant();
     }
 
-    public Uri getUserProfilePic() {
+    public String getUserProfilePic() {
         coreRepository.getUser();
         return coreRepository.GetProfilePic();
     }
@@ -36,11 +37,6 @@ public class CoreViewModel extends ViewModel {
     public String getUserMail() {
         coreRepository.getUser();
         return coreRepository.getUserMail();
-    }
-
-
-    public void logOutUser() {
-        signInRepository.logOut();
     }
 
 }
