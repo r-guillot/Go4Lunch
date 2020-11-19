@@ -52,6 +52,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         binding = ActivityDetailsRestaurantBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
     }
 
     private void initViewModel() {
