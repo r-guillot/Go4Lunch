@@ -35,7 +35,7 @@ public class SignInRepository {
                     String id = firebaseUser.getUid();
                     String username = firebaseUser.getDisplayName();
                     String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
-                    LatLng userLocation = new LatLng(45.833641, 6.864594);
+                    String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
                     user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
                     createUserInFirestore(firebaseUser);
@@ -57,7 +57,7 @@ public class SignInRepository {
                     String id = firebaseUser.getUid();
                     String username = firebaseUser.getDisplayName();
                     String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
-                    LatLng userLocation = new LatLng(45.833641, 6.864594);
+                    String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
                     user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
                     createUserInFirestore(firebaseUser);
@@ -74,15 +74,15 @@ public class SignInRepository {
         String id = firebaseUser.getUid();
         String username = firebaseUser.getDisplayName();
         String urlProfilePicture = (firebaseUser.getPhotoUrl() != null) ? firebaseUser.getPhotoUrl().toString() : null;
-        LatLng userLocation = new LatLng(45.833641, 6.864594);
-        String userName = firebaseUser.getEmail();
+        String userLocation = "45.833641, 6.864594";
+        String userMail = firebaseUser.getEmail();
 
-        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userName,  null, null);
+        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userMail,  null, null);
     }
 
 
 //    public static SharedPreferences sharedPreferences (Context context) {
-//        return context.getSharedPreferences(CONSTANTS.SHARED_PREFERENCES_USER, 0);
+//        return context.getSharedPreferences(Constants.SHARED_PREFERENCES_USER, 0);
 //
 //        SharedPreferences.Editor editor = sharedPreferences(context).edit();
 //    }

@@ -49,26 +49,17 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         }
         binding.textViewDistance.setText(distanceToDisplay);
 
-        Glide.with(context)
-                .load("https://upload.wikimedia.org/wikipedia/commons/4/4b/Ursidae-01.jpg")
-                .placeholder(android.R.drawable.progress_indeterminate_horizontal)
-                .error(android.R.drawable.stat_notify_error)
-                .centerCrop()
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.d(TAG, "onLoadFailed: " + e.getMessage());
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d(TAG, "onResourceReady: ");
-                        return false;
-                    }
-                })
-                .into(binding.imageViewRestaurant);
-        Log.d(TAG, "photo reference " + RestaurantRepository.getInstance().getPhotoRestaurant(restaurant.getPhotoReference()));
+        if (restaurant.getPhotoReference() != null) {
+            Glide.with(context)
+                    .load(RestaurantRepository.getInstance().getPhotoRestaurant(restaurant.getPhotoReference()))
+                    .centerCrop()
+                    .placeholder(android.R.drawable.progress_indeterminate_horizontal)
+                    .error(android.R.drawable.stat_notify_error)
+                    .into(binding.imageViewRestaurant);
+            Log.d(TAG, "photo reference " + RestaurantRepository.getInstance().getPhotoRestaurant(restaurant.getPhotoReference()));
+        } else {
+            binding.imageViewRestaurant.setImageResource(R.drawable.image_not_avaiable);
+        }
 
 
         LayerDrawable stars = (LayerDrawable) binding.ratingBar.getProgressDrawable();

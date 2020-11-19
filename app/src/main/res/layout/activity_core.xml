@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:layout_constraintTop_toTopOf="parent"
+            />
 
-            app:menu="@menu/top_search_menu" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

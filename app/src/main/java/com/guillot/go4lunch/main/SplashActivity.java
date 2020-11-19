@@ -27,8 +27,6 @@ public class SplashActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-//        Intent intent = new Intent(getBaseContext(), SignInActivity.class);
-//        startActivity(intent);
         mSharedPreferences = getPreferences(0);
         Log.d("userId" ,"user splash"+ userId);
 

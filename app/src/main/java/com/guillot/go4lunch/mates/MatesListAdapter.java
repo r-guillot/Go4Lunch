@@ -28,8 +28,7 @@ public class MatesListAdapter extends RecyclerView.Adapter<MatesListViewHolder> 
 
     @Override
     public void onBindViewHolder(MatesListViewHolder holder, int position) {
-        final User user = userList.get(position);
-        holder.updateMatesInfo(user);
+        holder.updateMatesInfo(userList.get(position));
     }
 
     @Override
@@ -37,8 +36,8 @@ public class MatesListAdapter extends RecyclerView.Adapter<MatesListViewHolder> 
         return this.userList.size();
     }
 
-    void update(List<User> users){
+    public void update(List<User> users){
         this.userList = users;
-
+        notifyDataSetChanged();
     }
 }

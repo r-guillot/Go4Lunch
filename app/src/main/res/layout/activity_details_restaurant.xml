@@ -17,6 +17,7 @@
         android:id="@+id/fabSelectedRestaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_24"
 
         android:layout_marginEnd="22dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewPictureRestaurant"
@@ -112,6 +113,21 @@
         app:layout_constraintStart_toEndOf="@+id/textViewLike"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
         tools:ignore="MissingPrefix" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCall">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/details_mates_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

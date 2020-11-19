@@ -8,6 +8,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.guillot.go4lunch.model.User;
 
 import java.util.Map;
@@ -25,9 +26,9 @@ public class UserHelper {
 
     // CREATE
 
-    public static Task<Void> createUser(String id, String username, String urlProfilePicture, LatLng userLocation, String userName,
+    public static Task<Void> createUser(String id, String username, String urlProfilePicture, String userLocation, String userMail,
                                         String restaurantId, String restaurantName) {
-        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userName, restaurantId, restaurantName);
+        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantId, restaurantName);
         return UserHelper.getUsersCollection().document(id).set(userToCreate);
     }
 
@@ -37,18 +38,18 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).get();
     }
 
-    public static Query getUserByRestaurantId(String restaurantId){
-        return UserHelper.getUsersCollection().whereEqualTo("restaurantId",restaurantId);
+    public static Task<QuerySnapshot> getUserByRestaurantId(String restaurantId){
+        return UserHelper.getUsersCollection().whereEqualTo("restaurantId",restaurantId).get();
     }
 
-    public static Query getAllUser(){
-        return UserHelper.getUsersCollection().orderBy("userName");
+    public static Task<QuerySnapshot> getAllUser(){
+        return UserHelper.getUsersCollection().orderBy("username").get();
     }
 
     // UPDATE
 
-    public static Task<Void> updateRestaurantId(String uid, String restaurantIdentifier, String restaurantName) {
-        return UserHelper.getUsersCollection().document(uid).update("restaurantIdentifier", restaurantIdentifier,"restaurantName", restaurantName);
+    public static Task<Void> updateRestaurantId(String uid, String restaurantId, String restaurantName) {
+        return UserHelper.getUsersCollection().document(uid).update("restaurantId", restaurantId,"restaurantName", restaurantName);
     }
 
     public static Task<Void> updateRestaurantName(String uid, String restaurantName) {
