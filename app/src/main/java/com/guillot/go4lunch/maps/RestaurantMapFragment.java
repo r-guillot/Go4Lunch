@@ -139,7 +139,7 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(positionRestaurant)
                 .title(restaurant.getName())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
+                .icon(BitmapDescriptorFactory.fromResource(icon)));
         marker.setTag(restaurant.getRestaurantID());
     }
 
