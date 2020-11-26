@@ -1,8 +1,5 @@
 package com.guillot.go4lunch.main;
 
-import android.app.Application;
-import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -11,18 +8,17 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.guillot.go4lunch.api.UserHelper;
-import com.guillot.go4lunch.authentication.SignInRepository;
 import com.guillot.go4lunch.mates.UserRepository;
 import com.guillot.go4lunch.model.User;
 
-import java.util.List;
-
-public class CoreViewModel extends ViewModel {
-    private final String TAG = CoreViewModel.class.getSimpleName();
+public class MainViewModel extends ViewModel {
+    private final String TAG = MainViewModel.class.getSimpleName();
 
     private MutableLiveData<User> currentUser = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isNotificationEnable = new MutableLiveData<>();
 
     public LiveData<User> getCurrentUserLiveData(){ return currentUser; }
+    public LiveData<Boolean> getIsNotificationEnable(){ return isNotificationEnable; }
 
     private UserRepository userRepository;
     private User fetchedUser;
@@ -44,4 +40,18 @@ public class CoreViewModel extends ViewModel {
         return fetchedUser.getRestaurantId();
     }
 
+    public void signOut() {
+        userRepository.logOut();
+    }
+
+    public void checkIfNotificationIsEnabled() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
+                fetchedUser = documentSnapshot.toObject(User.class);
+                assert fetchedUser != null;
+                fetchedUser.isNotification();
+                isNotificationEnable.setValue(fetchedUser.isNotification());
+            });
+        }
+    }
 }

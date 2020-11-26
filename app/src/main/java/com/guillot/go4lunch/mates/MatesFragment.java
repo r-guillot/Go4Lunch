@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.FragmentMatesBinding;
 import com.guillot.go4lunch.model.User;

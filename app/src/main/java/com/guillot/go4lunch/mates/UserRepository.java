@@ -2,7 +2,11 @@ package com.guillot.go4lunch.mates;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
+import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.model.User;
+
+import java.util.List;
 
 public class UserRepository {
     private static UserRepository newInstance;
@@ -16,7 +20,21 @@ public class UserRepository {
     }
 
     public String getCurrentUserId() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        return user.getUid();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            return user.getUid();
+        }
+        else {
+           return null;
+        }
     }
+
+    public void logOut() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    public void deleteUserFromFirebase() {
+        FirebaseAuth.getInstance().getCurrentUser().delete();
+     }
+
 }

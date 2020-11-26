@@ -6,7 +6,6 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,6 +33,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
     private Restaurant restaurant;
     private String userId;
     private User fetchedUser;
+    private boolean state;
 
     private MutableLiveData<Restaurant> restaurantDetail = new MutableLiveData<>();
     private MutableLiveData<List<User>> usersEatingHere = new MutableLiveData<>();
@@ -46,19 +46,22 @@ public class RestaurantDetailsViewModel extends ViewModel {
     public LiveData<Pair<Restaurant, User>> getMediatorLiveData() {return mediatorLiveData;}
 
     public void init() {
+        Log.d(TAG, "init: 1");
         mRestaurantRepository = RestaurantRepository.getInstance();
         userRepository = UserRepository.getInstance();
-        userId = userRepository.getCurrentUserId();
-        Log.d(TAG, "init: ");
+        Log.d(TAG, "init: 2");
     }
 
+    public void getUserId() {
+        userId = userRepository.getCurrentUserId();
+        Log.d(TAG, "userId: " + userId);
+    }
 
     public void executeNetworkRequest(String placeId) {
         this.disposable = mRestaurantRepository.streamFetchRestaurantDetails(placeId).subscribeWith(new DisposableObserver<ApiDetailsRestaurantResponse>() {
             @Override
             public void onNext(@NonNull ApiDetailsRestaurantResponse apiDetailsRestaurantResponse) {
                 createRestaurant(apiDetailsRestaurantResponse);
-                getCurrentUser();
             }
 
             @Override
@@ -85,17 +88,17 @@ public class RestaurantDetailsViewModel extends ViewModel {
             restaurant = mRestaurantRepository.createRestaurant(detailsResult.getResult());
         }
         restaurantDetail.setValue(restaurant);
-        mediatorLiveData.addSource(getRestaurantDetails(), new Observer<Restaurant>() {
-            private int count = 1;
-            @Override
-            public void onChanged(Restaurant restaurant) {
-                    count++;
-                    mediatorLiveData.setValue(Pair.create(restaurant, getCurrentUserLiveData().getValue()));
-                    if (count > 10) {
-                        mediatorLiveData.removeSource(getRestaurantDetails());
-                    }
-            }
-        });
+//        mediatorLiveData.addSource(getRestaurantDetails(), new Observer<Restaurant>() {
+//            private int count = 1;
+//            @Override
+//            public void onChanged(Restaurant restaurant) {
+//                    count++;
+//                    mediatorLiveData.setValue(Pair.create(restaurant, getCurrentUserLiveData().getValue()));
+//                    if (count > 10) {
+//                        mediatorLiveData.removeSource(getRestaurantDetails());
+//                    }
+//            }
+//        });
     }
 
     public void getUsersEatingHere(String restaurantId) {
@@ -114,29 +117,50 @@ public class RestaurantDetailsViewModel extends ViewModel {
 
     public void getCurrentUser() {
         Log.d(TAG, "getCurrentUser: start");
-        UserHelper.getUser(userId).addOnSuccessListener(documentSnapshot -> {
-            fetchedUser = documentSnapshot.toObject(User.class);
-            currentUser.setValue(fetchedUser);
-            Log.d(TAG, "getCurrentUser: " + currentUser);
-            Log.d(TAG, "fetchedUser: " +fetchedUser);
-        });
-        mediatorLiveData.addSource(getCurrentUserLiveData(), new Observer<User>() {
-            private int count = 1;
-            @Override
-            public void onChanged(User user) {
-                Log.d(TAG, "mediatorLiveDataUser: start 2 ");
-                count++;
-                mediatorLiveData.setValue(Pair.create(getRestaurantDetails().getValue(), user));
-                Log.d(TAG, "mediatorLiveData: " + mediatorLiveData);
-                if (count > 10) {
-                    mediatorLiveData.removeSource(getCurrentUserLiveData());
-                }
-            }
-        });
+        if (userId != null) {
+            Log.d(TAG, "getCurrentUserId: " + userId);
+            UserHelper.getUser(userId).addOnSuccessListener(documentSnapshot -> {
+                fetchedUser = documentSnapshot.toObject(User.class);
+                Log.d(TAG, "fetchedUser: " + fetchedUser);
+                currentUser.setValue(fetchedUser);
+                Log.d(TAG, "getCurrentUser: " + currentUser);
+            })
+                    .addOnFailureListener(e -> {
+                        Log.d(TAG, "getCurrentUser: " + e);
+                    });
+        }
+
+//        mediatorLiveData.addSource(getCurrentUserLiveData(), new Observer<User>() {
+//            private int count = 1;
+//            @Override
+//            public void onChanged(User user) {
+//                Log.d(TAG, "mediatorLiveDataUser: start 2 ");
+//                count++;
+//                mediatorLiveData.setValue(Pair.create(getRestaurantDetails().getValue(), user));
+//                Log.d(TAG, "mediatorLiveData: " + mediatorLiveData);
+//                if (count > 10) {
+//                    mediatorLiveData.removeSource(getCurrentUserLiveData());
+//                }
+//            }
+//        });
     }
 
-    public void updateSelectedRestaurant(String restaurantId, String restaurantName) {
-        UserHelper.updateRestaurantId(userId, restaurantId, restaurantName);
+    public boolean checkIfRestaurantIsChosen() {
+//        getCurrentUser();
+        if (getCurrentUserLiveData().getValue().getRestaurantId() != null && getCurrentUserLiveData().getValue().getRestaurantId().equals(getRestaurantDetails().getValue().getRestaurantID())) {
+            Log.d(TAG, "checkIfRestaurantIsChosen: userRestoId " + getCurrentUserLiveData().getValue().getRestaurantId() + "restoId" + getRestaurantDetails().getValue().getRestaurantID());
+            state = true;
+        } else{ state = false;}
+        Log.d(TAG, "checkIfRestaurantIsChosen: " + state);
+        return state;
+    }
+
+    public void setRestaurantSelected() {
+        UserHelper.updateRestaurantInfo(getCurrentUserLiveData().getValue().getId(), getRestaurantDetails().getValue().getRestaurantID(), getRestaurantDetails().getValue().getName(), getRestaurantDetails().getValue().getAddress());
+    }
+
+    public void setRestaurantUnselected() {
+        UserHelper.updateRestaurantInfo(getCurrentUserLiveData().getValue().getId(), "", "", "");
     }
 
 

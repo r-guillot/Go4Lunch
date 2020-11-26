@@ -20,12 +20,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField ('String', "ApiPlaceBase", baseApi)
-            buildConfigField ('String', "ApiPlaceKey", placeApiKey)
+            buildConfigField('String', "ApiPlaceBase", baseApi)
+            buildConfigField('String', "ApiPlaceKey", placeApiKey)
         }
         debug {
-            buildConfigField ('String', "ApiPlaceBase", baseApi)
-            buildConfigField ('String', "ApiPlaceKey", placeApiKey)
+            buildConfigField('String', "ApiPlaceBase", baseApi)
+            buildConfigField('String', "ApiPlaceKey", placeApiKey)
         }
     }
     buildFeatures {
@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
     implementation 'com.google.firebase:firebase-core:18.0.0'
 
+    //FireBase Storage//
+    implementation 'com.google.firebase:firebase-storage:19.2.0'
 
     //FireStore//
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'

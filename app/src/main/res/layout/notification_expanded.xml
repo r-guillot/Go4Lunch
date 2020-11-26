@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="256dp">
+    
+    <TextView
+        android:id="@+id/expanded_core_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:padding="8dp"
+        style="@style/TextAppearance.Compat.Notification"
+        />
+
+    <ImageView
+        android:id="@+id/expanded_image_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/expanded_image_notification" />
+
+</LinearLayout>

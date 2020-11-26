@@ -25,7 +25,28 @@
     <string name="search_view">Search Restaurant</string>
 
     <!-- CONTENT DESCRIPTION-->
-    <string name="desc_img_recyclerview"> photo restaurant</string>
+    <string name="desc_img_recyclerview">Photo restaurant</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="expanded_image_notification">Image of your restaurant for lunch</string>
+
+    <!-- SETTINGS XML-->
+    <string name="switch_text">Enable/Disable notifications</string>
+    <string name="update_button">Update Information</string>
+    <string name="delete_button">Delete Account</string>
+    <string name="toast_error_image">No image choose or image can\'t be pick</string>
+
+    <!-- SETTINGS ALERT DIALOG-->
+    <string name="title">Delete Account ?</string>
+    <string name="message">Are you sure you want to delete your account and all your data</string>
+
+    <!-- NOTIFICATION-->
+    <string name="notification_title">Hey ! Don\'t forget to eat !</string>
+    <string name="notification_content">you have select a place to eat today</string>
+    <string name="notification_message_alone">You are eating at %s on %s</string>
+    <string name="notification_message">You are eating at %s with %s on %s</string>
+    <string name="notificationChannel" translatable="false">notificationChannel</string>
+    <string name="name_channel" translatable="false">Go4Lunch channel</string>
+    <string name="description_channel" translatable="false">Notification channel</string>
+
 </resources>

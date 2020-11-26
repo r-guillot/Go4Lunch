@@ -1,13 +1,19 @@
 package com.guillot.go4lunch.maps;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.common.Utils;
+import com.guillot.go4lunch.mates.UserRepository;
 import com.guillot.go4lunch.model.ApiDetailsRestaurantResponse;
 import com.guillot.go4lunch.model.Restaurant;
+import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +25,16 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 public class RestaurantMapViewModel extends ViewModel {
 
     private RestaurantRepository mRestaurantRepository;
+    private UserRepository mUserRepository;
     private Disposable disposable;
     private List<Restaurant> mRestaurants;
     private MutableLiveData<List<Restaurant>> restaurantsList = new MutableLiveData<>();
+    private List<String> restaurantIdList;
+    private String userId;
 
     public void init() {
         mRestaurantRepository = RestaurantRepository.getInstance();
+        mUserRepository = UserRepository.getInstance();
     }
 
     public LiveData<List<Restaurant>> getRestaurantsList(){
@@ -64,4 +74,28 @@ public class RestaurantMapViewModel extends ViewModel {
         restaurantsList.setValue(mRestaurants);
     }
 
+    public List<String> getAllOccupiedRestaurant() {
+        UserHelper.getAllUser()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    restaurantIdList = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        User userFetched = documentSnapshot.toObject(User.class);
+                        assert userFetched != null;
+                        if (userFetched.getRestaurantId() != null) {
+                            restaurantIdList.add(userFetched.getRestaurantId());
+                        }
+                    }
+                });
+        return restaurantIdList;
+    }
+
+    public void getUserId() {
+        userId = mUserRepository.getCurrentUserId();
+    }
+
+    public void updateUserLocation(String locationUser){
+        getUserId();
+        UserHelper.updateUserLocation(userId, locationUser);
+
+    }
 }

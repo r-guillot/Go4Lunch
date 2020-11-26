@@ -9,9 +9,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ItemMatesBinding;
@@ -33,6 +35,7 @@ public class MatesListViewHolder extends RecyclerView.ViewHolder {
         if (user !=null) {
             Glide.with(context)
                     .load(RestaurantRepository.getInstance().getPhotoRestaurant(user.getUrlProfilePicture()))
+                    .override(500,500)
                     .placeholder(android.R.drawable.progress_indeterminate_horizontal)
                     .error(android.R.drawable.stat_notify_error)
                     .into(binding.profilePictureImageView);

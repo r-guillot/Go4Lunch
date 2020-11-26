@@ -76,11 +76,13 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
 
     @Override
     public void getLocationUser(LatLng locationUser) {
+        String location = locationUser.latitude + "," + locationUser.longitude;
         centerCameraOnGPSLocation(locationUser);
         viewModel.init();
         viewModel.executeNetworkRequest(locationUser);
         viewModel.getRestaurantsList().observe(this, this::initRestaurantMarker);
         locationButtonDesign();
+        viewModel.updateUserLocation(location);
     }
 
     @Override
@@ -89,20 +91,56 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
     }
 
     private void initRestaurantMarker(List<Restaurant> restaurants) {
+        int icon;
         if (googleMap != null) {
             googleMap.clear();
             for (Restaurant restaurant : restaurants) {
                 double latitude = restaurant.getLatitude();
                 double longitude = restaurant.getLongitude();
                 LatLng positionRestaurant = new LatLng(latitude, longitude);
-                Marker marker = googleMap.addMarker(new MarkerOptions()
-                        .position(positionRestaurant)
-                        .title(restaurant.getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
-                marker.setTag(restaurant.getRestaurantID());
+                if (viewModel.getAllOccupiedRestaurant() == null || viewModel.getAllOccupiedRestaurant().isEmpty()) {
+//                    Marker marker = googleMap.addMarker(new MarkerOptions()
+//                            .position(positionRestaurant)
+//                            .title(restaurant.getName())
+//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
+//                    marker.setTag(restaurant.getRestaurantID());
+                    icon = R.drawable.marker_restaurant_green_48px;
+                    setIconMarker(restaurant, icon);
+                } else {
+                    List<String> listId = viewModel.getAllOccupiedRestaurant();
+                    if (listId.contains(restaurant.getRestaurantID())) {
+//                        Marker marker = googleMap.addMarker(new MarkerOptions()
+//                                .position(positionRestaurant)
+//                                .title(restaurant.getName())
+//                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_orange_48px)));
+//                        marker.setTag(restaurant.getRestaurantID());
+                        icon = R.drawable.marker_restaurant_orange_48px;
+                        setIconMarker(restaurant, icon);
+                    }
+                    else {
+//                        Marker marker = googleMap.addMarker(new MarkerOptions()
+//                                .position(positionRestaurant)
+//                                .title(restaurant.getName())
+//                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
+//                        marker.setTag(restaurant.getRestaurantID());
+                        icon = R.drawable.marker_restaurant_green_48px;
+                        setIconMarker(restaurant, icon);
+                    }
+                }
             }
             onMarkerClick();
         }
+    }
+
+    private void setIconMarker(Restaurant restaurant, int icon) {
+        double latitude = restaurant.getLatitude();
+        double longitude = restaurant.getLongitude();
+        LatLng positionRestaurant = new LatLng(latitude, longitude);
+        Marker marker = googleMap.addMarker(new MarkerOptions()
+                .position(positionRestaurant)
+                .title(restaurant.getName())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
+        marker.setTag(restaurant.getRestaurantID());
     }
 
     private void initViewModel() {
@@ -153,4 +191,5 @@ public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCal
         rLP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rLP.setMargins(0,0,30,180);
     }
+
 }

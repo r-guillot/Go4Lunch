@@ -27,15 +27,15 @@ public class UserHelper {
     // CREATE
 
     public static Task<Void> createUser(String id, String username, String urlProfilePicture, String userLocation, String userMail,
-                                        String restaurantId, String restaurantName) {
-        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantId, restaurantName);
+                                        String restaurantId, String restaurantName, String restaurantAddress, boolean isNotification) {
+        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantId, restaurantName, restaurantAddress, isNotification);
         return UserHelper.getUsersCollection().document(id).set(userToCreate);
     }
 
     // GET
 
-    public static Task<DocumentSnapshot> getUser(String uid){
-        return UserHelper.getUsersCollection().document(uid).get();
+    public static Task<DocumentSnapshot> getUser(String id){
+        return UserHelper.getUsersCollection().document(id).get();
     }
 
     public static Task<QuerySnapshot> getUserByRestaurantId(String restaurantId){
@@ -48,17 +48,29 @@ public class UserHelper {
 
     // UPDATE
 
-    public static Task<Void> updateRestaurantId(String uid, String restaurantId, String restaurantName) {
-        return UserHelper.getUsersCollection().document(uid).update("restaurantId", restaurantId,"restaurantName", restaurantName);
+    public static Task<Void> updateRestaurantInfo(String id, String restaurantId, String restaurantName, String restaurantAddress) {
+        return UserHelper.getUsersCollection().document(id).update("restaurantId", restaurantId,"restaurantName", restaurantName, "restaurantAddress", restaurantAddress);
     }
 
-    public static Task<Void> updateRestaurantName(String uid, String restaurantName) {
-        return UserHelper.getUsersCollection().document(uid).update("restaurantName", restaurantName);
+    public static Task<Void> updateNotification(String id, boolean isNotification) {
+        return UserHelper.getUsersCollection().document(id).update("isNotification", isNotification);
+    }
+
+    public static Task<Void> updateUserInfo(String id, String username, String userMail) {
+        return UserHelper.getUsersCollection().document(id).update("username", username, "userMail", userMail);
+    }
+
+    public static Task<Void> updateUserProfilePicture(String id, String urlProfilePicture) {
+        return UserHelper.getUsersCollection().document(id).update("urlProfilePicture", urlProfilePicture);
+    }
+
+    public static Task<Void> updateUserLocation(String id, String userLocation) {
+        return UserHelper.getUsersCollection().document(id).update("userLocation", userLocation);
     }
 
     // DELETE
 
-    public static Task<Void> deleteUser(String uid) {
-        return UserHelper.getUsersCollection().document(uid).delete();
+    public static Task<Void> deleteUser(String id) {
+        return UserHelper.getUsersCollection().document(id).delete();
     }
 }

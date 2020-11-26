@@ -1,14 +1,11 @@
 package com.guillot.go4lunch.details;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.ActivityDetailsRestaurantBinding;
 import com.guillot.go4lunch.main.CoreActivity;
-import com.guillot.go4lunch.main.CoreViewModel;
 import com.guillot.go4lunch.mates.MatesListAdapter;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.User;
@@ -41,6 +37,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_restaurant);
         initViewModel();
+//        viewModel.getCurrentUser();
         viewBinding();
         configureRecycleView();
 
@@ -65,6 +62,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         Log.d("Intent", "intentRestaurantId2: " + intentRestaurantId);
 
         viewModel.init();
+        viewModel.getUserId();
         viewModel.getCurrentUser();
         viewModel.executeNetworkRequest(intentRestaurantId);
         viewModel.getUsersEatingHere(intentRestaurantId);
@@ -76,7 +74,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private void setGraphicElement(Restaurant restaurant) {
         binding.textViewNameRestaurant.setText(restaurant.getName());
         binding.textViewAddressRestaurant.setText(restaurant.getAddress());
-        setCheckFab();
+        checkFabIsSelected();
 
         if (restaurant.getPhotoReference() != null) {
             Glide.with(this)
@@ -91,7 +89,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         binding.fabSelectedRestaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCheckFab();
+                updateRestaurantSelected();
             }
         });
 
@@ -114,26 +112,30 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         });
 
     }
-    private void setCheckFab() {
-        viewModel.getMediatorLiveData().observe(this,this::checkFabIsSelected);
+//    private void setCheckFab() {
+//        viewModel.getMediatorLiveData().observe(this,this::checkFabIsSelected);
+//    }
+
+    private void checkFabIsSelected() {
+        Log.d(TAG, "checkFabIsSelected: 1 " + viewModel.checkIfRestaurantIsChosen() );
+        if (viewModel.checkIfRestaurantIsChosen()) {
+            Log.d(TAG, "checkFabIsSelected: 2 " + viewModel.checkIfRestaurantIsChosen() );
+            binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
+            binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
+        } else {
+            Log.d(TAG, "checkFabIsSelected: 3 " + viewModel.checkIfRestaurantIsChosen() );
+            binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orange)));
+            binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_24));
+        }
     }
 
-    private void checkFabIsSelected(Pair<Restaurant, User> restaurantUserPair) {
-        Log.d(TAG, "restaurantUserPair: " + restaurantUserPair);
-        Log.d(TAG, "restaurant " + restaurantUserPair.first.getRestaurantID());
-        Log.d(TAG, "user: " + restaurantUserPair.second.getId());
-//        if (restaurantUserPair.second.getRestaurantId() != null) {
-        assert restaurantUserPair.second.getRestaurantId() != null;
-        if (restaurantUserPair.second.getRestaurantId().equals(restaurantUserPair.first.getRestaurantID())) {
-                binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
-                binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
-                viewModel.updateSelectedRestaurant(restaurantUserPair.first.getRestaurantID(), restaurantUserPair.first.getName());
-            } else {
-//        }
-                binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orange)));
-                binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_24));
-                viewModel.updateSelectedRestaurant(null, null);
-            }
+    private void updateRestaurantSelected() {
+        if (viewModel.checkIfRestaurantIsChosen()) {
+            viewModel.setRestaurantUnselected();
+        } else {
+            viewModel.setRestaurantSelected();
+        }
+        checkFabIsSelected();
     }
 
     private void configureRecycleView() {

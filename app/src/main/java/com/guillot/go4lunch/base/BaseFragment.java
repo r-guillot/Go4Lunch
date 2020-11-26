@@ -13,6 +13,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.api.UserHelper;
 
 import java.util.List;
 
@@ -39,6 +40,13 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
         fetchLastKnowLocation();
     }
 
+    @Override
+    public void onResume() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        fetchLastKnowLocation();
+        super.onResume();
+    }
+
     @SuppressLint("MissingPermission")
     @AfterPermissionGranted(RC_LOCATION_PERMS)
     protected void fetchLastKnowLocation() {
@@ -50,9 +58,9 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
         fusedLocationClient
                 .getLastLocation()
                 .addOnSuccessListener(location -> {
-                            Log.d(TAG, "onSuccess location: " + location);
-                            locationUser = new LatLng(location.getLatitude(), location.getLongitude());
-                            getLocationUser(locationUser);
+                        Log.d(TAG, "onSuccess location: " + location);
+                        locationUser = new LatLng(location.getLatitude(), location.getLongitude());
+                        getLocationUser(locationUser);
                         }
                 );
     }

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.base.BaseFragment;
@@ -64,7 +65,7 @@ public class RestaurantListFragment extends BaseFragment {
 
     private void configureRecycleView() {
         restaurants = new ArrayList<>();
-        adapter = new RestaurantListAdapter(restaurants, getContext());
+        adapter = new RestaurantListAdapter(restaurants, getContext(), Glide.with(this));
         binding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.restaurantRecyclerView.setAdapter(adapter);
     }

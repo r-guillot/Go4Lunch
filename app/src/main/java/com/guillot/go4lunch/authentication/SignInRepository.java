@@ -37,7 +37,7 @@ public class SignInRepository {
                     String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
                     String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
-                    user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", false);
                     createUserInFirestore(firebaseUser);
                     authenticatedUserMutableLIveData.setValue(user);
                 }
@@ -59,7 +59,7 @@ public class SignInRepository {
                     String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
                     String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
-                    user = new User(id, username, urlProfilePicture, userLocation, userName, null, null);
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", false);
                     createUserInFirestore(firebaseUser);
                     authenticatedUserMutableLIveData.setValue(user);
                 }
@@ -76,8 +76,7 @@ public class SignInRepository {
         String urlProfilePicture = (firebaseUser.getPhotoUrl() != null) ? firebaseUser.getPhotoUrl().toString() : null;
         String userLocation = "45.833641, 6.864594";
         String userMail = firebaseUser.getEmail();
-
-        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userMail,  null, null);
+        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userMail,  "", "", "", false);
     }
 
 
