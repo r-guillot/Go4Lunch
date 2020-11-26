@@ -29,7 +29,9 @@ import com.guillot.go4lunch.details.RestaurantDetailActivity;
 import java.util.List;
 
 public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCallback {
-
+/*
+test push
+ */
     private final String TAG = RestaurantMapFragment.class.getSimpleName();
 
     private final float ZOOM_USER_LOCATION_VALUE = 15;
