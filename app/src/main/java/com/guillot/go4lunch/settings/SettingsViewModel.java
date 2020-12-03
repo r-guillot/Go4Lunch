@@ -23,7 +23,7 @@ import com.guillot.go4lunch.model.User;
 
 import java.util.UUID;
 
-public class SettingsViewModel extends ViewModel {
+public class  SettingsViewModel extends ViewModel {
     private final String TAG = SettingsViewModel.class.getSimpleName();
 
     private MutableLiveData<User> currentUser = new MutableLiveData<>();
@@ -41,6 +41,7 @@ public class SettingsViewModel extends ViewModel {
     }
 
     public void getCurrentUser() {
+        Log.d(TAG, "getCurrentUser: " + userRepository.getCurrentUserId());
         assert userRepository.getCurrentUserId() != null;
         UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
             fetchedUser = documentSnapshot.toObject(User.class);

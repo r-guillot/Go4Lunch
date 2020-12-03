@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.databinding.ActivityDetailsRestaurantBinding;
 import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.mates.MatesListAdapter;
@@ -21,6 +22,7 @@ import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RestaurantDetailActivity extends AppCompatActivity {
     private final String TAG = RestaurantDetailActivity.class.getSimpleName();
@@ -58,15 +60,22 @@ public class RestaurantDetailActivity extends AppCompatActivity {
 
     private void getInfoRestaurant() {
         Intent intent = getIntent();
-        intentRestaurantId = intent.getStringExtra(CoreActivity.RESTAURANT);
+        intentRestaurantId = intent.getStringExtra(Constants.RESTAURANT);
         Log.d("Intent", "intentRestaurantId2: " + intentRestaurantId);
 
+        Log.d(TAG, "1 ");
         viewModel.init();
+        Log.d(TAG, "2 ");
         viewModel.getUserId();
-        viewModel.getCurrentUser();
-        viewModel.executeNetworkRequest(intentRestaurantId);
-        viewModel.getUsersEatingHere(intentRestaurantId);
+        Log.d(TAG, "3 ");
+        viewModel.getCurrentUser(intentRestaurantId);
+        Log.d(TAG, "4 ");
+//        viewModel.executeNetworkRequest(intentRestaurantId);
+        Log.d(TAG, "5 ");
+//        viewModel.getUsersEatingHere(intentRestaurantId);
+        Log.d(TAG, "6 ");
         viewModel.getRestaurantDetails().observe(this, this::setGraphicElement);
+        Log.d(TAG, "7 ");
 //        setCheckFab();
         setUpUserList();
     }
@@ -105,8 +114,8 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         binding.textViewWebsite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.setData(Uri.parse("web:" + restaurant.getWebSite()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(restaurant.getWebSite()));
+//                intent.setData(Uri.parse("web:" + restaurant.getWebSite()));
                 startActivity(intent);
             }
         });
@@ -124,7 +133,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
         } else {
             Log.d(TAG, "checkFabIsSelected: 3 " + viewModel.checkIfRestaurantIsChosen() );
-            binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orange)));
+            binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orangered)));
             binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_24));
         }
     }

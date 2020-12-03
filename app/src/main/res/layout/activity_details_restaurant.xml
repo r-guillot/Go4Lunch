@@ -78,19 +78,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
+        android:background="@color/fui_transparent"
+        android:clickable="true"
+        android:drawablePadding="13dp"
+        android:focusable="true"
         android:text="@string/like"
         android:textColor="@color/orange"
-        android:background="@color/fui_transparent"
         android:textSize="17sp"
         android:textStyle="bold"
         app:drawableTopCompat="@drawable/ic_baseline_star_24"
-        android:drawablePadding="13dp"
-        android:clickable="true"
-        android:focusable="true"
 
 
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
         tools:ignore="MissingPrefix" />
 

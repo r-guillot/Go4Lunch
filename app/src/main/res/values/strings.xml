@@ -5,6 +5,10 @@
     <string name="facebook_application_id" translatable="false">2604788743184222</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb2604788743184222</string>
 
+    <!-- TWITTER PURPOSE-->
+    <string name="twitter_consumer_key" translatable="false"> ZQxLdmoa47QREqlzDCBxUOiRI </string>
+    <string name="twitter_consumer_secret" translatable="false"> pzsWKcA4A8csSTE0GmyJvvtfUqqpIDnwnjU03Lcp5hDRDMbWz1 </string>
+
     <!-- BOTTOM NAVIGATION VIEW-->
     <string name="bottom_view_map">Map View</string>
     <string name="bottom_view_list">List View</string>

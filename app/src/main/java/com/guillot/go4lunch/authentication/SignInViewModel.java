@@ -17,12 +17,20 @@ public class SignInViewModel extends AndroidViewModel {
         mSignInRepository = new SignInRepository();
     }
 
+    void signInWithEmail(AuthCredential mailCredential) {
+        authenticatedUserLiveData = mSignInRepository.firebaseAuthWithTwitter(mailCredential);
+    }
+
     void signInWithGoogle(AuthCredential googleAuthCredential) {
         authenticatedUserLiveData = mSignInRepository.firebaseAuthWithGoogle(googleAuthCredential);
     }
 
     void signInWithFacebook(AuthCredential facebookAuthCredential) {
         authenticatedUserLiveData = mSignInRepository.firebaseAuthWithFacebook(facebookAuthCredential);
+    }
+
+    void signInWithTwitter(AuthCredential twitterAuthCredential) {
+        authenticatedUserLiveData = mSignInRepository.firebaseAuthWithTwitter(twitterAuthCredential);
     }
 
 //    public void saveData() {

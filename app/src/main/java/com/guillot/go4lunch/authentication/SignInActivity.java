@@ -1,15 +1,20 @@
 package com.guillot.go4lunch.authentication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.facebook.FacebookSdk;
 
@@ -30,14 +35,24 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.databinding.ActivitySignInBinding;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.Objects;
 
 public class SignInActivity extends AppCompatActivity {
+    private final String TAG = SignInActivity.class.getSimpleName();
     private ActivitySignInBinding binding;
     private SignInViewModel mViewModel;
     private static final int RC_SIGN_IN = 1337;
@@ -49,11 +64,15 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        Twitter.initialize(this);
+        twitterSignInBuilder();
         viewBinding();
         initViewModel();
         googleSignInBuilder();
-        onClickButton();
         facebookLoginInitiating();
+        updateTwitterButton();
+        onClickGoogleButton();
+        onClickTwitterButton();
 
         mAuth = FirebaseAuth.getInstance();
         //Initiate FB SDK
@@ -73,7 +92,7 @@ public class SignInActivity extends AppCompatActivity {
     /**
      * Google authentication
      */
-    private void onClickButton() {
+    private void onClickGoogleButton() {
         binding.googleSignInButton.setOnClickListener(v -> signIn());
     }
 
@@ -95,6 +114,8 @@ public class SignInActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         fbCallback.onActivityResult(requestCode, resultCode, data);
+        binding.twitterSignInButton.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: " + requestCode);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -183,6 +204,130 @@ public class SignInActivity extends AppCompatActivity {
                 Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Twitter authentication
+     */
+    private void twitterSignInBuilder(){
+        TwitterAuthConfig mTwitterAuthConfig = new TwitterAuthConfig(getString(R.string.twitter_consumer_key),
+                getString(R.string.twitter_consumer_secret));
+        TwitterConfig twitterConfig = new TwitterConfig.Builder(this)
+                .twitterAuthConfig(mTwitterAuthConfig)
+                .build();
+        Twitter.initialize(twitterConfig);
+    }
+
+    private void onClickTwitterButton(){
+        Log.d(TAG, "onClickTwitterButton: ");
+        binding.twitterSignInButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                Log.d(TAG, "success: " + result);
+                firebaseAuthWithTwitter(result.data);
+                binding.twitterSignInButton.setVisibility(View.VISIBLE);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                updateTwitterButton();
+            }
+        });
+    }
+
+    private void firebaseAuthWithTwitter(TwitterSession session) {
+        Log.d(TAG, "firebaseAuthWithTwitter: ");
+        AuthCredential credential = TwitterAuthProvider.getCredential(session.getAuthToken().token,
+                session.getAuthToken().secret);
+        signInWithTwitterAuthCredential(credential);
+    }
+
+    private void signInWithTwitterAuthCredential(AuthCredential twitterAuthCredential) {
+        mViewModel.signInWithTwitter(twitterAuthCredential);
+        mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
+            if (authenticatedUser != null) {
+                Log.d("SignInActivity", "signInTwitterWithCredential:success");
+                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
+                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
+                startActivity(coreActivityIntent);
+                saveData();
+                finish();
+            } else {
+                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateTwitterButton(){
+        if (TwitterCore.getInstance().getSessionManager().getActiveSession() == null){
+            binding.twitterSignInButton.setVisibility(View.VISIBLE);
+        }
+        else{
+//            binding.twitterSignInButton.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Mail authentication
+     */
+    private void onClickMailButton(){
+        binding.mailLoginButton.setOnClickListener(v -> openDialog());
+    }
+
+    private void openDialog(){
+        new AlertDialog.Builder(this)
+                .setTitle("R.string.title")
+                .setMessage("Have you already a count with this mail ?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        openLogInDialog();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        openSignInDialog();
+                    }
+                })
+                .show();
+    }
+
+    private void openLogInDialog() {
+        // Inflate and set the layout for the dialog
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Pass null as the parent view because its going in the dialog layout
+        new AlertDialog.Builder(this)
+                .setView(inflater.inflate(R.layout.layout_log_in, null))
+                // Add action buttons
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // sign in the user ...
+
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void openSignInDialog() {
+        // Inflate and set the layout for the dialog
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Pass null as the parent view because its going in the dialog layout
+        new AlertDialog.Builder(this)
+                .setView(inflater.inflate(R.layout.layout_log_in, null))
+                // Add action buttons
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // sign in the user ...
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 
     public void saveData() {

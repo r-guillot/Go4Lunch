@@ -1,5 +1,7 @@
 package com.guillot.go4lunch.mates;
 
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
@@ -31,6 +33,8 @@ public class UserRepository {
 
     public void logOut() {
         FirebaseAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
+
     }
 
     public void deleteUserFromFirebase() {

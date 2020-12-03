@@ -13,10 +13,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.api.NotificationHelper;
 import com.guillot.go4lunch.authentication.SignInActivity;
 import com.guillot.go4lunch.databinding.ActivitySettingsBinding;
 import com.guillot.go4lunch.main.CoreActivity;
@@ -28,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static String USER_ID;
     private ActivitySettingsBinding binding;
     private SettingsViewModel viewModel;
+    private NotificationHelper notification;
 //    private Uri imageUri;
 
     @Override
@@ -35,6 +38,17 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         viewBinding();
+        notification = new NotificationHelper(this);
+        initViewModel();
+//        notification.resetRestaurantData();
+//        notification.createNotificationChannel();
+//        viewModel.getCurrentUser();
+        getUserInfo();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initViewModel();
         getUserInfo();
     }
@@ -53,9 +67,11 @@ public class SettingsActivity extends AppCompatActivity {
         viewModel.init();
         viewModel.getCurrentUser();
         viewModel.getCurrentUserLiveData().observe(this, this::setGraphicElements);
+//        notification.initNotification();
     }
 
     private void setGraphicElements(User user) {
+        Log.d(TAG, "user: " + user);
         if (user.getUrlProfilePicture() != null) {
             Glide.with(this)
                     .load(user.getUrlProfilePicture())
@@ -84,10 +100,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         checkSwitchNotificationState(user);
-        binding.notificationSwitch.setOnClickListener(new View.OnClickListener() {
+        binding.notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                viewModel.updateNotification(user.getId(), binding.notificationSwitch.isChecked());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateNotification(user.getId(), isChecked);
+                notification.configureNotification(isChecked);
             }
         });
 
@@ -160,10 +177,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void checkSwitchNotificationState(User user){
         Log.d(TAG, "checkSwitchNotificationState: " + user.isNotification());
-        if (user.isNotification()) {
-            binding.notificationSwitch.setChecked(true);
-        } else {
-            binding.notificationSwitch.setChecked(false);
-        }
+        binding.notificationSwitch.setChecked(user.isNotification());
+//        if (user.isNotification()) {
+//            binding.notificationSwitch.setChecked(true);
+//        } else {
+//            binding.notificationSwitch.setChecked(false);
+//        }
     }
 }

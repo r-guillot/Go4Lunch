@@ -7,6 +7,9 @@ import android.graphics.Paint;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.common.base.Joiner;
+
+import java.util.List;
 
 public class Utils {
 
@@ -47,6 +50,10 @@ public class Utils {
             return lat + "," + lng;
         }
         return null;
+    }
+
+    public static String convertListToStringForNotification(List<String> list){
+        return Joiner.on("& ").join(list);
     }
 
 

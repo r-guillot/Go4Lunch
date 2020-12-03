@@ -26,6 +26,30 @@ public class SignInRepository {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private User user;
 
+    MutableLiveData<User> firebaseAuthWithEmailAndPassword(AuthCredential mailCredential) {
+        Log.d(TAG, "firebaseAuthWithEmailAndPassword: " + mailCredential);
+        MutableLiveData<User> authenticatedUserMutableLIveData = new MutableLiveData<>();
+        mAuth.signInWithCredential(mailCredential).addOnCompleteListener(authTask -> {
+            if (authTask.isSuccessful()) {
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                Log.d(TAG, "firebaseAuthWithEmailAndPassword: "+ firebaseUser);
+                if(firebaseUser != null) {
+                    String id = firebaseUser.getUid();
+                    String username = firebaseUser.getDisplayName();
+                    String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
+                    String userLocation = "45.833641, 6.864594";
+                    String userName = firebaseUser.getEmail();
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", true);
+                    createUserInFirestore(firebaseUser);
+                    authenticatedUserMutableLIveData.setValue(user);
+                }
+            }else {
+                Log.e("error", "firebaseAuthWithEmailAndPassword:" + authTask.getException().getMessage());
+            }
+        });
+        return authenticatedUserMutableLIveData;
+    }
+
     MutableLiveData<User> firebaseAuthWithGoogle(AuthCredential googleCredential) {
         MutableLiveData<User> authenticatedUserMutableLIveData = new MutableLiveData<>();
         mAuth.signInWithCredential(googleCredential).addOnCompleteListener(authTask -> {
@@ -37,7 +61,7 @@ public class SignInRepository {
                     String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
                     String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
-                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", false);
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", true);
                     createUserInFirestore(firebaseUser);
                     authenticatedUserMutableLIveData.setValue(user);
                 }
@@ -59,7 +83,7 @@ public class SignInRepository {
                     String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
                     String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
-                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", false);
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", true);
                     createUserInFirestore(firebaseUser);
                     authenticatedUserMutableLIveData.setValue(user);
                 }
@@ -70,13 +94,38 @@ public class SignInRepository {
         return authenticatedUserMutableLIveData;
     }
 
+    MutableLiveData<User> firebaseAuthWithTwitter(AuthCredential twitterCredential) {
+        Log.d(TAG, "firebaseAuthWithTwitter: " + twitterCredential);
+        MutableLiveData<User> authenticatedUserMutableLIveData = new MutableLiveData<>();
+        mAuth.signInWithCredential(twitterCredential).addOnCompleteListener(authTask -> {
+            if (authTask.isSuccessful()) {
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                Log.d(TAG, "firebaseAuthWithTwitter: "+ firebaseUser);
+                if(firebaseUser != null) {
+                    String id = firebaseUser.getUid();
+                    String username = firebaseUser.getDisplayName();
+                    String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
+                    String userLocation = "45.833641, 6.864594";
+                    String userName = firebaseUser.getEmail();
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", true);
+                    createUserInFirestore(firebaseUser);
+                    authenticatedUserMutableLIveData.setValue(user);
+                }
+            }else {
+                Log.e("error", "errorFirebaseAuthWithTwitter:" + authTask.getException().getMessage());
+            }
+        });
+        return authenticatedUserMutableLIveData;
+    }
+
     private void createUserInFirestore(FirebaseUser firebaseUser){
+        Log.d(TAG, "createUserInFirestore: " + firebaseUser);
         String id = firebaseUser.getUid();
         String username = firebaseUser.getDisplayName();
         String urlProfilePicture = (firebaseUser.getPhotoUrl() != null) ? firebaseUser.getPhotoUrl().toString() : null;
         String userLocation = "45.833641, 6.864594";
         String userMail = firebaseUser.getEmail();
-        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userMail,  "", "", "", false);
+        UserHelper.createUser(id, username, urlProfilePicture, userLocation, userMail,  "", "", "", true);
     }
 
 

@@ -165,7 +165,7 @@ public class User implements Parcelable {
                 ", restaurantId='" + restaurantId + '\'' +
                 ", restaurantName=" + restaurantName + '\'' +
                 ", restaurantAddress=" + restaurantAddress + '\'' +
-                ", notification=" + isNotification +
+                ", isNotification=" + isNotification +
                 '}';
     }
 }

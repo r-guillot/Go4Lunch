@@ -38,12 +38,10 @@ public class RestaurantDetailsViewModel extends ViewModel {
     private MutableLiveData<Restaurant> restaurantDetail = new MutableLiveData<>();
     private MutableLiveData<List<User>> usersEatingHere = new MutableLiveData<>();
     private MutableLiveData<User> currentUser = new MutableLiveData<>();
-    private MediatorLiveData<Pair<Restaurant, User>> mediatorLiveData = new MediatorLiveData<>();
 
     public LiveData<Restaurant> getRestaurantDetails(){ return restaurantDetail; }
     public LiveData<List<User>> getListUsersEatingHere() {return usersEatingHere;}
     public LiveData<User> getCurrentUserLiveData() {return currentUser;}
-    public LiveData<Pair<Restaurant, User>> getMediatorLiveData() {return mediatorLiveData;}
 
     public void init() {
         Log.d(TAG, "init: 1");
@@ -57,11 +55,38 @@ public class RestaurantDetailsViewModel extends ViewModel {
         Log.d(TAG, "userId: " + userId);
     }
 
+//    public void getCurrentUser() {
+//        Log.d(TAG, "getCurrentUser: start");
+//        if (userId != null) {
+//            Log.d(TAG, "getCurrentUserId: " + userId);
+//            UserHelper.getUser(userId).addOnSuccessListener(documentSnapshot -> {
+//                fetchedUser = documentSnapshot.toObject(User.class);
+//                Log.d(TAG, "fetchedUser: " + fetchedUser);
+//                currentUser.setValue(fetchedUser);
+//                Log.d(TAG, "getCurrentUser: " + currentUser);
+//            })
+//                    .addOnFailureListener(e -> {
+//                        Log.d(TAG, "getCurrentUser: " + e);
+//                    });
+//        }
+//    }
+
+    public void getCurrentUser(String placeId) {
+        Log.d(TAG, "getCurrentUser 1: " + userRepository.getCurrentUserId());
+        assert userRepository.getCurrentUserId() != null;
+        UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
+            fetchedUser = documentSnapshot.toObject(User.class);
+            currentUser.setValue(fetchedUser);
+            Log.d(TAG, "getCurrentUser 2: " + fetchedUser + currentUser);
+        });
+        executeNetworkRequest(placeId);
+    }
+
     public void executeNetworkRequest(String placeId) {
         this.disposable = mRestaurantRepository.streamFetchRestaurantDetails(placeId).subscribeWith(new DisposableObserver<ApiDetailsRestaurantResponse>() {
             @Override
             public void onNext(@NonNull ApiDetailsRestaurantResponse apiDetailsRestaurantResponse) {
-                createRestaurant(apiDetailsRestaurantResponse);
+                createRestaurant(apiDetailsRestaurantResponse, placeId);
             }
 
             @Override
@@ -82,23 +107,13 @@ public class RestaurantDetailsViewModel extends ViewModel {
         return mRestaurantRepository.getPhotoRestaurant(photoReference);
     }
 
-    private void createRestaurant(ApiDetailsRestaurantResponse results) {
+    private void createRestaurant(ApiDetailsRestaurantResponse results, String placeId) {
     ApiDetailsRestaurantResponse detailsResult = results;
         if(detailsResult.getResult() != null) {
             restaurant = mRestaurantRepository.createRestaurant(detailsResult.getResult());
         }
         restaurantDetail.setValue(restaurant);
-//        mediatorLiveData.addSource(getRestaurantDetails(), new Observer<Restaurant>() {
-//            private int count = 1;
-//            @Override
-//            public void onChanged(Restaurant restaurant) {
-//                    count++;
-//                    mediatorLiveData.setValue(Pair.create(restaurant, getCurrentUserLiveData().getValue()));
-//                    if (count > 10) {
-//                        mediatorLiveData.removeSource(getRestaurantDetails());
-//                    }
-//            }
-//        });
+        getUsersEatingHere(placeId);
     }
 
     public void getUsersEatingHere(String restaurantId) {
@@ -115,38 +130,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
                 });
     }
 
-    public void getCurrentUser() {
-        Log.d(TAG, "getCurrentUser: start");
-        if (userId != null) {
-            Log.d(TAG, "getCurrentUserId: " + userId);
-            UserHelper.getUser(userId).addOnSuccessListener(documentSnapshot -> {
-                fetchedUser = documentSnapshot.toObject(User.class);
-                Log.d(TAG, "fetchedUser: " + fetchedUser);
-                currentUser.setValue(fetchedUser);
-                Log.d(TAG, "getCurrentUser: " + currentUser);
-            })
-                    .addOnFailureListener(e -> {
-                        Log.d(TAG, "getCurrentUser: " + e);
-                    });
-        }
-
-//        mediatorLiveData.addSource(getCurrentUserLiveData(), new Observer<User>() {
-//            private int count = 1;
-//            @Override
-//            public void onChanged(User user) {
-//                Log.d(TAG, "mediatorLiveDataUser: start 2 ");
-//                count++;
-//                mediatorLiveData.setValue(Pair.create(getRestaurantDetails().getValue(), user));
-//                Log.d(TAG, "mediatorLiveData: " + mediatorLiveData);
-//                if (count > 10) {
-//                    mediatorLiveData.removeSource(getCurrentUserLiveData());
-//                }
-//            }
-//        });
-    }
-
     public boolean checkIfRestaurantIsChosen() {
-//        getCurrentUser();
         if (getCurrentUserLiveData().getValue().getRestaurantId() != null && getCurrentUserLiveData().getValue().getRestaurantId().equals(getRestaurantDetails().getValue().getRestaurantID())) {
             Log.d(TAG, "checkIfRestaurantIsChosen: userRestoId " + getCurrentUserLiveData().getValue().getRestaurantId() + "restoId" + getRestaurantDetails().getValue().getRestaurantID());
             state = true;
