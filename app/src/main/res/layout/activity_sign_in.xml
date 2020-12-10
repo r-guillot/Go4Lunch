@@ -7,7 +7,7 @@
     tools:context=".authentication.SignInActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/social_media_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:buttonSize="wide"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/facebook_sign_in_button" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/mail_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="log you with social media (preferable)"
@@ -82,5 +82,51 @@
         android:text="Log In with Email"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/mail_go_button"
+        style=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:visibility="gone"
+
+        android:text="GO"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/mail_sign_in_button"
+        style=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:visibility="gone"
+
+        android:text="GO"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/mail_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/mail"
+        android:inputType="textEmailAddress"
+        android:visibility="gone"
+
+        app:layout_constraintTop_toBottomOf="@+id/facebook_sign_in_button" />
+
+    <EditText
+        android:id="@+id/password_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:visibility="gone"
+        android:imeOptions="actionDone"
+
+        app:layout_constraintTop_toBottomOf="@+id/mail_editText"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

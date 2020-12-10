@@ -17,8 +17,19 @@ public class SignInViewModel extends AndroidViewModel {
         mSignInRepository = new SignInRepository();
     }
 
-    void signInWithEmail(AuthCredential mailCredential) {
-        authenticatedUserLiveData = mSignInRepository.firebaseAuthWithTwitter(mailCredential);
+    void checkLogOrSignWithMail(String mail, String password, int check){
+        if (check == 0){
+            logInWithMail(mail, password);
+        } else if (check == 1){
+            signInWithEmail(mail, password);
+        }
+    }
+    void logInWithMail(String mail, String password){
+        authenticatedUserLiveData = mSignInRepository.firebaseGetUserWithEmailAndPassword(mail, password);
+    }
+
+    void signInWithEmail(String mail, String password) {
+        authenticatedUserLiveData = mSignInRepository.firebaseAuthWithEmailAndPassword(mail,password);
     }
 
     void signInWithGoogle(AuthCredential googleAuthCredential) {

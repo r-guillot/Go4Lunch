@@ -2,10 +2,14 @@ package com.guillot.go4lunch.maps;
 
 import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.api.ApiDetails;
+import com.guillot.go4lunch.api.ApiDistanceMatrix;
 import com.guillot.go4lunch.api.ApiInterface;
 import com.guillot.go4lunch.api.RetrofitService;
+import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.model.ApiDetailsRestaurantResponse;
+import com.guillot.go4lunch.model.ApiDistanceResponse;
 import com.guillot.go4lunch.model.ApiRestaurantResponse;
+import com.guillot.go4lunch.model.Distance;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.RestaurantApi;
 
@@ -24,6 +28,7 @@ public class RestaurantRepository {
 
     private ApiInterface apiInterface;
     private ApiDetails apiDetails;
+    private ApiDistanceMatrix apiDistance;
 
     private static RestaurantRepository newsRepository;
 
@@ -37,6 +42,7 @@ public class RestaurantRepository {
     public RestaurantRepository() {
         apiInterface = RetrofitService.getInterface();
         apiDetails = RetrofitService.getDetails();
+        apiDistance = RetrofitService.getDistance();
     }
 
     public Observable<ApiRestaurantResponse> streamFetchRestaurantsCloseToMe(String location){
@@ -48,6 +54,13 @@ public class RestaurantRepository {
 
     public Observable<ApiDetailsRestaurantResponse> streamFetchRestaurantDetails(String placeId) {
         return apiDetails.getRestaurantDetails(placeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(15, TimeUnit.SECONDS);
+    }
+
+    public Observable<ApiDistanceResponse> streamFetchDistanceFromRestaurant(String placeLocation) {
+        return apiDistance.getDistanceMatrix(placeLocation, BaseFragment.locationUser.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(15, TimeUnit.SECONDS);
@@ -81,6 +94,14 @@ public class RestaurantRepository {
     public String getPhotoRestaurant(String photoReference) {
         return String.format("%splace/photo?maxwidth=500&photoreference=%s&key=%s",
                 BuildConfig.ApiPlaceBase, photoReference, BuildConfig.ApiPlaceKey);
+    }
+
+    public Distance createDistance(ApiDistanceResponse result){
+        ApiDistanceResponse.InfoDistanceMatrix infoDistanceMatrix = result.rows.get(0);
+        ApiDistanceResponse.InfoDistanceMatrix.DistanceElement distanceElement = (ApiDistanceResponse.InfoDistanceMatrix.DistanceElement) infoDistanceMatrix.elements.get(0);
+        ApiDistanceResponse.InfoDistanceMatrix.ValueItem itemDistance = distanceElement.distance;
+        String totalDistance = itemDistance.text;
+        return new Distance(totalDistance);
     }
 
     public Restaurant createRestaurant(RestaurantApi result) {

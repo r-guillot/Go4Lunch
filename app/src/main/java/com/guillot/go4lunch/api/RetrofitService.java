@@ -19,4 +19,6 @@ public class RetrofitService {
     }
 
     public static ApiDetails getDetails() {return retrofit.create(ApiDetails.class);}
+
+    public static  ApiDistanceMatrix getDistance() {return retrofit.create(ApiDistanceMatrix.class);}
 }

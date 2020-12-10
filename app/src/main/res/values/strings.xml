@@ -21,7 +21,6 @@
     <string name="chosen_restaurant">YOUR LUNCH</string>
     <string name="settings">SETTINGS</string>
     <string name="logout">LOGOUT</string>
-
     <string name="call">CALL</string>
     <string name="like">LIKE</string>
     <string name="website">WEBSITE</string>
@@ -52,5 +51,18 @@
     <string name="notificationChannel" translatable="false">notificationChannel</string>
     <string name="name_channel" translatable="false">Go4Lunch channel</string>
     <string name="description_channel" translatable="false">Notification channel</string>
+
+    <!-- BOTTOM SHEET-->
+    <string name="log_in">I already have a count !</string>
+    <string name="sign_in">i don\'t have a count yet !</string>
+
+    <!-- SIGN IN -->
+    <string name="mail">Your Mail</string>
+    <string name="password">Your Password</string>
+    <string name="username">Your Username</string>
+    <string name="error_space">Please remove spaces</string>
+    <string name="error_empty">You have to define a mail</string>
+    <string name="error_format">Please respect the format of an email address</string>
+
 
 </resources>

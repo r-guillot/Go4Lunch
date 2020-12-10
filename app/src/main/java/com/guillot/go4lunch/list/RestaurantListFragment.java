@@ -65,7 +65,7 @@ public class RestaurantListFragment extends BaseFragment {
 
     private void configureRecycleView() {
         restaurants = new ArrayList<>();
-        adapter = new RestaurantListAdapter(restaurants, getContext(), Glide.with(this));
+        adapter = new RestaurantListAdapter(restaurants, getContext(), viewModel);
         binding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.restaurantRecyclerView.setAdapter(adapter);
     }

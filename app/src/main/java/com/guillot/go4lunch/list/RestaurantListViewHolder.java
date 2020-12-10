@@ -24,10 +24,15 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.api.ApiDistanceMatrix;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
 import com.guillot.go4lunch.maps.RestaurantRepository;
+import com.guillot.go4lunch.model.ApiDistanceResponse;
 import com.guillot.go4lunch.model.Restaurant;
 
+import java.util.List;
+
+import io.reactivex.rxjava3.core.Observable;
 
 
 public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
@@ -42,16 +47,17 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         this.context = context;
     }
 
-    public void updateRestaurantInfo(Restaurant restaurant, RequestManager glide){
+    public void updateRestaurantInfo(Restaurant restaurant, String distance){
         binding.textViewName.setText(restaurant.getName());
 
         binding.textViewAddress.setText(restaurant.getAddress());
 
         String distanceToDisplay = "0m";
-        if(restaurant.getDistance() != null){
-            distanceToDisplay = String.format("%sm", restaurant.getDistance().toString());
+        if(distance != null){
+            distanceToDisplay = String.format("%sm", distance);
         }
         binding.textViewDistance.setText(distanceToDisplay);
+
 
         if (restaurant.getPhotoReference() != null) {
             Glide.with(context)
@@ -72,5 +78,4 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
                 PorterDuff.Mode.SRC_ATOP);
         binding.ratingBar.setRating(restaurant.getRating());
     }
-
 }

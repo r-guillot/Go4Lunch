@@ -1,20 +1,22 @@
 package com.guillot.go4lunch.authentication;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 
@@ -51,7 +53,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.Objects;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements BottomSheetDialog.BottomSheetListener{
     private final String TAG = SignInActivity.class.getSimpleName();
     private ActivitySignInBinding binding;
     private SignInViewModel mViewModel;
@@ -73,6 +75,9 @@ public class SignInActivity extends AppCompatActivity {
         updateTwitterButton();
         onClickGoogleButton();
         onClickTwitterButton();
+        onClickMailButton();
+        onClickLogIn();
+        onClickSignIn();
 
         mAuth = FirebaseAuth.getInstance();
         //Initiate FB SDK
@@ -272,63 +277,95 @@ public class SignInActivity extends AppCompatActivity {
      * Mail authentication
      */
     private void onClickMailButton(){
-        binding.mailLoginButton.setOnClickListener(v -> openDialog());
+        binding.mailLoginButton.setOnClickListener(v -> openBottomSheet());
     }
 
-    private void openDialog(){
-        new AlertDialog.Builder(this)
-                .setTitle("R.string.title")
-                .setMessage("Have you already a count with this mail ?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        openLogInDialog();
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        openSignInDialog();
-                    }
-                })
-                .show();
+    private void openBottomSheet(){
+        BottomSheetDialog bottomSheet = BottomSheetDialog.getInstance();
+        bottomSheet.showNow(getSupportFragmentManager(), BottomSheetDialog.class.getSimpleName());
     }
 
-    private void openLogInDialog() {
-        // Inflate and set the layout for the dialog
-        LayoutInflater inflater = this.getLayoutInflater();
-        // Pass null as the parent view because its going in the dialog layout
-        new AlertDialog.Builder(this)
-                .setView(inflater.inflate(R.layout.layout_log_in, null))
-                // Add action buttons
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
+    @Override
+    public void onButtonClicked(int result) {
+        if (result == 0){
+            binding.twitterSignInButton.setVisibility(View.GONE);
+            binding.facebookSignInButton.setVisibility(View.GONE);
+            binding.googleSignInButton.setVisibility(View.GONE);
+            binding.socialMediaTextView.setVisibility(View.GONE);
+            binding.mailTextView.setVisibility(View.GONE);
+            binding.mailLoginButton.setVisibility(View.GONE);
+            binding.mailEditText.setVisibility(View.VISIBLE);
+            binding.passwordEditText.setVisibility(View.VISIBLE);
+            binding.mailGoButton.setVisibility(View.VISIBLE);
+        } else {
+            binding.twitterSignInButton.setVisibility(View.GONE);
+            binding.facebookSignInButton.setVisibility(View.GONE);
+            binding.googleSignInButton.setVisibility(View.GONE);
+            binding.socialMediaTextView.setVisibility(View.GONE);
+            binding.mailTextView.setVisibility(View.GONE);
+            binding.mailLoginButton.setVisibility(View.GONE);
+            binding.mailEditText.setVisibility(View.VISIBLE);
+            binding.passwordEditText.setVisibility(View.VISIBLE);
+            binding.mailSignInButton.setVisibility(View.VISIBLE);
+        }
 
-
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
     }
 
-    private void openSignInDialog() {
-        // Inflate and set the layout for the dialog
-        LayoutInflater inflater = this.getLayoutInflater();
-        // Pass null as the parent view because its going in the dialog layout
-        new AlertDialog.Builder(this)
-                .setView(inflater.inflate(R.layout.layout_log_in, null))
-                // Add action buttons
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
+    private void onClickLogIn() {
+        binding.mailGoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getMailAndPassword(0);
+            }
+        });
     }
+
+    private void onClickSignIn(){
+        binding.mailSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getMailAndPassword(1);
+            }
+        });
+    }
+
+    private void getMailAndPassword(int check) {
+        binding.passwordEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                String email = binding.mailEditText.getText().toString().trim();
+                String password = binding.passwordEditText.getText().toString();
+                if (!email.isEmpty() && !password.isEmpty()) {
+                    if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        mViewModel.checkLogOrSignWithMail(email, password, check);
+                        startActivity();
+                    }
+                } else{
+                    Toast.makeText(getApplicationContext(),"veuillez remplir une adresse mail et un mot de passe valide", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+                return false;
+            }
+        });
+    }
+
+    private void startActivity(){
+        mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
+            if (authenticatedUser != null) {
+                Log.d("SignInActivity", "signInTwitterWithCredential:success");
+                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
+                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
+                startActivity(coreActivityIntent);
+                saveData();
+                finish();
+            } else {
+                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     public void saveData() {
         SharedPreferences sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
@@ -339,4 +376,5 @@ public class SignInActivity extends AppCompatActivity {
         editor.putString(Constants.URL_PROFILE_PICTURE, mViewModel.authenticatedUserLiveData.getValue().getUrlProfilePicture().toString()).apply();
         editor.putString(Constants.USER_LOCATION, mViewModel.authenticatedUserLiveData.getValue().getUserLocation().toString()).apply();
     }
+
 }

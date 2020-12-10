@@ -26,17 +26,17 @@ public class SignInRepository {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private User user;
 
-    MutableLiveData<User> firebaseAuthWithEmailAndPassword(AuthCredential mailCredential) {
-        Log.d(TAG, "firebaseAuthWithEmailAndPassword: " + mailCredential);
+    MutableLiveData<User> firebaseAuthWithEmailAndPassword(String mail, String password) {
+        Log.d(TAG, "firebaseAuthWithEmailAndPassword: " + mail + password);
         MutableLiveData<User> authenticatedUserMutableLIveData = new MutableLiveData<>();
-        mAuth.signInWithCredential(mailCredential).addOnCompleteListener(authTask -> {
+        mAuth.createUserWithEmailAndPassword(mail, password).addOnCompleteListener(authTask -> {
             if (authTask.isSuccessful()) {
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 Log.d(TAG, "firebaseAuthWithEmailAndPassword: "+ firebaseUser);
                 if(firebaseUser != null) {
                     String id = firebaseUser.getUid();
                     String username = firebaseUser.getDisplayName();
-                    String urlProfilePicture = firebaseUser.getPhotoUrl().toString();
+                    String urlProfilePicture = "";
                     String userLocation = "45.833641, 6.864594";
                     String userName = firebaseUser.getEmail();
                     user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", true);
@@ -44,6 +44,30 @@ public class SignInRepository {
                     authenticatedUserMutableLIveData.setValue(user);
                 }
             }else {
+                Log.e("error", "firebaseAuthWithEmailAndPassword:" + authTask.getException().getMessage());
+            }
+        });
+        return authenticatedUserMutableLIveData;
+    }
+
+    MutableLiveData<User> firebaseGetUserWithEmailAndPassword(String mail, String password) {
+        Log.d(TAG, "firebaseGetUserWithEmailAndPassword: " + mail + password);
+        MutableLiveData<User> authenticatedUserMutableLIveData = new MutableLiveData<>();
+        mAuth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(authTask -> {
+            if (authTask.isSuccessful()) {
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                Log.d(TAG, "firebaseAuthWithEmailAndPassword: " + firebaseUser);
+                if (firebaseUser != null) {
+                    String id = firebaseUser.getUid();
+                    String username = firebaseUser.getDisplayName();
+                    String urlProfilePicture = "";
+                    String userLocation = "45.833641, 6.864594";
+                    String userName = firebaseUser.getEmail();
+                    user = new User(id, username, urlProfilePicture, userLocation, userName, "", "", "", true);
+                    createUserInFirestore(firebaseUser);
+                    authenticatedUserMutableLIveData.setValue(user);
+                }
+            } else {
                 Log.e("error", "firebaseAuthWithEmailAndPassword:" + authTask.getException().getMessage());
             }
         });
