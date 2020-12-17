@@ -56,7 +56,7 @@ import java.util.Objects;
 
 public class SignInActivity extends AppCompatActivity implements BottomSheetDialog.BottomSheetListener{
     private final String TAG = SignInActivity.class.getSimpleName();
-    private ActivityB binding;
+    private ActivitySignInBinding binding;
     private SignInViewModel mViewModel;
     private static final int RC_SIGN_IN = 1337;
     private GoogleSignInClient googleSignInClient;

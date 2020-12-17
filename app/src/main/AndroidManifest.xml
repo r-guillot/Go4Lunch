@@ -25,7 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".authentication.SignInMailActivity"></activity>
         <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".details.RestaurantDetailActivity" />
         <!--
@@ -36,9 +35,9 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-<!--        <meta-data-->
-<!--            android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="@string/google_api_key" />-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_api_key" />
 
         <activity android:name=".authentication.SignInActivity" />
         <activity android:name=".main.CoreActivity" />
