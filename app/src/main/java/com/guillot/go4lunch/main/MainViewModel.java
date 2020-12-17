@@ -15,7 +15,7 @@ public class MainViewModel extends ViewModel {
     private final String TAG = MainViewModel.class.getSimpleName();
 
     private MutableLiveData<User> currentUser = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isNotificationEnable = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isNotificationEnable = new MutableLiveData<Boolean>();
 
     public LiveData<User> getCurrentUserLiveData(){ return currentUser; }
     public LiveData<Boolean> getIsNotificationEnable(){ return isNotificationEnable; }

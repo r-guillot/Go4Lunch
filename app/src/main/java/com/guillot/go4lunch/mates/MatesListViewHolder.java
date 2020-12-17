@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
@@ -34,16 +35,24 @@ public class MatesListViewHolder extends RecyclerView.ViewHolder {
     public void updateMatesInfo(User user){
         if (user !=null) {
             Glide.with(context)
-                    .load(RestaurantRepository.getInstance().getPhotoRestaurant(user.getUrlProfilePicture()))
+                    .load(user.getUrlProfilePicture())
                     .override(500,500)
-                    .placeholder(android.R.drawable.progress_indeterminate_horizontal)
-                    .error(android.R.drawable.stat_notify_error)
+//                    .load(user.getUrlProfilePicture())
+                    .centerCrop()
+                    .circleCrop()
+//                    .into(userPic);
+//                    .centerCrop()
+//                    .circleCrop()
+//                    .placeholder(android.R.drawable.progress_indeterminate_horizontal)
+//                    .error(android.R.drawable.stat_notify_error)
+//                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.profilePictureImageView);
 
             binding.infoTextView.setText(user.getUsername());
         } else {
             binding.profilePictureImageView.setImageResource(R.drawable.image_not_avaiable);
-            binding.infoTextView.setText("NO FRIENDS");
+            binding.infoTextView.setText(R.string.no_friends);
+
         }
 
     }

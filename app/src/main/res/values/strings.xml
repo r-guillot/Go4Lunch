@@ -26,6 +26,7 @@
     <string name="website">WEBSITE</string>
     <string name="need_permission_message">This application needs permission to run</string>
     <string name="search_view">Search Restaurant</string>
+    <string name="no_lunch">You don\'t have select a place to lunch</string>
 
     <!-- CONTENT DESCRIPTION-->
     <string name="desc_img_recyclerview">Photo restaurant</string>
@@ -53,8 +54,8 @@
     <string name="description_channel" translatable="false">Notification channel</string>
 
     <!-- BOTTOM SHEET-->
-    <string name="log_in">I already have a count !</string>
-    <string name="sign_in">i don\'t have a count yet !</string>
+    <string name="log_in">I already have an account !</string>
+    <string name="sign_in">i don\'t have an account yet !</string>
 
     <!-- SIGN IN -->
     <string name="mail">Your Mail</string>
@@ -63,6 +64,21 @@
     <string name="error_space">Please remove spaces</string>
     <string name="error_empty">You have to define a mail</string>
     <string name="error_format">Please respect the format of an email address</string>
+    <string name="log_in_button">Log In</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="log_with_social_media">Log you with social media (preferable)</string>
+    <string name="log_with_email">Log you with your email</string>
+    <string name="log_with_email_button">Log you with an Email</string>
 
+    <!-- RESTAURANT LIST -->
+    <string name="closing_soon">Close soon</string>
+    <string name="no_time">No Time available</string>
+    <string name="open_24_7">Open 24/7</string>
+    <string name="closed">Closed</string>
+    <string name="open_until">Open until %s</string>
+
+    <string name="notification_disable">Careful you have disable the notifications</string>
+    <string name="no_friends">no soul treads these lands! </string>
 
 </resources>

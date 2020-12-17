@@ -5,14 +5,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -21,7 +19,6 @@ import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.api.NotificationHelper;
 import com.guillot.go4lunch.authentication.SignInActivity;
 import com.guillot.go4lunch.databinding.ActivitySettingsBinding;
-import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.model.User;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -173,6 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
         viewModel.deleteUser(user.getId());
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void checkSwitchNotificationState(User user){

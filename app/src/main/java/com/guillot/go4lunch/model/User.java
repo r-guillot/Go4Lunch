@@ -24,12 +24,13 @@ public class User implements Parcelable {
     private String restaurantName;
     @Nullable
     private String restaurantAddress;
-    private boolean isNotification;
+//    private int notifyMe;
+    private boolean notification;
 
     public User() {
     }
 
-    public User(String id, String username, String urlProfilePicture, String userLocation, String userMail, String restaurantId, String restaurantName, String restaurantAddress, boolean isNotification) {
+    public User(String id, String username, String urlProfilePicture, String userLocation, String userMail, String restaurantId, String restaurantName, String restaurantAddress, boolean notification) {
         this.id = id;
         this.username = username;
         this.urlProfilePicture = urlProfilePicture;
@@ -38,7 +39,8 @@ public class User implements Parcelable {
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
         this.restaurantAddress = restaurantAddress;
-        this.isNotification = isNotification;
+//        this.notifyMe = notifyMe;
+        this.notification = notification;
     }
 
     protected User(Parcel in) {
@@ -50,7 +52,7 @@ public class User implements Parcelable {
         restaurantId = in.readString();
         restaurantName = in.readString();
         restaurantAddress = in.readString();
-        isNotification = in.readByte() != 0;
+//        notifyMe = in.readInt();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -100,9 +102,11 @@ public class User implements Parcelable {
         return restaurantAddress;
     }
 
-    public boolean isNotification() {
-        return isNotification;
-    }
+//    public int getNotifyMe() {
+//        return notifyMe;
+//    }
+
+    public boolean isNotification() {return notification;}
 
     public void setId(String id) {
         this.id = id;
@@ -151,7 +155,7 @@ public class User implements Parcelable {
         dest.writeString(restaurantId);
         dest.writeString(restaurantName);
         dest.writeString(restaurantAddress);
-        dest.writeByte((byte) (isNotification ? 1 : 0));
+//        dest.writeInt(notifyMe);
     }
 
     @Override
@@ -165,7 +169,8 @@ public class User implements Parcelable {
                 ", restaurantId='" + restaurantId + '\'' +
                 ", restaurantName=" + restaurantName + '\'' +
                 ", restaurantAddress=" + restaurantAddress + '\'' +
-                ", isNotification=" + isNotification +
+//                ", notifyMe=" + notifyMe + '\'' +
+                ", notification=" + notification +
                 '}';
     }
 }

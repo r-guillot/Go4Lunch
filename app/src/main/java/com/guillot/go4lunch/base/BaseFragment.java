@@ -42,9 +42,9 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
 
     @Override
     public void onResume() {
+        super.onResume();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
         fetchLastKnowLocation();
-        super.onResume();
     }
 
     @SuppressLint("MissingPermission")

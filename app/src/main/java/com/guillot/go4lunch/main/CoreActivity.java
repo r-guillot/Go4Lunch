@@ -8,15 +8,8 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.libraries.places.api.Places;
@@ -43,12 +37,9 @@ import com.guillot.go4lunch.databinding.ActivityCoreBinding;
 import com.guillot.go4lunch.mates.MatesFragment;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
 import com.guillot.go4lunch.model.User;
-import com.guillot.go4lunch.notification.NotificationEraser;
-import com.guillot.go4lunch.notification.NotificationReceiver;
 import com.guillot.go4lunch.settings.SettingsActivity;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -84,6 +75,12 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
 
         Places.initialize(getApplicationContext(), BuildConfig.ApiPlaceKey);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RestaurantMapFragment()).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        viewModel.getCurrentUser();
+        super.onResume();
     }
 
     private void viewBinding() {
@@ -128,8 +125,11 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = null;
         switch (item.getItemId()){
             case R.id.chosenRestaurant:
-                intent = new Intent(this, RestaurantDetailActivity.class);
-                intent.putExtra(Constants.RESTAURANT,viewModel.getChosenRestaurant());
+                if (!viewModel.getChosenRestaurant().equals("")) {
+                    intent = new Intent(this, RestaurantDetailActivity.class);
+                    intent.putExtra(Constants.RESTAURANT, viewModel.getChosenRestaurant());
+                }
+                Toast.makeText(this, R.string.no_lunch, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.settings:
                 intent = new Intent(this, SettingsActivity.class);
@@ -137,6 +137,7 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
             case R.id.logout:
                 viewModel.signOut();
                 intent = new Intent(this, SignInActivity.class);
+                finish();
                 break;
         }
         if (intent != null){
@@ -190,6 +191,7 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
                 selectedFragment = new MatesFragment();
                 break;
         }
+        assert selectedFragment != null;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 selectedFragment).commit();
 

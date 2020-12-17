@@ -1,6 +1,8 @@
 package com.guillot.go4lunch.authentication;
 
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -17,19 +19,19 @@ public class SignInViewModel extends AndroidViewModel {
         mSignInRepository = new SignInRepository();
     }
 
-    void checkLogOrSignWithMail(String mail, String password, int check){
+    void checkLogOrSignWithMail(String mail, String password, int check, Context context){
         if (check == 0){
-            logInWithMail(mail, password);
+            signInWithEmail(mail, password, context);
         } else if (check == 1){
-            signInWithEmail(mail, password);
+            logInWithMail(mail, password, context);
         }
     }
-    void logInWithMail(String mail, String password){
-        authenticatedUserLiveData = mSignInRepository.firebaseGetUserWithEmailAndPassword(mail, password);
+    void logInWithMail(String mail, String password, Context context){
+        authenticatedUserLiveData = mSignInRepository.firebaseGetUserWithEmailAndPassword(mail, password, context);
     }
 
-    void signInWithEmail(String mail, String password) {
-        authenticatedUserLiveData = mSignInRepository.firebaseAuthWithEmailAndPassword(mail,password);
+    void signInWithEmail(String mail, String password, Context context) {
+        authenticatedUserLiveData = mSignInRepository.firebaseAuthWithEmailAndPassword(mail,password, context);
     }
 
     void signInWithGoogle(AuthCredential googleAuthCredential) {

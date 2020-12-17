@@ -9,6 +9,6 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("place/nearbysearch/json?type=restaurant&radius=1500&key=" + BuildConfig.ApiPlaceKey)
+    @GET("place/nearbysearch/json?type=restaurant&rankby=distance&key=" + BuildConfig.ApiPlaceKey)
     Observable<ApiRestaurantResponse> getRestaurants(@Query("location") String location);
 }

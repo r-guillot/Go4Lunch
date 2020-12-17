@@ -71,8 +71,8 @@ public class MatesFragment extends Fragment {
         } else {
             List<User> noFriendsList= new ArrayList<>();
             User user = new User();
-            user.setUrlProfilePicture("https://www.beenaroundtheglobe.com/wp-content/uploads/2018/09/solomangarephobia.jpg");
-            user.setUsername("No FRIENDS");
+            user.setUrlProfilePicture("https://dupasquier.ch/wp-content/uploads/2017/05/marais10.jpg");
+            user.setUsername("no soul treads these lands!");
             noFriendsList.add(user);
             this.users = noFriendsList;
         }

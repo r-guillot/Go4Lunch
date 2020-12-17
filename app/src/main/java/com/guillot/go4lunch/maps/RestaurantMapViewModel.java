@@ -23,22 +23,28 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class RestaurantMapViewModel extends ViewModel {
+    private final String TAG = RestaurantMapViewModel.class.getSimpleName();
 
     private RestaurantRepository mRestaurantRepository;
     private UserRepository mUserRepository;
     private Disposable disposable;
     private List<Restaurant> mRestaurants;
-    private MutableLiveData<List<Restaurant>> restaurantsList = new MutableLiveData<>();
     private List<String> restaurantIdList;
     private String userId;
+
+    private MutableLiveData<List<Restaurant>> restaurantsList = new MutableLiveData<>();
+    private MutableLiveData<List<String>> userList = new MutableLiveData<>();
+
+    public LiveData<List<Restaurant>> getRestaurantsList(){
+        return restaurantsList;
+    }
+    public LiveData<List<String>> getUserIdList(){
+        return userList;
+    }
 
     public void init() {
         mRestaurantRepository = RestaurantRepository.getInstance();
         mUserRepository = UserRepository.getInstance();
-    }
-
-    public LiveData<List<Restaurant>> getRestaurantsList(){
-        return restaurantsList;
     }
 
     public void executeNetworkRequest(LatLng location) {
@@ -74,20 +80,32 @@ public class RestaurantMapViewModel extends ViewModel {
         restaurantsList.setValue(mRestaurants);
     }
 
-    public List<String> getAllOccupiedRestaurant() {
+    public void getAllOccupiedRestaurant() {
         UserHelper.getAllUser()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     restaurantIdList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         User userFetched = documentSnapshot.toObject(User.class);
+                        Log.d(TAG, "userFetched: " +userFetched);
                         assert userFetched != null;
                         if (userFetched.getRestaurantId() != null) {
+                            Log.d(TAG, "restaurantId " + userFetched.getRestaurantId());
                             restaurantIdList.add(userFetched.getRestaurantId());
+                            Log.d(TAG, "getAllOccupiedRestaurantList1: " + restaurantIdList);
                         }
                     }
+                    userList.setValue(restaurantIdList);
                 });
-        return restaurantIdList;
     }
+
+    public List<String> getIdList(){
+        List<String> idList = new ArrayList<>();
+        idList = getUserIdList().getValue();
+
+        return idList;
+    }
+
+
 
     public void getUserId() {
         userId = mUserRepository.getCurrentUserId();

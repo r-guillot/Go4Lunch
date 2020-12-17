@@ -89,13 +89,13 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void checkIfNotificationShouldBeDisplay() {
         String message;
         String bigText;
-        if (fetchedUser != null && fetchedUser.getRestaurantName() != null && usersNamesList == null) {
+        if (fetchedUser != null && fetchedUser.getRestaurantName() != null && usersNamesList.isEmpty() && fetchedUser.isNotification()) {
             message = context.getString(R.string.notification_message_alone);
             bigText = String.format(message, restaurantName, restaurantAddress);
             showNotification(bigText);
-        } else if (fetchedUser != null && fetchedUser.getRestaurantName() != null && usersNamesList != null){
+        } else if (fetchedUser != null && fetchedUser.getRestaurantName() != null && usersNamesList != null && fetchedUser.isNotification()){
             message = context.getString(R.string.notification_message);
-            bigText = String.format(message, restaurantName, Utils.convertListToStringForNotification(usersNamesList), restaurantName);
+            bigText = String.format(message, restaurantName, Utils.convertListToStringForNotification(usersNamesList), restaurantAddress);
             showNotification(bigText);
         }
     }

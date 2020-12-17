@@ -21,7 +21,7 @@ public class Restaurant {
     private List<User> usersEatingHere;
 
     public Restaurant(String restaurantID, String name, Double latitude, Double longitude, @Nullable String address,
-                      @Nullable String photoReference, @Nullable float rating, String phoneNumber, String webSite) {
+                      int openingHours, @Nullable String photoReference, @Nullable float rating, String phoneNumber, String webSite) {
         this.restaurantID = restaurantID;
         this.name = name;
         this.latitude = latitude;

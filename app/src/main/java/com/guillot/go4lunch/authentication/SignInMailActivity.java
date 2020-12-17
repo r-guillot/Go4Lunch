@@ -47,7 +47,7 @@ public class SignInMailActivity extends AppCompatActivity {
                     String password = binding.passwordEditText.getText().toString();
                     if (!email.isEmpty() && !password.isEmpty()) {
                         if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                            viewModel.signInWithEmail(email, password);
+                            viewModel.signInWithEmail(email, password, getApplicationContext());
                         }
                     } else{
                         Toast.makeText(getApplicationContext(),"veuillez remplir une adress mail et un mot de passe valide", Toast.LENGTH_SHORT).show();

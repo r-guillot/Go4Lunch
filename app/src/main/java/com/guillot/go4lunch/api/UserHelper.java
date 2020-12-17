@@ -27,8 +27,8 @@ public class UserHelper {
     // CREATE
 
     public static Task<Void> createUser(String id, String username, String urlProfilePicture, String userLocation, String userMail,
-                                        String restaurantId, String restaurantName, String restaurantAddress, boolean isNotification) {
-        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantId, restaurantName, restaurantAddress, isNotification);
+                                        String restaurantId, String restaurantName, String restaurantAddress, boolean notification) {
+        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantId, restaurantName, restaurantAddress, notification);
         return UserHelper.getUsersCollection().document(id).set(userToCreate);
     }
 
@@ -52,8 +52,12 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(id).update("restaurantId", restaurantId,"restaurantName", restaurantName, "restaurantAddress", restaurantAddress);
     }
 
-    public static Task<Void> updateNotification(String id, boolean isNotification) {
-        return UserHelper.getUsersCollection().document(id).update("isNotification", isNotification);
+//    public static Task<Void> updateNotifyMe(String id, int notifyMe) {
+//        return UserHelper.getUsersCollection().document(id).update("notifyMe", notifyMe);
+//    }
+
+    public static Task<Void> updateNotification(String id, boolean notification) {
+        return UserHelper.getUsersCollection().document(id).update("notification", notification);
     }
 
     public static Task<Void> updateUserInfo(String id, String username, String userMail) {

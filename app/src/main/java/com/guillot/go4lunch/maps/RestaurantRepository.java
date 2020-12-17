@@ -1,15 +1,17 @@
 package com.guillot.go4lunch.maps;
 
+import android.util.Log;
+
 import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.api.ApiDetails;
 import com.guillot.go4lunch.api.ApiDistanceMatrix;
 import com.guillot.go4lunch.api.ApiInterface;
 import com.guillot.go4lunch.api.RetrofitService;
 import com.guillot.go4lunch.base.BaseFragment;
+import com.guillot.go4lunch.common.Utils;
 import com.guillot.go4lunch.model.ApiDetailsRestaurantResponse;
-import com.guillot.go4lunch.model.ApiDistanceResponse;
+import com.guillot.go4lunch.model.distance.ApiDistanceResponse;
 import com.guillot.go4lunch.model.ApiRestaurantResponse;
-import com.guillot.go4lunch.model.Distance;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.RestaurantApi;
 
@@ -60,7 +62,8 @@ public class RestaurantRepository {
     }
 
     public Observable<ApiDistanceResponse> streamFetchDistanceFromRestaurant(String placeLocation) {
-        return apiDistance.getDistanceMatrix(placeLocation, BaseFragment.locationUser.toString())
+        Log.d(TAG, "streamFetchDistanceFromRestaurant: "+ Utils.convertLocationForApi(BaseFragment.locationUser) + "place location " + placeLocation);
+        return apiDistance.getDistanceMatrix(placeLocation, Utils.convertLocationForApi(BaseFragment.locationUser))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(15, TimeUnit.SECONDS);
@@ -96,24 +99,17 @@ public class RestaurantRepository {
                 BuildConfig.ApiPlaceBase, photoReference, BuildConfig.ApiPlaceKey);
     }
 
-    public Distance createDistance(ApiDistanceResponse result){
-        ApiDistanceResponse.InfoDistanceMatrix infoDistanceMatrix = result.rows.get(0);
-        ApiDistanceResponse.InfoDistanceMatrix.DistanceElement distanceElement = (ApiDistanceResponse.InfoDistanceMatrix.DistanceElement) infoDistanceMatrix.elements.get(0);
-        ApiDistanceResponse.InfoDistanceMatrix.ValueItem itemDistance = distanceElement.distance;
-        String totalDistance = itemDistance.text;
-        return new Distance(totalDistance);
-    }
-
     public Restaurant createRestaurant(RestaurantApi result) {
         String uid = result.getPlaceId();
         String name = result.getName();
         Double latitude = result.getGeometry().getLocation().getLat();
         Double longitude = result.getGeometry().getLocation().getLng();
-        String photo = result.getPhotos().get(0).getPhotoReference();
+        String photo = (result.getPhotos() != null) ? result.getPhotos().get(0).getPhotoReference() : null;
         String address = result.getVicinity();
+        int openingHours = Utils.getOpeningTime(result.getOpeningHours());
         String webSite = result.getWebsite();
         String phoneNumber = result.getPhoneNumber();
         float rating = result.getRating();
-        return new Restaurant(uid, name, latitude, longitude, address, photo, rating, phoneNumber, webSite);
+        return new Restaurant(uid, name, latitude, longitude, address,  openingHours, photo, rating, phoneNumber, webSite);
     }
 }

@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
@@ -39,7 +41,6 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_restaurant);
         initViewModel();
-//        viewModel.getCurrentUser();
         viewBinding();
         configureRecycleView();
 
@@ -63,27 +64,17 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         intentRestaurantId = intent.getStringExtra(Constants.RESTAURANT);
         Log.d("Intent", "intentRestaurantId2: " + intentRestaurantId);
 
-        Log.d(TAG, "1 ");
         viewModel.init();
-        Log.d(TAG, "2 ");
         viewModel.getUserId();
-        Log.d(TAG, "3 ");
         viewModel.getCurrentUser(intentRestaurantId);
-        Log.d(TAG, "4 ");
-//        viewModel.executeNetworkRequest(intentRestaurantId);
-        Log.d(TAG, "5 ");
-//        viewModel.getUsersEatingHere(intentRestaurantId);
-        Log.d(TAG, "6 ");
         viewModel.getRestaurantDetails().observe(this, this::setGraphicElement);
         Log.d(TAG, "7 ");
-//        setCheckFab();
         setUpUserList();
     }
 
     private void setGraphicElement(Restaurant restaurant) {
         binding.textViewNameRestaurant.setText(restaurant.getName());
         binding.textViewAddressRestaurant.setText(restaurant.getAddress());
-        checkFabIsSelected();
 
         if (restaurant.getPhotoReference() != null) {
             Glide.with(this)
@@ -94,14 +85,13 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             binding.imageViewPictureRestaurant.setImageResource(R.drawable.image_not_avaiable);
         }
 
-
         binding.fabSelectedRestaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                checkIfUserDisableNotification();
                 updateRestaurantSelected();
             }
         });
-
 
         binding.textViewCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,25 +110,30 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             }
         });
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkFabIsSelected();
+            }
+        }, 100);
     }
-//    private void setCheckFab() {
-//        viewModel.getMediatorLiveData().observe(this,this::checkFabIsSelected);
-//    }
 
     private void checkFabIsSelected() {
         Log.d(TAG, "checkFabIsSelected: 1 " + viewModel.checkIfRestaurantIsChosen() );
         if (viewModel.checkIfRestaurantIsChosen()) {
             Log.d(TAG, "checkFabIsSelected: 2 " + viewModel.checkIfRestaurantIsChosen() );
             binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
-            binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
+            binding.fabSelectedRestaurant.setImageResource(R.drawable.ic_selected);
         } else {
             Log.d(TAG, "checkFabIsSelected: 3 " + viewModel.checkIfRestaurantIsChosen() );
             binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orangered)));
-            binding.fabSelectedRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_24));
+            binding.fabSelectedRestaurant.setImageResource(R.drawable.ic_add_24);
         }
     }
 
     private void updateRestaurantSelected() {
+        viewModel.getCurrentUser(intentRestaurantId);
         if (viewModel.checkIfRestaurantIsChosen()) {
             viewModel.setRestaurantUnselected();
         } else {
@@ -164,12 +159,20 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         } else {
             List<User> noFriendsList= new ArrayList<>();
             User user = new User();
-            user.setUrlProfilePicture("https://www.beenaroundtheglobe.com/wp-content/uploads/2018/09/solomangarephobia.jpg");
-            user.setUsername("No FRIENDS");
+            user.setUrlProfilePicture("https://dupasquier.ch/wp-content/uploads/2017/05/marais10.jpg");
+            user.setUsername("no soul treads these lands!");
             noFriendsList.add(user);
             this.users = noFriendsList;
         }
         Log.d("MatesFragment", "initUserList: " + this.users);
         adapter.update(this.users);
+    }
+
+    private void checkIfUserDisableNotification(){
+        User user = viewModel.getCurrentUserLiveData().getValue();
+        assert user != null;
+        if (!user.isNotification()){
+            Toast.makeText(this,R.string.notification_disable,Toast.LENGTH_LONG).show();
+        }
     }
 }

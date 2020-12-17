@@ -42,6 +42,7 @@ import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.databinding.ActivitySignInBinding;
+import com.guillot.go4lunch.model.User;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -55,7 +56,7 @@ import java.util.Objects;
 
 public class SignInActivity extends AppCompatActivity implements BottomSheetDialog.BottomSheetListener{
     private final String TAG = SignInActivity.class.getSimpleName();
-    private ActivitySignInBinding binding;
+    private ActivityB binding;
     private SignInViewModel mViewModel;
     private static final int RC_SIGN_IN = 1337;
     private GoogleSignInClient googleSignInClient;
@@ -78,10 +79,17 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         onClickMailButton();
         onClickLogIn();
         onClickSignIn();
+        OnClickCancel();
 
         mAuth = FirebaseAuth.getInstance();
         //Initiate FB SDK
         FacebookSdk.sdkInitialize(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        facebookLoginInitiating();
     }
 
     private void viewBinding() {
@@ -98,7 +106,7 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
      * Google authentication
      */
     private void onClickGoogleButton() {
-        binding.googleSignInButton.setOnClickListener(v -> signIn());
+        binding.socialButtonLayout.googleSignInButton.setOnClickListener(v -> signIn());
     }
 
     private void googleSignInBuilder() {
@@ -119,7 +127,7 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         fbCallback.onActivityResult(requestCode, resultCode, data);
-        binding.twitterSignInButton.onActivityResult(requestCode, resultCode, data);
+        binding.socialButtonLayout.twitterSignInButton.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: " + requestCode);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
@@ -168,7 +176,7 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
     private void facebookLoginInitiating() {
         // Initialize Facebook Login button
         fbCallback = CallbackManager.Factory.create();
-        LoginButton loginButton = binding.facebookSignInButton;
+        LoginButton loginButton = binding.socialButtonLayout.facebookSignInButton;
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(fbCallback, new FacebookCallback<LoginResult>() {
             @Override
@@ -225,12 +233,12 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
 
     private void onClickTwitterButton(){
         Log.d(TAG, "onClickTwitterButton: ");
-        binding.twitterSignInButton.setCallback(new Callback<TwitterSession>() {
+        binding.socialButtonLayout.twitterSignInButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 Log.d(TAG, "success: " + result);
                 firebaseAuthWithTwitter(result.data);
-                binding.twitterSignInButton.setVisibility(View.VISIBLE);
+                binding.socialButtonLayout.twitterSignInButton.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
 
@@ -266,10 +274,7 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
 
     private void updateTwitterButton(){
         if (TwitterCore.getInstance().getSessionManager().getActiveSession() == null){
-            binding.twitterSignInButton.setVisibility(View.VISIBLE);
-        }
-        else{
-//            binding.twitterSignInButton.setVisibility(View.GONE);
+            binding.socialButtonLayout.twitterSignInButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -277,51 +282,31 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
      * Mail authentication
      */
     private void onClickMailButton(){
-        binding.mailLoginButton.setOnClickListener(v -> openBottomSheet());
+        binding.socialButtonLayout.mailLoginButton.setOnClickListener(v -> openBottomSheet());
     }
 
     private void openBottomSheet(){
+        onBackPressed();
         BottomSheetDialog bottomSheet = BottomSheetDialog.getInstance();
         bottomSheet.showNow(getSupportFragmentManager(), BottomSheetDialog.class.getSimpleName());
     }
 
     @Override
     public void onButtonClicked(int result) {
-        if (result == 0){
-            binding.twitterSignInButton.setVisibility(View.GONE);
-            binding.facebookSignInButton.setVisibility(View.GONE);
-            binding.googleSignInButton.setVisibility(View.GONE);
-            binding.socialMediaTextView.setVisibility(View.GONE);
-            binding.mailTextView.setVisibility(View.GONE);
-            binding.mailLoginButton.setVisibility(View.GONE);
-            binding.mailEditText.setVisibility(View.VISIBLE);
-            binding.passwordEditText.setVisibility(View.VISIBLE);
-            binding.mailGoButton.setVisibility(View.VISIBLE);
+        if (result == 1){
+            binding.socialButtonLayout.getRoot().setVisibility(View.GONE);
+            binding.edittextMailLayout.getRoot().setVisibility(View.VISIBLE);
+            binding.logInMailLayout.getRoot().setVisibility(View.VISIBLE);
         } else {
-            binding.twitterSignInButton.setVisibility(View.GONE);
-            binding.facebookSignInButton.setVisibility(View.GONE);
-            binding.googleSignInButton.setVisibility(View.GONE);
-            binding.socialMediaTextView.setVisibility(View.GONE);
-            binding.mailTextView.setVisibility(View.GONE);
-            binding.mailLoginButton.setVisibility(View.GONE);
-            binding.mailEditText.setVisibility(View.VISIBLE);
-            binding.passwordEditText.setVisibility(View.VISIBLE);
-            binding.mailSignInButton.setVisibility(View.VISIBLE);
+            binding.socialButtonLayout.getRoot().setVisibility(View.GONE);
+            binding.edittextMailLayout.getRoot().setVisibility(View.VISIBLE);
+            binding.signInMailLayout.getRoot().setVisibility(View.VISIBLE);
         }
 
     }
 
     private void onClickLogIn() {
-        binding.mailGoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMailAndPassword(0);
-            }
-        });
-    }
-
-    private void onClickSignIn(){
-        binding.mailSignInButton.setOnClickListener(new View.OnClickListener() {
+        binding.logInMailLayout.mailLogInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getMailAndPassword(1);
@@ -329,43 +314,66 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         });
     }
 
-    private void getMailAndPassword(int check) {
-        binding.passwordEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+    private void onClickSignIn(){
+        binding.signInMailLayout.mailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                String email = binding.mailEditText.getText().toString().trim();
-                String password = binding.passwordEditText.getText().toString();
+            public void onClick(View v) {
+                Log.d(TAG, "onClickSignIn: " );
+                getMailAndPassword(0);
+            }
+        });
+    }
+
+    private void getMailAndPassword(int check) {
+        Log.d(TAG, "getMailAndPassword: ");
+                String email = binding.edittextMailLayout.mailEditText.getText().toString().trim();
+                String password = binding.edittextMailLayout.passwordEditText.getText().toString();
                 if (!email.isEmpty() && !password.isEmpty()) {
                     if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        mViewModel.checkLogOrSignWithMail(email, password, check);
-                        startActivity();
+                        Log.d(TAG, "onEditorAction: " +check);
+                        mViewModel.checkLogOrSignWithMail(email, password, check, getApplicationContext());
+                        Log.d(TAG, "LD: "+ mViewModel.authenticatedUserLiveData.getValue());
+                        mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
+                            if (authenticatedUser != null) {
+                                Log.d("SignInActivity", "signInTwitterWithCredential:success");
+                                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
+                                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
+                                startActivity(coreActivityIntent);
+                                saveData();
+                                finish();
+                            } else {
+                                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 } else{
                     Toast.makeText(getApplicationContext(),"veuillez remplir une adresse mail et un mot de passe valide", Toast.LENGTH_SHORT).show();
                 }
-                return false;
+    }
+
+    private void OnClickCancel(){
+        binding.signInMailLayout.mailCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.socialButtonLayout.getRoot().setVisibility(View.VISIBLE);
+                binding.edittextMailLayout.getRoot().setVisibility(View.GONE);
+                binding.signInMailLayout.getRoot().setVisibility(View.GONE);
             }
-                return false;
+        });
+
+        binding.logInMailLayout.mailLogInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.socialButtonLayout.getRoot().setVisibility(View.VISIBLE);
+                binding.edittextMailLayout.getRoot().setVisibility(View.GONE);
+                binding.logInMailLayout.getRoot().setVisibility(View.GONE);
             }
         });
     }
 
-    private void startActivity(){
-        mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
-            if (authenticatedUser != null) {
-                Log.d("SignInActivity", "signInTwitterWithCredential:success");
-                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
-                startActivity(coreActivityIntent);
-                saveData();
-                finish();
-            } else {
-                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public void onBackPressed() {
     }
-
 
     public void saveData() {
         SharedPreferences sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);

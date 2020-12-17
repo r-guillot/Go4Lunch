@@ -18,6 +18,7 @@ import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -54,22 +55,6 @@ public class RestaurantDetailsViewModel extends ViewModel {
         userId = userRepository.getCurrentUserId();
         Log.d(TAG, "userId: " + userId);
     }
-
-//    public void getCurrentUser() {
-//        Log.d(TAG, "getCurrentUser: start");
-//        if (userId != null) {
-//            Log.d(TAG, "getCurrentUserId: " + userId);
-//            UserHelper.getUser(userId).addOnSuccessListener(documentSnapshot -> {
-//                fetchedUser = documentSnapshot.toObject(User.class);
-//                Log.d(TAG, "fetchedUser: " + fetchedUser);
-//                currentUser.setValue(fetchedUser);
-//                Log.d(TAG, "getCurrentUser: " + currentUser);
-//            })
-//                    .addOnFailureListener(e -> {
-//                        Log.d(TAG, "getCurrentUser: " + e);
-//                    });
-//        }
-//    }
 
     public void getCurrentUser(String placeId) {
         Log.d(TAG, "getCurrentUser 1: " + userRepository.getCurrentUserId());
@@ -108,9 +93,9 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     private void createRestaurant(ApiDetailsRestaurantResponse results, String placeId) {
-    ApiDetailsRestaurantResponse detailsResult = results;
-        if(detailsResult.getResult() != null) {
-            restaurant = mRestaurantRepository.createRestaurant(detailsResult.getResult());
+//    ApiDetailsRestaurantResponse detailsResult = results;
+        if(results.getResult() != null) {
+            restaurant = mRestaurantRepository.createRestaurant(results.getResult());
         }
         restaurantDetail.setValue(restaurant);
         getUsersEatingHere(placeId);

@@ -20,6 +20,7 @@ import com.guillot.go4lunch.common.ItemClickListener;
 import com.guillot.go4lunch.databinding.RestaurantListFragmentBinding;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
+import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class RestaurantListFragment extends BaseFragment {
     private RestaurantListFragmentBinding binding;
     private RestaurantListViewModel viewModel;
     private List<Restaurant> restaurants;
+    private List<User> users;
     private RestaurantListAdapter adapter;
 
     @Override
@@ -65,7 +67,8 @@ public class RestaurantListFragment extends BaseFragment {
 
     private void configureRecycleView() {
         restaurants = new ArrayList<>();
-        adapter = new RestaurantListAdapter(restaurants, getContext(), viewModel);
+        users = viewModel.getListUsersEatingHere().getValue();
+        adapter = new RestaurantListAdapter(restaurants, getContext(), users);
         binding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.restaurantRecyclerView.setAdapter(adapter);
     }

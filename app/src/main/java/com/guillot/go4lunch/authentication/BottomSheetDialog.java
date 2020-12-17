@@ -30,14 +30,14 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         binding.logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onButtonClicked(0);
+                mListener.onButtonClicked(1);
                 dismiss();
             }
         });
         binding.signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onButtonClicked(1);
+                mListener.onButtonClicked(0);
                 dismiss();
             }
         });

@@ -1,11 +1,7 @@
 package com.guillot.go4lunch.settings;
 
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.net.Uri;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -20,8 +16,6 @@ import com.google.firebase.storage.UploadTask;
 import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.mates.UserRepository;
 import com.guillot.go4lunch.model.User;
-
-import java.util.UUID;
 
 public class  SettingsViewModel extends ViewModel {
     private final String TAG = SettingsViewModel.class.getSimpleName();

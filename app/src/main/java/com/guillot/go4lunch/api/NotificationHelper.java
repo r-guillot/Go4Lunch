@@ -12,11 +12,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.guillot.go4lunch.R;
-import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.main.MainViewModel;
 import com.guillot.go4lunch.notification.NotificationEraser;
 import com.guillot.go4lunch.notification.NotificationReceiver;
@@ -29,8 +25,8 @@ public class NotificationHelper extends ContextWrapper {
     private MainViewModel viewModel;
     private PendingIntent pendingIntentOn;
     private PendingIntent pendingIntentOff;
-    private static int[] TIME_NOTIFICATION = {18, 10};
-    private static int[] TIME_RESET = {18, 15};
+    private static int[] TIME_NOTIFICATION = {16, 35};
+    private static int[] TIME_RESET = {15, 0};
 
     public NotificationHelper(Context base) {
         super(base);
@@ -81,10 +77,10 @@ public class NotificationHelper extends ContextWrapper {
         notificationTime.set(Calendar.MINUTE, TIME_NOTIFICATION[1]);
         notificationTime.set(Calendar.SECOND, 0);
 
-//        Calendar todayMidDay = Calendar.getInstance();
-//        if (notificationTime.before(todayMidDay)) {
-//            notificationTime.add(Calendar.DATE,1);
-//        }
+        Calendar todayMidDay = Calendar.getInstance();
+        if (notificationTime.before(todayMidDay)) {
+            notificationTime.add(Calendar.DATE,1);
+        }
         ComponentName receiver = new ComponentName(getApplicationContext(), NotificationReceiver.class);
         PackageManager packageManager = getApplicationContext().getPackageManager();
         packageManager.setComponentEnabledSetting(receiver,

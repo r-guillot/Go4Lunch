@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +21,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.guillot.go4lunch.authentication.SignInActivity;
 import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.RestaurantMapFragmentBinding;
+import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
 
@@ -34,7 +37,7 @@ test push
  */
     private final String TAG = RestaurantMapFragment.class.getSimpleName();
 
-    private final float ZOOM_USER_LOCATION_VALUE = 15;
+    private final float ZOOM_USER_LOCATION_VALUE = 17;
     public final static String RESTAURANT = "RESTAURANT_ID";
 
     private RestaurantMapFragmentBinding binding;
@@ -47,27 +50,29 @@ test push
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.restaurant_map_fragment, container, false);
         configureBinding(view);
-        initViewModel();
         createMapView(savedInstanceState);
+        initViewModel();
         return view;
     }
 
     @Override
     public void onResume() {
-        super.onResume();
         mapView.onResume();
+        Log.d(TAG, "onResume: " +mapView);
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         mapView.onPause();
+        super.onPause();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        googleMap.clear();
         mapView.onDestroy();
+        super.onDestroyView();
     }
 
     @Override
@@ -79,10 +84,10 @@ test push
     @Override
     public void getLocationUser(LatLng locationUser) {
         String location = locationUser.latitude + "," + locationUser.longitude;
-        centerCameraOnGPSLocation(locationUser);
         viewModel.init();
         viewModel.executeNetworkRequest(locationUser);
         viewModel.getRestaurantsList().observe(this, this::initRestaurantMarker);
+        centerCameraOnGPSLocation(locationUser);
         locationButtonDesign();
         viewModel.updateUserLocation(location);
     }
@@ -97,38 +102,23 @@ test push
         if (googleMap != null) {
             googleMap.clear();
             for (Restaurant restaurant : restaurants) {
-                double latitude = restaurant.getLatitude();
-                double longitude = restaurant.getLongitude();
-                LatLng positionRestaurant = new LatLng(latitude, longitude);
-                if (viewModel.getAllOccupiedRestaurant() == null || viewModel.getAllOccupiedRestaurant().isEmpty()) {
-//                    Marker marker = googleMap.addMarker(new MarkerOptions()
-//                            .position(positionRestaurant)
-//                            .title(restaurant.getName())
-//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
-//                    marker.setTag(restaurant.getRestaurantID());
+//                double latitude = restaurant.getLatitude();
+//                double longitude = restaurant.getLongitude();
+//                LatLng positionRestaurant = new LatLng(latitude, longitude);
+                Log.d(TAG, "initRestaurantMarker: " + viewModel.getIdList());
+                viewModel.getAllOccupiedRestaurant();
+                if (viewModel.getIdList() == null || viewModel.getIdList().isEmpty()) {
                     icon = R.drawable.marker_restaurant_green_48px;
-                    setIconMarker(restaurant, icon);
                 } else {
-                    List<String> listId = viewModel.getAllOccupiedRestaurant();
+                    List<String> listId = viewModel.getIdList();
                     if (listId.contains(restaurant.getRestaurantID())) {
-//                        Marker marker = googleMap.addMarker(new MarkerOptions()
-//                                .position(positionRestaurant)
-//                                .title(restaurant.getName())
-//                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_orange_48px)));
-//                        marker.setTag(restaurant.getRestaurantID());
                         icon = R.drawable.marker_restaurant_orange_48px;
-                        setIconMarker(restaurant, icon);
                     }
                     else {
-//                        Marker marker = googleMap.addMarker(new MarkerOptions()
-//                                .position(positionRestaurant)
-//                                .title(restaurant.getName())
-//                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant_green_48px)));
-//                        marker.setTag(restaurant.getRestaurantID());
                         icon = R.drawable.marker_restaurant_green_48px;
-                        setIconMarker(restaurant, icon);
                     }
                 }
+                setIconMarker(restaurant, icon);
             }
             onMarkerClick();
         }
@@ -161,10 +151,20 @@ test push
 
     @SuppressLint("MissingPermission")
     private void centerCameraOnGPSLocation(LatLng locationUser) {
-        if (locationUser != null) {
+        if (locationUser != null && googleMap != null) {
+            Log.d(TAG, "centerCameraOnGPSLocation: " +locationUser);
+            Log.d(TAG, "centerCameraOnGPSLocation: " + googleMap);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(ZOOM_USER_LOCATION_VALUE));
             googleMap.setMyLocationEnabled(true);
+        } else {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    centerCameraOnGPSLocation(locationUser);
+                }
+            }, 50);
         }
     }
 
@@ -176,7 +176,6 @@ test push
                 Log.d(TAG, "onMarkerClick: " + placeId);
 
                 Intent detailIntent = new Intent(getActivity(), RestaurantDetailActivity.class);
-
                 detailIntent.putExtra(RESTAURANT, placeId);
                 startActivity(detailIntent);
                 return false;

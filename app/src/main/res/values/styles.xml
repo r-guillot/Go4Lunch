@@ -17,4 +17,19 @@
         <item name="colorControlActivated">@color/white</item>
     </style>
 
+    <style name="TimeRestaurantClosed">
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TimeRestaurantClosingSoon">
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="TimeRestaurantOpen">
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
 </resources>

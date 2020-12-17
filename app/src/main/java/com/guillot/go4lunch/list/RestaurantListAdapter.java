@@ -4,14 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
-import com.guillot.go4lunch.model.Distance;
 import com.guillot.go4lunch.model.Restaurant;
+import com.guillot.go4lunch.model.User;
 
 
 import java.util.List;
@@ -19,29 +16,26 @@ import java.util.List;
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListViewHolder> {
 
     private List<Restaurant> restaurantList;
+    private List<User> users;
     private Context context;
-    private RestaurantListViewModel viewModel;
 
-    public RestaurantListAdapter(List<Restaurant> restaurants, Context context, RestaurantListViewModel viewModel) {
+    public RestaurantListAdapter(List<Restaurant> restaurants, Context context, List<User> users) {
         this.restaurantList = restaurants;
         this.context = context;
-        this.viewModel = viewModel;
+        this.users = users;
     }
 
     @Override
     public RestaurantListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         context = parent.getContext();
-        return new RestaurantListViewHolder(ItemRestaurantBinding.inflate(layoutInflater), context);
+        return new RestaurantListViewHolder(ItemRestaurantBinding.inflate(layoutInflater), context, users);
     }
 
     @Override
     public void onBindViewHolder(RestaurantListViewHolder holder, int position) {
         final Restaurant restaurant = restaurantList.get(position);
-        String locationRestaurant = restaurant.getLatitude().toString() + restaurant.getLongitude().toString();
-        viewModel.executeDistanceRequest(locationRestaurant);
-        String distance = viewModel.getDistanceLiveData().getValue();
-        holder.updateRestaurantInfo(restaurant, distance);
+        holder.updateRestaurantInfo(restaurant, users);
     }
 
     @Override

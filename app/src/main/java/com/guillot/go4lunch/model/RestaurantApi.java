@@ -1,6 +1,8 @@
 package com.guillot.go4lunch.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.guillot.go4lunch.model.details.OpeningHours;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ public class RestaurantApi {
     private float rating;
     @SerializedName("vicinity")
     private String vicinity;
+    @SerializedName("opening_hours")
+    private OpeningHours openingHours;
     @SerializedName("website")
     private String website;
     @SerializedName("international_phone_number")
@@ -45,6 +49,10 @@ public class RestaurantApi {
 
     public String getVicinity() {
         return vicinity;
+    }
+
+    public OpeningHours getOpeningHours() {
+        return openingHours;
     }
 
     public String getWebsite() {

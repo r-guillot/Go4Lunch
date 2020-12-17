@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.guillot.go4lunch.api.UserHelper;
-import com.guillot.go4lunch.mates.UserRepository;
 import com.guillot.go4lunch.model.User;
 
 public class NotificationEraser extends BroadcastReceiver {
@@ -24,7 +23,6 @@ public class NotificationEraser extends BroadcastReceiver {
                         User user = documentSnapshot.toObject(User.class);
                         if(user != null && user.getRestaurantId() != null) {
                             UserHelper.updateRestaurantInfo(user.getId(), "", "", "");
-                            UserHelper.updateNotification(user.getId(), false);
                         }
                     }
                 });
