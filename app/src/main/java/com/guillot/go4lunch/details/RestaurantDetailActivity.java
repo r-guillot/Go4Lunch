@@ -1,11 +1,14 @@
 package com.guillot.go4lunch.details;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,7 +96,12 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             }
         });
 
-        binding.textViewCall.setOnClickListener(new View.OnClickListener() {
+        LayerDrawable stars = (LayerDrawable) binding.ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.orange),
+                PorterDuff.Mode.SRC_ATOP);
+        binding.ratingBar.setRating(restaurant.getRating());
+
+        binding.callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -101,7 +109,18 @@ public class RestaurantDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        binding.textViewWebsite.setOnClickListener(new View.OnClickListener() {
+
+        binding.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User user = viewModel.getCurrentUserLiveData().getValue();
+                assert user != null;
+                List<String> restaurantLiked = user.getRestaurantLiked();
+                updateRestaurantLiked(restaurantLiked);
+            }
+        });
+
+        binding.websiteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(restaurant.getWebSite()));
@@ -115,6 +134,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 checkFabIsSelected();
+                checkRestaurantIsLiked();
             }
         }, 100);
     }
@@ -132,6 +152,14 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void checkRestaurantIsLiked(){
+        if (viewModel.checkIfRestaurantIsLiked()) {
+            binding.likeButton.setTextColor(getResources().getColor(R.color.quantum_yellow));
+        } else {
+            binding.likeButton.setTextColor(getResources().getColor(R.color.orange));
+        }
+    }
+
     private void updateRestaurantSelected() {
         viewModel.getCurrentUser(intentRestaurantId);
         if (viewModel.checkIfRestaurantIsChosen()) {
@@ -140,6 +168,16 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             viewModel.setRestaurantSelected();
         }
         checkFabIsSelected();
+    }
+
+    private void updateRestaurantLiked(List<String> restaurantLiked) {
+        viewModel.getCurrentUser(intentRestaurantId);
+        if (viewModel.checkIfRestaurantIsLiked()) {
+            viewModel.setRestaurantUnliked(restaurantLiked);
+        } else {
+            viewModel.setRestaurantLiked(restaurantLiked);
+        }
+            checkRestaurantIsLiked();
     }
 
     private void configureRecycleView() {

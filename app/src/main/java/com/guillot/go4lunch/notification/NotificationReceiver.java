@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.audiofx.Equalizer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -62,12 +64,15 @@ public class NotificationReceiver extends BroadcastReceiver {
             userId = userRepository.getCurrentUserId();
             UserHelper.getUser(userId).addOnSuccessListener(documentSnapshot -> {
                 fetchedUser = documentSnapshot.toObject(User.class);
-
+                assert fetchedUser != null;
                 restaurantId = fetchedUser.getRestaurantId();
                 restaurantName = fetchedUser.getRestaurantName();
                 restaurantAddress = fetchedUser.getRestaurantAddress();
                 intentForTouchAction(context);
-                getUsersEatingHere(fetchedUser.getRestaurantId());
+                assert fetchedUser.getRestaurantId() != null;
+                if (!fetchedUser.getRestaurantId().equals("")) {
+                    getUsersEatingHere(fetchedUser.getRestaurantId());
+                }
         });
         }
     }
@@ -93,7 +98,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             message = context.getString(R.string.notification_message_alone);
             bigText = String.format(message, restaurantName, restaurantAddress);
             showNotification(bigText);
-        } else if (fetchedUser != null && fetchedUser.getRestaurantName() != null && usersNamesList != null && fetchedUser.isNotification()){
+        } else if (fetchedUser != null && fetchedUser.getRestaurantName() != null && !usersNamesList.isEmpty() && fetchedUser.isNotification()){
             message = context.getString(R.string.notification_message);
             bigText = String.format(message, restaurantName, Utils.convertListToStringForNotification(usersNamesList), restaurantAddress);
             showNotification(bigText);
@@ -108,8 +113,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true)
                 .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                 .setLights(Color.YELLOW, 3000, 3000)
-                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setSound(Settings.System.DEFAULT_ALARM_ALERT_URI)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);

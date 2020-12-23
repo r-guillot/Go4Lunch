@@ -80,5 +80,7 @@
 
     <string name="notification_disable">Careful you have disable the notifications</string>
     <string name="no_friends">no soul treads these lands! </string>
+    <string name="place_mates_eating">%s is eating at %s</string>
+    <string name="mates_not_place">%s hasn\'t decided yet</string>
 
 </resources>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -30,6 +31,7 @@ import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCallback {
 /*
@@ -83,6 +85,7 @@ test push
 
     @Override
     public void getLocationUser(LatLng locationUser) {
+        Log.d(TAG, "getLocationUser: " + locationUser.toString());
         String location = locationUser.latitude + "," + locationUser.longitude;
         viewModel.init();
         viewModel.executeNetworkRequest(locationUser);
@@ -105,18 +108,24 @@ test push
 //                double latitude = restaurant.getLatitude();
 //                double longitude = restaurant.getLongitude();
 //                LatLng positionRestaurant = new LatLng(latitude, longitude);
-                Log.d(TAG, "initRestaurantMarker: " + viewModel.getIdList());
-                viewModel.getAllOccupiedRestaurant();
-                if (viewModel.getIdList() == null || viewModel.getIdList().isEmpty()) {
-                    icon = R.drawable.marker_restaurant_green_48px;
-                } else {
-                    List<String> listId = viewModel.getIdList();
+//                viewModel.getUserIdList().getValue();
+                Log.d(TAG, "initRestaurantMarker1: " + viewModel.getUserIdList().getValue());
+//                Log.d(TAG, "initRestaurantMarker2: " + viewModel.getAllOccupiedRestaurant());
+                if (viewModel.getUserIdList().getValue() != null && !viewModel.getUserIdList().getValue().isEmpty()){
+//                if (viewModel.getAllOccupiedRestaurant().getValue() != null && !viewModel.getAllOccupiedRestaurant().getValue().isEmpty()) {
+//                    List<String> listId = viewModel.getAllOccupiedRestaurant().getValue();
+                    List<String> listId = viewModel.getUserIdList().getValue();
+                    Log.d(TAG, "listId: " + listId);
+                    Log.d(TAG, "getRestaurantID: " + restaurant.getRestaurantID() );
                     if (listId.contains(restaurant.getRestaurantID())) {
+                        Log.w(TAG, "orange: " + restaurant.getName()+ " + " +restaurant.getRestaurantID() + " + " + listId);
                         icon = R.drawable.marker_restaurant_orange_48px;
                     }
                     else {
                         icon = R.drawable.marker_restaurant_green_48px;
                     }
+                } else {
+                    icon = R.drawable.marker_restaurant_green_48px;
                 }
                 setIconMarker(restaurant, icon);
             }

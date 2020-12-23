@@ -21,6 +21,8 @@ import com.guillot.go4lunch.databinding.ItemMatesBinding;
 import com.guillot.go4lunch.maps.RestaurantRepository;
 import com.guillot.go4lunch.model.User;
 
+import java.util.Objects;
+
 public class MatesListViewHolder extends RecyclerView.ViewHolder {
 
     private ItemMatesBinding binding;
@@ -33,22 +35,23 @@ public class MatesListViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void updateMatesInfo(User user){
+        String textUser;
         if (user !=null) {
             Glide.with(context)
                     .load(user.getUrlProfilePicture())
                     .override(500,500)
-//                    .load(user.getUrlProfilePicture())
                     .centerCrop()
                     .circleCrop()
-//                    .into(userPic);
-//                    .centerCrop()
-//                    .circleCrop()
-//                    .placeholder(android.R.drawable.progress_indeterminate_horizontal)
-//                    .error(android.R.drawable.stat_notify_error)
-//                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.profilePictureImageView);
 
-            binding.infoTextView.setText(user.getUsername());
+            if (Objects.equals(user.getRestaurantName(), "")){
+                String message = context.getString(R.string.mates_not_place);
+                textUser = String.format(message, user.getUsername());
+            } else {
+                String message = context.getString(R.string.place_mates_eating);
+                textUser = String.format(message, user.getUsername(), user.getRestaurantName());
+            }
+            binding.infoTextView.setText(textUser);
         } else {
             binding.profilePictureImageView.setImageResource(R.drawable.image_not_avaiable);
             binding.infoTextView.setText(R.string.no_friends);

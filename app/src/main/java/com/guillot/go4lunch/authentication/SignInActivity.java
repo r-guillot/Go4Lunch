@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
@@ -24,6 +25,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -90,6 +92,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
     protected void onResume() {
         super.onResume();
         facebookLoginInitiating();
+        if(AccessToken.getCurrentAccessToken() != null){
+        LoginManager.getInstance().logOut();}
     }
 
     private void viewBinding() {
@@ -159,10 +163,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
                 Log.d("SignInActivity", "signInGoogleWithCredential:success");
-                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
-                startActivity(coreActivityIntent);
-                saveData();
+                coreActivityIntent(authenticatedUser);
+//                saveData();
                 finish();
             } else {
                 Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -208,10 +210,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
                 Log.d("SignInActivity", "signInFacebookWithCredential:success");
-                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
-                startActivity(coreActivityIntent);
-                saveData();
+                coreActivityIntent(authenticatedUser);
+//                saveData();
                 finish();
             } else {
                 Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -261,10 +261,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
                 Log.d("SignInActivity", "signInTwitterWithCredential:success");
-                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
-                startActivity(coreActivityIntent);
-                saveData();
+                coreActivityIntent(authenticatedUser);
+//                saveData();
                 finish();
             } else {
                 Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -336,10 +334,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
                         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
                             if (authenticatedUser != null) {
                                 Log.d("SignInActivity", "signInTwitterWithCredential:success");
-                                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
-                                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
-                                startActivity(coreActivityIntent);
-                                saveData();
+                                coreActivityIntent(authenticatedUser);
+//                                saveData();
                                 finish();
                             } else {
                                 Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
@@ -375,14 +371,26 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
     public void onBackPressed() {
     }
 
-    public void saveData() {
-        SharedPreferences sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
-        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString(Constants.USER_ID, Objects.requireNonNull(mViewModel.authenticatedUserLiveData.getValue()).getId()).apply();
-        editor.putString(Constants.USER_USERNAME, mViewModel.authenticatedUserLiveData.getValue().getUsername()).apply();
-        editor.putString(Constants.URL_PROFILE_PICTURE, mViewModel.authenticatedUserLiveData.getValue().getUrlProfilePicture().toString()).apply();
-        editor.putString(Constants.USER_LOCATION, mViewModel.authenticatedUserLiveData.getValue().getUserLocation().toString()).apply();
+    private void coreActivityIntent(User authenticatedUser){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent coreActivityIntent = new Intent(getBaseContext(), CoreActivity.class);
+                coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
+                startActivity(coreActivityIntent);
+            }
+        }, 500);
     }
+
+//    public void saveData() {
+//        SharedPreferences sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
+//        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//        editor.putString(Constants.USER_ID, Objects.requireNonNull(mViewModel.authenticatedUserLiveData.getValue()).getId()).apply();
+//        editor.putString(Constants.USER_USERNAME, mViewModel.authenticatedUserLiveData.getValue().getUsername()).apply();
+//        editor.putString(Constants.URL_PROFILE_PICTURE, mViewModel.authenticatedUserLiveData.getValue().getUrlProfilePicture().toString()).apply();
+//        editor.putString(Constants.USER_LOCATION, mViewModel.authenticatedUserLiveData.getValue().getUserLocation().toString()).apply();
+//    }
 
 }

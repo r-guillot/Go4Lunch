@@ -25,12 +25,11 @@ public class NotificationHelper extends ContextWrapper {
     private MainViewModel viewModel;
     private PendingIntent pendingIntentOn;
     private PendingIntent pendingIntentOff;
-    private static int[] TIME_NOTIFICATION = {16, 35};
-    private static int[] TIME_RESET = {15, 0};
+    private static int[] TIME_NOTIFICATION = {12, 0};
+    private static int[] TIME_RESET = {23, 59};
 
     public NotificationHelper(Context base) {
         super(base);
-//        initViewModel();
     }
 
     public void createNotificationChannel(){
@@ -38,7 +37,7 @@ public class NotificationHelper extends ContextWrapper {
             String channelId = getString(R.string.notificationChannel);
             CharSequence name = getString(R.string.name_channel);
             String description = getString(R.string.description_channel);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(channelId, name, importance);
             channel.setDescription(description);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -46,15 +45,6 @@ public class NotificationHelper extends ContextWrapper {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
-//    public void initViewModel() {
-//        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-//        viewModel.init();
-//    }
-//
-//    public void initNotification(){
-//        viewModel.getIsNotificationEnable().observe((LifecycleOwner) this, this::configureNotification);
-//    }
 
     public void configureNotification(boolean isEnable){
         configureNotificationIntent();

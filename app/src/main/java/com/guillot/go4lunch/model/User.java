@@ -7,6 +7,8 @@ import androidx.annotation.Keep;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 @Keep
@@ -18,24 +20,23 @@ public class User implements Parcelable {
     private String urlProfilePicture;
     private String userLocation;
     private String userMail;
-    @Nullable
+    private List<String> restaurantLiked;
     private String restaurantId;
-    @Nullable
     private String restaurantName;
-    @Nullable
     private String restaurantAddress;
-//    private int notifyMe;
+    //    private int notifyMe;
     private boolean notification;
 
     public User() {
     }
 
-    public User(String id, String username, String urlProfilePicture, String userLocation, String userMail, String restaurantId, String restaurantName, String restaurantAddress, boolean notification) {
+    public User(String id, String username, String urlProfilePicture, String userLocation, String userMail, List<String> restaurantLiked, String restaurantId, String restaurantName, String restaurantAddress, boolean notification) {
         this.id = id;
         this.username = username;
         this.urlProfilePicture = urlProfilePicture;
         this.userLocation = userLocation;
         this.userMail = userMail;
+        this.restaurantLiked = restaurantLiked;
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
         this.restaurantAddress = restaurantAddress;
@@ -87,17 +88,18 @@ public class User implements Parcelable {
         return userMail;
     }
 
-    @Nullable
+    public List<String> getRestaurantLiked() {
+        return restaurantLiked;
+    }
+
     public String getRestaurantId() {
         return restaurantId;
     }
 
-    @Nullable
     public String getRestaurantName() {
         return restaurantName;
     }
 
-    @Nullable
     public String getRestaurantAddress() {
         return restaurantAddress;
     }
@@ -106,7 +108,9 @@ public class User implements Parcelable {
 //        return notifyMe;
 //    }
 
-    public boolean isNotification() {return notification;}
+    public boolean isNotification() {
+        return notification;
+    }
 
     public void setId(String id) {
         this.id = id;

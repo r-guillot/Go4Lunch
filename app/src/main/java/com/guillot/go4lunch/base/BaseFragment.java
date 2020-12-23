@@ -13,7 +13,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.guillot.go4lunch.R;
-import com.guillot.go4lunch.api.UserHelper;
+import com.guillot.go4lunch.common.Constants;
 
 import java.util.List;
 

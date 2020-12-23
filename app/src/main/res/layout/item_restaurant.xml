@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:textSize="18sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
+        android:textStyle="bold"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView_restaurant" />
@@ -54,11 +55,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/lightGrey"
 
-        app:layout_constraintBottom_toBottomOf="@+id/textViewAddress"
+        app:layout_constraintBottom_toBottomOf="@+id/hours_textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
 
     <TextView
         android:id="@+id/users_textView"

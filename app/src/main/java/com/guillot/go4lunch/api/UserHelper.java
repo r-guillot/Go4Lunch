@@ -11,6 +11,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.guillot.go4lunch.model.User;
 
+import java.util.List;
 import java.util.Map;
 
 public class UserHelper {
@@ -26,9 +27,9 @@ public class UserHelper {
 
     // CREATE
 
-    public static Task<Void> createUser(String id, String username, String urlProfilePicture, String userLocation, String userMail,
+    public static Task<Void> createUser(String id, String username, String urlProfilePicture, String userLocation, String userMail, List<String> restaurantLiked,
                                         String restaurantId, String restaurantName, String restaurantAddress, boolean notification) {
-        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantId, restaurantName, restaurantAddress, notification);
+        User userToCreate = new User(id, username, urlProfilePicture, userLocation, userMail, restaurantLiked, restaurantId, restaurantName, restaurantAddress, notification);
         return UserHelper.getUsersCollection().document(id).set(userToCreate);
     }
 
@@ -52,9 +53,9 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(id).update("restaurantId", restaurantId,"restaurantName", restaurantName, "restaurantAddress", restaurantAddress);
     }
 
-//    public static Task<Void> updateNotifyMe(String id, int notifyMe) {
-//        return UserHelper.getUsersCollection().document(id).update("notifyMe", notifyMe);
-//    }
+    public static Task<Void> updateRestaurantLiked(String id, List<String> restaurantLiked) {
+        return UserHelper.getUsersCollection().document(id).update("restaurantLiked", restaurantLiked);
+    }
 
     public static Task<Void> updateNotification(String id, boolean notification) {
         return UserHelper.getUsersCollection().document(id).update("notification", notification);

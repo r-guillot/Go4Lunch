@@ -1,21 +1,20 @@
 {
   "project_info": {
-    "project_number": "631830888728",
-    "firebase_url": "https://go4lunch-a7169.firebaseio.com",
-    "project_id": "go4lunch-a7169",
-    "storage_bucket": "go4lunch-a7169.appspot.com"
+    "project_number": "65210261749",
+    "project_id": "go4lunch-299415",
+    "storage_bucket": "go4lunch-299415.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:631830888728:android:3d7cea0b185459ee3ade6d",
+        "mobilesdk_app_id": "1:65210261749:android:0b67e3e995062988b725bc",
         "android_client_info": {
           "package_name": "com.guillot.go4lunch"
         }
       },
       "oauth_client": [
         {
-          "client_id": "631830888728-gkdqvpn3dm9mfoahac40vupb1nprlji8.apps.googleusercontent.com",
+          "client_id": "65210261749-18r6rgd86h717aqma6f4r2r5f0iovq5b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.guillot.go4lunch",
@@ -23,20 +22,28 @@
           }
         },
         {
-          "client_id": "631830888728-6sqv7sa9ecr2m9ids85tbn95tuqdqnac.apps.googleusercontent.com",
+          "client_id": "65210261749-kponr5c2dgb16mv3icj6emdutitfgnk1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guillot.go4lunch",
+            "certificate_hash": "3b23ef3a5c8b46994f49a1e5faaec29889157a76"
+          }
+        },
+        {
+          "client_id": "65210261749-4mdojapjv7al910mlmquadv9390jsc6u.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA7KlBHCypuu23i6SeU5RcQRaB-BKrwbmI"
+          "current_key": "AIzaSyCU1lFsPXWRYFbAlkanvFlDVWW5GIqmdqA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "631830888728-6sqv7sa9ecr2m9ids85tbn95tuqdqnac.apps.googleusercontent.com",
+              "client_id": "65210261749-4mdojapjv7al910mlmquadv9390jsc6u.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -37,19 +37,18 @@ public class RestaurantListViewModel extends ViewModel {
     private MutableLiveData<List<Restaurant>> restaurantsList = new MutableLiveData<>();
     private MutableLiveData<Integer> distanceRU = new MutableLiveData<Integer>();
     private MutableLiveData<List<User>> usersEatingHere = new MutableLiveData<>();
+    private MutableLiveData<List<String>> usersIds = new MutableLiveData<>();
 
     public LiveData<List<Restaurant>> getRestaurantsList() {
         return restaurantsList;
     }
-
     public LiveData<Integer> getDistanceLiveData() {
         return distanceRU;
     }
-
     public LiveData<List<User>> getListUsersEatingHere() {
         return usersEatingHere;
     }
-
+    public LiveData<List<String>> getUsersIds(){ return usersIds; }
 
     public void init() {
         mRestaurantRepository = RestaurantRepository.getInstance();
@@ -89,17 +88,17 @@ public class RestaurantListViewModel extends ViewModel {
         return new DisposableObserver<ApiDistanceResponse>() {
             @Override
             public void onNext(ApiDistanceResponse distanceApi) {
-                Log.d(TAG, "onNext: " + distanceApi);
+//                Log.d(TAG, "onNext: " + distanceApi);
                 List<Row> row = distanceApi.getRows();
-                Log.d(TAG, "row: " + distanceApi.getRows().size());
+//                Log.d(TAG, "row: " + distanceApi.getRows().size());
                 if (row.size() > 0) {
                     List<Elements> elements = row.get(0).getElements();
                     if (elements.size() > 0) {
-                        Log.d(TAG, "elements: " + row.get(0).getElements());
+//                        Log.d(TAG, "elements: " + row.get(0).getElements());
                         Integer distance = elements.get(0).getDistance().getValue();
-                        Log.d(TAG, "onNext:" + distance);
+//                        Log.d(TAG, "onNext:" + distance);
                         restaurant.setDistance(distance);
-                        Log.d(TAG, "onNext: " + restaurant.getDistance());
+//                        Log.d(TAG, "onNext: " + restaurant.getDistance());
                     }
                 }
             }
@@ -123,12 +122,31 @@ public class RestaurantListViewModel extends ViewModel {
                 Restaurant restaurant = mRestaurantRepository.createRestaurant(detailsResult.getResult());
                 LatLng positionRestaurant = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
                 this.disposableDistance = mRestaurantRepository.streamFetchDistanceFromRestaurant(Utils.convertLocationForApi(positionRestaurant)).subscribeWith(executeDistanceRequest(restaurant));
-                Log.d(TAG, "createRestaurantList: " + disposableDistance);
+//                Log.d(TAG, "createRestaurantList: " + disposableDistance);
                 mRestaurants.add(restaurant);
+                getAllUsersRestaurantsIds();
                 getUsersEatingHere(restaurant.getRestaurantID());
             }
         }
         restaurantsList.setValue(mRestaurants);
+    }
+
+    public void getAllUsersRestaurantsIds() {
+        List<String> usersList = new ArrayList<>();
+        UserHelper.getAllUser()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        User userFetched = documentSnapshot.toObject(User.class);
+                        Log.d(TAG, "userFetched: " + userFetched);
+                        if (!userFetched.getId().equals(userRepository.getCurrentUserId())) {
+                            Log.d(TAG, "currentUserId: " + userRepository.getCurrentUserId());
+                            usersList.add(userFetched.getRestaurantId());
+                            Log.w(TAG, "usersList: " + usersList);
+                        }
+                    }
+                    usersIds.setValue(usersList);
+                    Log.w(TAG, "usersIds: " +usersIds.getValue());
+                });
     }
 
     public void getUsersEatingHere(String restaurantId) {

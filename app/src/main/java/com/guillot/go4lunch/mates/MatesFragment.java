@@ -1,6 +1,7 @@
 package com.guillot.go4lunch.mates;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,11 +17,15 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.common.Constants;
+import com.guillot.go4lunch.common.ItemClickListener;
 import com.guillot.go4lunch.databinding.FragmentMatesBinding;
+import com.guillot.go4lunch.details.RestaurantDetailActivity;
 import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MatesFragment extends Fragment {
@@ -78,5 +83,16 @@ public class MatesFragment extends Fragment {
         }
         Log.d("MatesFragment", "initUserList: " + this.users);
         adapter.update(this.users);
+        configureOnClickRecyclerView();
     }
-}
+    private void configureOnClickRecyclerView() {
+        ItemClickListener
+                .addTo(binding.matesRecyclerView, R.layout.item_mates)
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    Intent detailIntent = new Intent(getActivity(), RestaurantDetailActivity.class);
+                    if (!Objects.equals(users.get(position).getRestaurantId(), "")) {
+                        detailIntent.putExtra(Constants.RESTAURANT, users.get(position).getRestaurantId());
+                        startActivity(detailIntent);
+                    }
+                });
+    }}

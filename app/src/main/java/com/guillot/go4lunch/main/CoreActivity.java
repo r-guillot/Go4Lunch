@@ -66,9 +66,7 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
         notification = new NotificationHelper(this);
         initViewModel();
         notification.resetRestaurantData();
-//        resetRestaurantData();
         notification.createNotificationChannel();
-//        createNotificationChannel();
         viewModel.getCurrentUser();
         bottomViewListener();
         drawerMenu();
@@ -94,7 +92,6 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
         viewModel.init();
         setUpUser();
         viewModel.checkIfNotificationIsEnabled();
-//        notification.initNotification();
         initNotification();
     }
 
@@ -231,20 +228,6 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-//    private void createNotificationChannel(){
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            String channelId = getString(R.string.notificationChannel);
-//            CharSequence name = getString(R.string.name_channel);
-//            String description = getString(R.string.description_channel);
-//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
-//            channel.setDescription(description);
-//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-//            assert notificationManager != null;
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//    }
-//
     private void initNotification(){
         viewModel.getIsNotificationEnable().observe(this, this::initNotificationInNotificationHelper);
     }
@@ -252,77 +235,4 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
     private void initNotificationInNotificationHelper(boolean isEnable) {
         notification.configureNotification(isEnable);
     }
-//
-//    private void configureNotification(boolean isEnable){
-//        configureNotificationIntent();
-//        Log.d(TAG, "configureNotification: " + isEnable);
-//        if (isEnable) enableNotification();
-//        if (!isEnable) disableNotification();
-//    }
-//
-//    private void configureNotificationIntent(){
-//        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
-//        pendingIntentOn = PendingIntent.getBroadcast(this, 0,
-//                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//    }
-//
-//    private void enableNotification() {
-//        Log.d(TAG, "enableNotification: ");
-//        Calendar notificationTime = Calendar.getInstance();
-//        notificationTime.set(Calendar.HOUR_OF_DAY,TIME_NOTIFICATION[0]);
-//        notificationTime.set(Calendar.MINUTE, TIME_NOTIFICATION[1]);
-//        notificationTime.set(Calendar.SECOND, 0);
-//
-//        Calendar todayMidDay = Calendar.getInstance();
-//        if (notificationTime.before(todayMidDay)) {
-//            notificationTime.add(Calendar.DATE,1);
-//        }
-//        ComponentName receiver = new ComponentName(getApplicationContext(), NotificationReceiver.class);
-//        PackageManager packageManager = getApplicationContext().getPackageManager();
-//        packageManager.setComponentEnabledSetting(receiver,
-//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-//                PackageManager.DONT_KILL_APP);
-//
-//        AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        assert manager != null;
-//        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, notificationTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentOn);
-//    }
-//
-//    private void disableNotification() {
-//        Log.d(TAG, "disableNotification: ");
-//        AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        assert manager != null;
-//        manager.cancel(pendingIntentOn);
-//
-//        ComponentName receiver = new ComponentName(getApplicationContext(), NotificationReceiver.class);
-//        PackageManager packageManager = getApplicationContext().getPackageManager();
-//        packageManager.setComponentEnabledSetting(receiver,
-//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-//                PackageManager.DONT_KILL_APP);
-//
-//    }
-//
-//    private void resetRestaurantData(){
-//        Intent notificationIntent = new Intent(this, NotificationEraser.class);
-//        pendingIntentOff = PendingIntent.getBroadcast(this, 0,
-//                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        Calendar resetTime = Calendar.getInstance();
-//        resetTime.setTimeInMillis(System.currentTimeMillis());
-//        resetTime.set(Calendar.HOUR_OF_DAY, TIME_RESET[0]);
-//        resetTime.set(Calendar.MINUTE, TIME_RESET[1]);
-//        resetTime.set(Calendar.SECOND, 0);
-//
-//        ComponentName receiver = new ComponentName(getApplicationContext(), NotificationEraser.class);
-//        PackageManager packageManager = getApplicationContext().getPackageManager();
-//        packageManager.setComponentEnabledSetting(receiver,
-//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-//                PackageManager.DONT_KILL_APP);
-//
-//        AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        assert manager != null;
-//        manager.setInexactRepeating(AlarmManager.RTC, resetTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentOff);
-//
-//    }
 }

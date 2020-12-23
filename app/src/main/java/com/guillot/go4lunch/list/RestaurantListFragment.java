@@ -2,6 +2,7 @@ package com.guillot.go4lunch.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.base.BaseFragment;
@@ -20,7 +20,6 @@ import com.guillot.go4lunch.common.ItemClickListener;
 import com.guillot.go4lunch.databinding.RestaurantListFragmentBinding;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
-import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class RestaurantListFragment extends BaseFragment {
     private RestaurantListFragmentBinding binding;
     private RestaurantListViewModel viewModel;
     private List<Restaurant> restaurants;
-    private List<User> users;
+    private List<String> usersRestaurantsIds;
     private RestaurantListAdapter adapter;
 
     @Override
@@ -54,7 +53,8 @@ public class RestaurantListFragment extends BaseFragment {
     public void getLocationUser(LatLng locationUser) {
         viewModel.init();
         viewModel.executeNetworkRequest(locationUser);
-        viewModel.getRestaurantsList().observe(this, this::initRestaurantList);
+        viewModel.getUsersIds().observe(this,this::initUsersRestaurantIds);
+//        viewModel.getRestaurantsList().observe(this, this::initRestaurantList);
     }
 
     private void configureBinding(View view) {
@@ -67,16 +67,22 @@ public class RestaurantListFragment extends BaseFragment {
 
     private void configureRecycleView() {
         restaurants = new ArrayList<>();
-        users = viewModel.getListUsersEatingHere().getValue();
-        adapter = new RestaurantListAdapter(restaurants, getContext(), users);
+        Log.d(TAG, "usersRestaurantsIds: " + usersRestaurantsIds);
+        Log.d(TAG, "configureRecycleView: " +  viewModel.getUsersIds().getValue());
+        adapter = new RestaurantListAdapter(restaurants, getContext(), usersRestaurantsIds);
         binding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.restaurantRecyclerView.setAdapter(adapter);
     }
 
     private void initRestaurantList(List<Restaurant> restaurants) {
         this.restaurants = restaurants;
-        adapter.update(this.restaurants);
+        adapter.update(this.restaurants, this.usersRestaurantsIds);
         configureOnClickRecyclerView();
+    }
+
+    private void initUsersRestaurantIds(List<String> usersRestaurantsIds){
+        this.usersRestaurantsIds = usersRestaurantsIds;
+        viewModel.getRestaurantsList().observe(this, this::initRestaurantList);
     }
 
     private void configureOnClickRecyclerView() {

@@ -60,8 +60,8 @@ public class RestaurantDetailsViewModel extends ViewModel {
         Log.d(TAG, "getCurrentUser 1: " + userRepository.getCurrentUserId());
         assert userRepository.getCurrentUserId() != null;
         UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
-            fetchedUser = documentSnapshot.toObject(User.class);
-            currentUser.setValue(fetchedUser);
+                fetchedUser = documentSnapshot.toObject(User.class);
+                currentUser.setValue(fetchedUser);
             Log.d(TAG, "getCurrentUser 2: " + fetchedUser + currentUser);
         });
         executeNetworkRequest(placeId);
@@ -124,12 +124,31 @@ public class RestaurantDetailsViewModel extends ViewModel {
         return state;
     }
 
+    public boolean checkIfRestaurantIsLiked() {
+        if (getCurrentUserLiveData().getValue().getRestaurantLiked() != null && getCurrentUserLiveData().getValue().getRestaurantLiked().contains(getRestaurantDetails().getValue().getRestaurantID())) {
+            Log.d(TAG, "checkIfRestaurantIsChosen: userRestoId " + getCurrentUserLiveData().getValue().getRestaurantId() + "restoId" + getRestaurantDetails().getValue().getRestaurantID());
+            state = true;
+        } else{ state = false;}
+        Log.d(TAG, "checkIfRestaurantIsChosen: " + state);
+        return state;
+    }
+
     public void setRestaurantSelected() {
         UserHelper.updateRestaurantInfo(getCurrentUserLiveData().getValue().getId(), getRestaurantDetails().getValue().getRestaurantID(), getRestaurantDetails().getValue().getName(), getRestaurantDetails().getValue().getAddress());
-    }
+}
 
     public void setRestaurantUnselected() {
         UserHelper.updateRestaurantInfo(getCurrentUserLiveData().getValue().getId(), "", "", "");
+    }
+
+    public void setRestaurantLiked(List<String> restaurantLiked){
+        restaurantLiked.add(getRestaurantDetails().getValue().getRestaurantID());
+        UserHelper.updateRestaurantLiked(getCurrentUserLiveData().getValue().getId(), restaurantLiked);
+    }
+
+    public void setRestaurantUnliked(List<String> restaurantLiked){
+        restaurantLiked.remove(getRestaurantDetails().getValue().getRestaurantID());
+        UserHelper.updateRestaurantLiked(getCurrentUserLiveData().getValue().getId(), restaurantLiked);
     }
 
 

@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.common.base.Strings;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.common.Utils;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
 import com.guillot.go4lunch.maps.RestaurantRepository;
 import com.guillot.go4lunch.model.Restaurant;
-import com.guillot.go4lunch.model.User;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,25 +34,26 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
     private ItemRestaurantBinding binding;
     private Context context;
-    private List<User> users;
     private Resources resources;
     private final String TAG = RestaurantListViewHolder.class.getSimpleName();
+    int result = 0;
 
-    RestaurantListViewHolder(@NonNull ItemRestaurantBinding binding, Context context, List<User> users) {
+    RestaurantListViewHolder(@NonNull ItemRestaurantBinding binding, Context context) {
         super(binding.getRoot());
         this.binding = binding;
         this.context = context;
-        this.users = users;
         resources = binding.getRoot().getResources();
     }
 
-    public void updateRestaurantInfo(Restaurant restaurant, List<User> users){
+    public void updateRestaurantInfo(Restaurant restaurant, List<String> usersRestaurantsIds){
+        Log.d(TAG, "users: " +usersRestaurantsIds);
         binding.textViewName.setText(restaurant.getName());
 
         binding.textViewAddress.setText(restaurant.getAddress());
 
-        if (users != null) {
-            binding.usersTextView.setText(users.size());
+        checkIfUsersEatingHere(usersRestaurantsIds, restaurant.getRestaurantID());
+        if (result != 0) {
+            binding.usersTextView.setText(String.valueOf(result));
         } else {
             binding.usersTextView.setVisibility(View.GONE);
         }
@@ -71,21 +72,16 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
             binding.imageViewRestaurant.setImageResource(R.drawable.image_not_avaiable);
         }
 
-
         LayerDrawable stars = (LayerDrawable) binding.ratingBar.getProgressDrawable();
         stars.getDrawable(2).setColorFilter(ContextCompat.getColor(context, R.color.orange),
                 PorterDuff.Mode.SRC_ATOP);
         binding.ratingBar.setRating(restaurant.getRating());
 
-        String distanceToDisplay;
-        if(restaurant.getDistance() != null){
-            distanceToDisplay = String.format("%sm", restaurant.getDistance());
-        } else {
-            distanceToDisplay = "0m";
+        if (restaurant.getDistance() != null) {
+            String distanceToDisplay = String.format("%sm", restaurant.getDistance());
+            binding.textViewDistance.setText(distanceToDisplay);
         }
-        binding.textViewDistance.setText(distanceToDisplay);
         Log.d(TAG, "restaurantDistance: " + restaurant.getDistance());
-        Log.d(TAG, "distanceToDisplay: "+ distanceToDisplay);
 
         displayOpeningHours(restaurant);
     }
@@ -113,6 +109,22 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
                 binding.hoursTextView.setText(String.format(resources.getString(R.string.open_until), timeToDisplay));
                 TextViewCompat.setTextAppearance(binding.hoursTextView, R.style.TimeRestaurantOpen);
                 break;
+        }
+    }
+
+    private void checkIfUsersEatingHere(List<String> usersRIds, String restaurantId) {
+        if (usersRIds != null) {
+            for (int i = 0; i < usersRIds.size(); i++) {
+                String item = usersRIds.get(i);
+                if (item.equals(restaurantId)) {
+                    result++;
+                }
+            }
+            if (result != 0) {
+                binding.usersTextView.setText(result);
+            } else {
+                binding.usersTextView.setVisibility(View.GONE);
+            }
         }
     }
 }

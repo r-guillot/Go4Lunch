@@ -70,6 +70,7 @@ public class RestaurantRepository {
     }
 
     public Observable<List<ApiDetailsRestaurantResponse>> streamFetchRestaurantsDetailsLst(String location) {
+        Log.d(TAG, "streamFetchRestaurantsDetailsLst: ");
         return streamFetchRestaurantsCloseToMe(location)
                 .map(new Function<ApiRestaurantResponse, List<RestaurantApi>>() {
                     @Override

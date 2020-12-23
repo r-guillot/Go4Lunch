@@ -33,7 +33,7 @@ public class RestaurantMapViewModel extends ViewModel {
     private String userId;
 
     private MutableLiveData<List<Restaurant>> restaurantsList = new MutableLiveData<>();
-    private MutableLiveData<List<String>> userList = new MutableLiveData<>();
+    public MutableLiveData<List<String>> userList = new MutableLiveData<>();
 
     public LiveData<List<Restaurant>> getRestaurantsList(){
         return restaurantsList;
@@ -45,12 +45,15 @@ public class RestaurantMapViewModel extends ViewModel {
     public void init() {
         mRestaurantRepository = RestaurantRepository.getInstance();
         mUserRepository = UserRepository.getInstance();
+        userId = mUserRepository.getCurrentUserId();
+        getAllOccupiedRestaurant();
     }
 
     public void executeNetworkRequest(LatLng location) {
         this.disposable = mRestaurantRepository.streamFetchRestaurantsDetailsLst(Utils.convertLocationForApi(location)).subscribeWith(new DisposableObserver<List<ApiDetailsRestaurantResponse>>() {
             @Override
             public void onNext(@NonNull List<ApiDetailsRestaurantResponse> apiDetailsRestaurantResponses) {
+                Log.d(TAG, "apiDetailsRestaurantResponses: " +apiDetailsRestaurantResponses);
                 createRestaurantList(apiDetailsRestaurantResponses);
 
             }
@@ -90,29 +93,26 @@ public class RestaurantMapViewModel extends ViewModel {
                         assert userFetched != null;
                         if (userFetched.getRestaurantId() != null) {
                             Log.d(TAG, "restaurantId " + userFetched.getRestaurantId());
-                            restaurantIdList.add(userFetched.getRestaurantId());
+                            if (!userFetched.getId().equals(userId)) {
+                                restaurantIdList.add(userFetched.getRestaurantId());
+                            }
                             Log.d(TAG, "getAllOccupiedRestaurantList1: " + restaurantIdList);
                         }
                     }
                     userList.setValue(restaurantIdList);
+                    Log.d(TAG, "userList: " +userList.getValue());
                 });
     }
 
-    public List<String> getIdList(){
-        List<String> idList = new ArrayList<>();
-        idList = getUserIdList().getValue();
+//    public List<String> getIdList(){
+//        List<String> idList = new ArrayList<>();
+//        idList = getUserIdList().getValue();
+//
+//        return idList;
+//    }
 
-        return idList;
-    }
-
-
-
-    public void getUserId() {
-        userId = mUserRepository.getCurrentUserId();
-    }
 
     public void updateUserLocation(String locationUser){
-        getUserId();
         UserHelper.updateUserLocation(userId, locationUser);
 
     }
