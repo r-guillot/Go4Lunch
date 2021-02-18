@@ -32,7 +32,6 @@ public class Restaurant {
         this.rating = rating;
         this.phoneNumber = phoneNumber;
         this.webSite = webSite;
-        usersEatingHere = new ArrayList<>();
     }
 
     public String getRestaurantID() {
@@ -99,15 +98,6 @@ public class Restaurant {
         this.photoReference = photoReference;
     }
 
-    public void setUserGoingEating(List<User> users) {
-        usersEatingHere = users;
-
-    }
-
-    public List<User> getUsersEatingHere() {
-        return usersEatingHere;
-    }
-
     public float getRating() {
         return rating;
     }
@@ -131,5 +121,9 @@ public class Restaurant {
     public void setWebSite(String webSite) {
         this.webSite = webSite;
     }
+
+    public void setUserGoingEating(List<User> users) {usersEatingHere = users;}
+
+    public List<User> getUsersEatingHere() {return usersEatingHere;}
 
 }

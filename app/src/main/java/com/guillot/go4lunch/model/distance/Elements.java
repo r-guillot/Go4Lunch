@@ -3,7 +3,6 @@ package com.guillot.go4lunch.model.distance;
 import com.google.gson.annotations.SerializedName;
 
 public class Elements {
-    private final String TAG = Elements.class.getSimpleName();
 
     @SerializedName("distance")
     private Distance distance;

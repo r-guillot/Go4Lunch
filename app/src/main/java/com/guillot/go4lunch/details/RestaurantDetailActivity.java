@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,22 +22,18 @@ import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.databinding.ActivityDetailsRestaurantBinding;
-import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.mates.MatesListAdapter;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class RestaurantDetailActivity extends AppCompatActivity {
-    private final String TAG = RestaurantDetailActivity.class.getSimpleName();
 
     private ActivityDetailsRestaurantBinding binding;
     private RestaurantDetailsViewModel viewModel;
     private String intentRestaurantId;
-    private int result;
     private List<User> users;
     private MatesListAdapter adapter;
 
@@ -48,7 +46,6 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         configureRecycleView();
 
         getInfoRestaurant();
-        Log.d("Intent", "intentRestaurantId: " + intentRestaurantId);
     }
 
     private void viewBinding() {
@@ -65,13 +62,11 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private void getInfoRestaurant() {
         Intent intent = getIntent();
         intentRestaurantId = intent.getStringExtra(Constants.RESTAURANT);
-        Log.d("Intent", "intentRestaurantId2: " + intentRestaurantId);
 
         viewModel.init();
         viewModel.getUserId();
         viewModel.getCurrentUser(intentRestaurantId);
         viewModel.getRestaurantDetails().observe(this, this::setGraphicElement);
-        Log.d(TAG, "7 ");
         setUpUserList();
     }
 
@@ -124,7 +119,6 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(restaurant.getWebSite()));
-//                intent.setData(Uri.parse("web:" + restaurant.getWebSite()));
                 startActivity(intent);
             }
         });
@@ -140,23 +134,28 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     }
 
     private void checkFabIsSelected() {
-        Log.d(TAG, "checkFabIsSelected: 1 " + viewModel.checkIfRestaurantIsChosen() );
         if (viewModel.checkIfRestaurantIsChosen()) {
-            Log.d(TAG, "checkFabIsSelected: 2 " + viewModel.checkIfRestaurantIsChosen() );
             binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
             binding.fabSelectedRestaurant.setImageResource(R.drawable.ic_selected);
         } else {
-            Log.d(TAG, "checkFabIsSelected: 3 " + viewModel.checkIfRestaurantIsChosen() );
             binding.fabSelectedRestaurant.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orangered)));
             binding.fabSelectedRestaurant.setImageResource(R.drawable.ic_add_24);
         }
     }
 
     private void checkRestaurantIsLiked(){
+        int color;
         if (viewModel.checkIfRestaurantIsLiked()) {
             binding.likeButton.setTextColor(getResources().getColor(R.color.quantum_yellow));
+            color = R.color.quantum_yellow;
         } else {
             binding.likeButton.setTextColor(getResources().getColor(R.color.orange));
+            color = R.color.orange;
+        }
+        for (Drawable drawable : binding.likeButton.getCompoundDrawables()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(binding.likeButton.getContext(), color), PorterDuff.Mode.SRC_IN));
+            }
         }
     }
 
@@ -198,11 +197,10 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             List<User> noFriendsList= new ArrayList<>();
             User user = new User();
             user.setUrlProfilePicture("https://dupasquier.ch/wp-content/uploads/2017/05/marais10.jpg");
-            user.setUsername("no soul treads these lands!");
+            user.setUsername(getString(R.string.no_friends));
             noFriendsList.add(user);
             this.users = noFriendsList;
         }
-        Log.d("MatesFragment", "initUserList: " + this.users);
         adapter.update(this.users);
     }
 

@@ -1,18 +1,11 @@
 package com.guillot.go4lunch.notification;
 
-import android.app.Notification;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.media.audiofx.Equalizer;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.provider.Settings;
-import android.util.Log;
-import android.view.View;
-import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -23,17 +16,14 @@ import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.common.Utils;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
-import com.guillot.go4lunch.main.SplashActivity;
 import com.guillot.go4lunch.mates.UserRepository;
 import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class NotificationReceiver extends BroadcastReceiver {
-    private final String TAG = NotificationReceiver.class.getSimpleName();
-    private final int NOTIFICATION_ID = 33;
-    private NotificationManagerCompat notificationManager;
     private Context context;
     private UserRepository userRepository;
     private String userId;
@@ -44,10 +34,11 @@ public class NotificationReceiver extends BroadcastReceiver {
     private List<String> usersNamesList;
     private PendingIntent pendingIntent;
 
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        notificationManager = NotificationManagerCompat.from(context);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         userRepository = UserRepository.getInstance();
         getCurrentUserInfo();
     }
@@ -83,7 +74,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     usersNamesList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         User userFetched = documentSnapshot.toObject(User.class);
-                        if (!userFetched.getId().equals(userId)) {
+                        if (!Objects.requireNonNull(userFetched).getId().equals(userId)) {
                             usersNamesList.add(userFetched.getUsername());
                         }
                     }
@@ -111,13 +102,12 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setContentTitle(context.getString(R.string.notification_title))
                 .setContentText(context.getString(R.string.notification_content))
                 .setAutoCancel(true)
-                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
-                .setLights(Color.YELLOW, 3000, 3000)
                 .setSound(Settings.System.DEFAULT_ALARM_ALERT_URI)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        int NOTIFICATION_ID = 33;
         notificationManagerCompat.notify(NOTIFICATION_ID, notification.build());
     }
 }

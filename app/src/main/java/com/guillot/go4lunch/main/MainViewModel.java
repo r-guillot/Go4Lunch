@@ -11,10 +11,11 @@ import com.guillot.go4lunch.api.UserHelper;
 import com.guillot.go4lunch.mates.UserRepository;
 import com.guillot.go4lunch.model.User;
 
-public class MainViewModel extends ViewModel {
-    private final String TAG = MainViewModel.class.getSimpleName();
+import java.util.Objects;
 
-    private MutableLiveData<User> currentUser = new MutableLiveData<>();
+public class MainViewModel extends ViewModel {
+
+    private final MutableLiveData<User> currentUser = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isNotificationEnable = new MutableLiveData<Boolean>();
 
     public LiveData<User> getCurrentUserLiveData(){ return currentUser; }
@@ -28,11 +29,10 @@ public class MainViewModel extends ViewModel {
     }
 
     public void getCurrentUser() {
-        assert userRepository.getCurrentUserId() != null;
+        if (userRepository.getCurrentUserId() == null) throw new AssertionError();
         UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
             fetchedUser = documentSnapshot.toObject(User.class);
             currentUser.setValue(fetchedUser);
-            Log.d(TAG, "getCurrentUser: " + fetchedUser+ currentUser);
         });
     }
 
@@ -48,8 +48,7 @@ public class MainViewModel extends ViewModel {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
                 fetchedUser = documentSnapshot.toObject(User.class);
-                assert fetchedUser != null;
-                fetchedUser.isNotification();
+                Objects.requireNonNull(fetchedUser).isNotification();
                 isNotificationEnable.setValue(fetchedUser.isNotification());
             });
         }

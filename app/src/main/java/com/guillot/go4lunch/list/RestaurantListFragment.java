@@ -24,10 +24,7 @@ import com.guillot.go4lunch.details.RestaurantDetailActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class RestaurantListFragment extends BaseFragment {
-
-    private final String TAG = RestaurantListFragment.class.getSimpleName();
 
     private RestaurantListFragmentBinding binding;
     private RestaurantListViewModel viewModel;
@@ -54,7 +51,6 @@ public class RestaurantListFragment extends BaseFragment {
         viewModel.init();
         viewModel.executeNetworkRequest(locationUser);
         viewModel.getUsersIds().observe(this,this::initUsersRestaurantIds);
-//        viewModel.getRestaurantsList().observe(this, this::initRestaurantList);
     }
 
     private void configureBinding(View view) {
@@ -67,16 +63,14 @@ public class RestaurantListFragment extends BaseFragment {
 
     private void configureRecycleView() {
         restaurants = new ArrayList<>();
-        Log.d(TAG, "usersRestaurantsIds: " + usersRestaurantsIds);
-        Log.d(TAG, "configureRecycleView: " +  viewModel.getUsersIds().getValue());
-        adapter = new RestaurantListAdapter(restaurants, getContext(), usersRestaurantsIds);
+        adapter = new RestaurantListAdapter(restaurants, getContext());
         binding.restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.restaurantRecyclerView.setAdapter(adapter);
     }
 
     private void initRestaurantList(List<Restaurant> restaurants) {
         this.restaurants = restaurants;
-        adapter.update(this.restaurants, this.usersRestaurantsIds);
+        adapter.update(this.restaurants);
         configureOnClickRecyclerView();
     }
 

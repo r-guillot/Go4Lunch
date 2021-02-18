@@ -7,22 +7,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.guillot.go4lunch.R;
-import com.guillot.go4lunch.common.Constants;
 
 import java.util.List;
+import java.util.Objects;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public abstract class BaseFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
-
-    private final String TAG = BaseFragment.class.getSimpleName();
 
     protected FusedLocationProviderClient fusedLocationClient;
     public static LatLng locationUser;
@@ -36,21 +32,21 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
         fetchLastKnowLocation();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
         fetchLastKnowLocation();
     }
 
     @SuppressLint("MissingPermission")
     @AfterPermissionGranted(RC_LOCATION_PERMS)
     protected void fetchLastKnowLocation() {
-        if (!EasyPermissions.hasPermissions(getActivity(), PERMS)) {
+        if (!EasyPermissions.hasPermissions(Objects.requireNonNull(getActivity()), PERMS)) {
             EasyPermissions.requestPermissions(
                     this, getString(R.string.need_permission_message), RC_LOCATION_PERMS, PERMS);
             return;
@@ -58,7 +54,7 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
         fusedLocationClient
                 .getLastLocation()
                 .addOnSuccessListener(location -> {
-                        Log.d(TAG, "onSuccess location: " + location);
+
                         locationUser = new LatLng(location.getLatitude(), location.getLongitude());
                         getLocationUser(locationUser);
                         }
@@ -67,7 +63,6 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        Log.d(TAG, "onPermissionsGranted : " + requestCode);
         if (requestCode == RC_LOCATION_PERMS) {
             fetchLastKnowLocation();
         }
@@ -75,6 +70,5 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        Log.d(TAG, "onPermissionsDenied");
     }
 }

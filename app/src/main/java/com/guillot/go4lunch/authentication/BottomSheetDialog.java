@@ -11,15 +11,15 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.LayoutBottomSheetBinding;
-import com.guillot.go4lunch.databinding.RestaurantListFragmentBinding;
+
+import org.jetbrains.annotations.NotNull;
 
 public class BottomSheetDialog extends BottomSheetDialogFragment {
 
     private BottomSheetListener mListener;
 
     public static BottomSheetDialog getInstance() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog();
-        return bottomSheetDialog;
+        return new BottomSheetDialog();
     }
 
     @Nullable
@@ -48,7 +48,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mListener = (BottomSheetListener) context;

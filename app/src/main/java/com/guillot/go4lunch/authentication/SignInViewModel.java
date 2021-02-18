@@ -2,7 +2,6 @@ package com.guillot.go4lunch.authentication;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -12,45 +11,38 @@ import com.guillot.go4lunch.model.User;
 
 public class SignInViewModel extends AndroidViewModel {
     private SignInRepository mSignInRepository;
-    LiveData<User> authenticatedUserLiveData;
+    public LiveData<User> authenticatedUserLiveData;
 
     public SignInViewModel(Application application) {
         super(application);
         mSignInRepository = new SignInRepository();
     }
 
-    void checkLogOrSignWithMail(String mail, String password, int check, Context context){
+    public void checkLogOrSignWithMail(String mail, String password, int check, Context context){
         if (check == 0){
             signInWithEmail(mail, password, context);
         } else if (check == 1){
             logInWithMail(mail, password, context);
         }
     }
-    void logInWithMail(String mail, String password, Context context){
+    public void logInWithMail(String mail, String password, Context context){
         authenticatedUserLiveData = mSignInRepository.firebaseGetUserWithEmailAndPassword(mail, password, context);
     }
 
-    void signInWithEmail(String mail, String password, Context context) {
+    public void signInWithEmail(String mail, String password, Context context) {
         authenticatedUserLiveData = mSignInRepository.firebaseAuthWithEmailAndPassword(mail,password, context);
     }
 
-    void signInWithGoogle(AuthCredential googleAuthCredential) {
+    public void signInWithGoogle(AuthCredential googleAuthCredential) {
         authenticatedUserLiveData = mSignInRepository.firebaseAuthWithGoogle(googleAuthCredential);
     }
 
-    void signInWithFacebook(AuthCredential facebookAuthCredential) {
+    public void signInWithFacebook(AuthCredential facebookAuthCredential) {
         authenticatedUserLiveData = mSignInRepository.firebaseAuthWithFacebook(facebookAuthCredential);
     }
 
-    void signInWithTwitter(AuthCredential twitterAuthCredential) {
+    public void signInWithTwitter(AuthCredential twitterAuthCredential) {
         authenticatedUserLiveData = mSignInRepository.firebaseAuthWithTwitter(twitterAuthCredential);
     }
-
-//    public void saveData() {
-//        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(CONSTANTS.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//
-//        editor.
-//    }
 
 }

@@ -24,20 +24,18 @@
         android:layout_margin="25dp"
         android:maxLength="30"
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_picture_imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture_imageButton"
+        />
 
     <EditText
         android:id="@+id/mail_editText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="25dp"
+        android:inputType="textEmailAddress"
         android:maxLength="30"
         android:textAllCaps="false"
-        android:inputType="textEmailAddress"
 
-
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_editText" />
 
     <androidx.appcompat.widget.SwitchCompat

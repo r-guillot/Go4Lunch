@@ -22,13 +22,11 @@ import com.guillot.go4lunch.databinding.ActivitySettingsBinding;
 import com.guillot.go4lunch.model.User;
 
 public class SettingsActivity extends AppCompatActivity {
-    private final String TAG = SettingsActivity.class.getSimpleName();
     private static final int PICK_IMAGE_REQUEST = 13;
     private static String USER_ID;
     private ActivitySettingsBinding binding;
     private SettingsViewModel viewModel;
     private NotificationHelper notification;
-//    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +35,6 @@ public class SettingsActivity extends AppCompatActivity {
         viewBinding();
         notification = new NotificationHelper(this);
         initViewModel();
-//        notification.resetRestaurantData();
-//        notification.createNotificationChannel();
-//        viewModel.getCurrentUser();
         getUserInfo();
     }
 
@@ -64,11 +59,9 @@ public class SettingsActivity extends AppCompatActivity {
         viewModel.init();
         viewModel.getCurrentUser();
         viewModel.getCurrentUserLiveData().observe(this, this::setGraphicElements);
-//        notification.initNotification();
     }
 
     private void setGraphicElements(User user) {
-        Log.d(TAG, "user: " + user);
         if (user.getUrlProfilePicture() != null) {
             Glide.with(this)
                     .load(user.getUrlProfilePicture())
@@ -128,25 +121,19 @@ public class SettingsActivity extends AppCompatActivity {
         intent.putExtra(USER_ID, user.getId());
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        Log.d(TAG, "openFileChooser: " + intent + PICK_IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String userId = getIntent().getStringExtra(USER_ID);
-        Log.d(TAG, "onActivityResult: start");
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
-            Log.d(TAG, "onActivityResult: " + requestCode + "  " +resultCode + data);
             Uri imageUri = data.getData();
-            Log.d(TAG, "image uri " + imageUri);
             viewModel.uploadPhotoStorage(imageUri);
             getUserInfo();
-            Log.d(TAG, "onActivityResult: end ok");
         } else {
-            Log.d(TAG, "onActivityResult: end no");
             Toast.makeText(this, R.string.toast_error_image, Toast.LENGTH_SHORT).show();
         }
     }
@@ -174,12 +161,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void checkSwitchNotificationState(User user){
-        Log.d(TAG, "checkSwitchNotificationState: " + user.isNotification());
         binding.notificationSwitch.setChecked(user.isNotification());
-//        if (user.isNotification()) {
-//            binding.notificationSwitch.setChecked(true);
-//        } else {
-//            binding.notificationSwitch.setChecked(false);
-//        }
     }
 }

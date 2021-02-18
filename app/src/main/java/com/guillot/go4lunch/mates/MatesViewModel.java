@@ -8,24 +8,22 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.guillot.go4lunch.api.UserHelper;
-import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MatesViewModel extends ViewModel {
-    private final String TAG = MatesViewModel.class.getSimpleName();
 
     private MutableLiveData<List<User>> users = new MutableLiveData<>();
 
     public LiveData<List<User>> getUsers(){ return users; }
 
-    private  UserRepository userRepository;
     private String userId;
 
     public void init() {
-        userRepository = UserRepository.getInstance();
+        UserRepository userRepository = UserRepository.getInstance();
         userId = userRepository.getCurrentUserId();
     }
 
@@ -35,11 +33,8 @@ public class MatesViewModel extends ViewModel {
                     List<User> usersList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         User userFetched = documentSnapshot.toObject(User.class);
-                        Log.d(TAG, "userFetched: " + userFetched);
-                        if (!userFetched.getId().equals(userId)) {
-                            Log.d(TAG, "currentUserId: " + userId);
+                        if (!Objects.requireNonNull(userFetched).getId().equals(userId)) {
                             usersList.add(userFetched);
-                            Log.d(TAG, "usersList: " + usersList);
                         }
                     }
                     users.setValue(usersList);

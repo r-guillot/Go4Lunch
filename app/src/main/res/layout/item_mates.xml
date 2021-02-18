@@ -17,13 +17,12 @@
 
     <TextView
         android:id="@+id/info_textView"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:maxLength="35"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginStart="15dp"
-        android:lines="2"
+        android:maxLines="3"
 
         app:layout_constraintBottom_toBottomOf="@+id/profile_picture_imageView"
         app:layout_constraintStart_toEndOf="@+id/profile_picture_imageView"

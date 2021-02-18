@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 @Keep
 @IgnoreExtraProperties
-public class User implements Parcelable {
+public class User implements Parcelable{
 
     private String id;
     private String username;
@@ -24,7 +24,6 @@ public class User implements Parcelable {
     private String restaurantId;
     private String restaurantName;
     private String restaurantAddress;
-    //    private int notifyMe;
     private boolean notification;
 
     public User() {
@@ -40,7 +39,6 @@ public class User implements Parcelable {
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
         this.restaurantAddress = restaurantAddress;
-//        this.notifyMe = notifyMe;
         this.notification = notification;
     }
 
@@ -50,10 +48,11 @@ public class User implements Parcelable {
         urlProfilePicture = in.readString();
         userLocation = in.readString();
         userMail = in.readString();
+        restaurantLiked = in.createStringArrayList();
         restaurantId = in.readString();
         restaurantName = in.readString();
         restaurantAddress = in.readString();
-//        notifyMe = in.readInt();
+        notification = in.readByte() != 0;
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -104,10 +103,6 @@ public class User implements Parcelable {
         return restaurantAddress;
     }
 
-//    public int getNotifyMe() {
-//        return notifyMe;
-//    }
-
     public boolean isNotification() {
         return notification;
     }
@@ -144,6 +139,10 @@ public class User implements Parcelable {
         this.restaurantAddress = restaurantAddress;
     }
 
+    public void setRestaurantLiked(List<String> restaurantLiked) {
+        this.restaurantLiked = restaurantLiked;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -159,22 +158,5 @@ public class User implements Parcelable {
         dest.writeString(restaurantId);
         dest.writeString(restaurantName);
         dest.writeString(restaurantAddress);
-//        dest.writeInt(notifyMe);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
-                ", urlPicture='" + urlProfilePicture + '\'' +
-                ", userLocation='" + userLocation + '\'' +
-                ", email='" + userMail + '\'' +
-                ", restaurantId='" + restaurantId + '\'' +
-                ", restaurantName=" + restaurantName + '\'' +
-                ", restaurantAddress=" + restaurantAddress + '\'' +
-//                ", notifyMe=" + notifyMe + '\'' +
-                ", notification=" + notification +
-                '}';
     }
 }

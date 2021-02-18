@@ -1,7 +1,6 @@
 package com.guillot.go4lunch.list;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,21 +9,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
 import com.guillot.go4lunch.model.Restaurant;
 
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListViewHolder> {
 
     private List<Restaurant> restaurantList;
-    private List<String> usersRestaurantsIds;
     private Context context;
 
-    public RestaurantListAdapter(List<Restaurant> restaurants, Context context, List<String> usersRIds) {
+    public RestaurantListAdapter(List<Restaurant> restaurants, Context context) {
         this.restaurantList = restaurants;
         this.context = context;
-        this.usersRestaurantsIds = usersRIds;
     }
 
+    @NotNull
     @Override
     public RestaurantListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
@@ -35,7 +34,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListVi
     @Override
     public void onBindViewHolder(RestaurantListViewHolder holder, int position) {
         final Restaurant restaurant = restaurantList.get(position);
-        holder.updateRestaurantInfo(restaurant, usersRestaurantsIds);
+        holder.updateRestaurantInfo(restaurant);
     }
 
     @Override
@@ -43,9 +42,8 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListVi
         return this.restaurantList.size();
     }
 
-    void update(List<Restaurant> restaurants, List<String> usersRestaurantsIds){
+    void update(List<Restaurant> restaurants){
         this.restaurantList = restaurants;
-        this.usersRestaurantsIds = usersRestaurantsIds;
         notifyDataSetChanged();
     }
 }

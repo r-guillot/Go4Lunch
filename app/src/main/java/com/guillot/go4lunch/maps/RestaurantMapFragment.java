@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -22,24 +21,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.guillot.go4lunch.authentication.SignInActivity;
 import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.databinding.RestaurantMapFragmentBinding;
-import com.guillot.go4lunch.main.CoreActivity;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.details.RestaurantDetailActivity;
 
 import java.util.List;
-import java.util.Objects;
 
 public class RestaurantMapFragment extends BaseFragment implements OnMapReadyCallback {
-/*
-test push
- */
-    private final String TAG = RestaurantMapFragment.class.getSimpleName();
 
-    private final float ZOOM_USER_LOCATION_VALUE = 17;
     public final static String RESTAURANT = "RESTAURANT_ID";
 
     private RestaurantMapFragmentBinding binding;
@@ -60,7 +51,6 @@ test push
     @Override
     public void onResume() {
         mapView.onResume();
-        Log.d(TAG, "onResume: " +mapView);
         super.onResume();
     }
 
@@ -85,7 +75,6 @@ test push
 
     @Override
     public void getLocationUser(LatLng locationUser) {
-        Log.d(TAG, "getLocationUser: " + locationUser.toString());
         String location = locationUser.latitude + "," + locationUser.longitude;
         viewModel.init();
         viewModel.executeNetworkRequest(locationUser);
@@ -105,20 +94,9 @@ test push
         if (googleMap != null) {
             googleMap.clear();
             for (Restaurant restaurant : restaurants) {
-//                double latitude = restaurant.getLatitude();
-//                double longitude = restaurant.getLongitude();
-//                LatLng positionRestaurant = new LatLng(latitude, longitude);
-//                viewModel.getUserIdList().getValue();
-                Log.d(TAG, "initRestaurantMarker1: " + viewModel.getUserIdList().getValue());
-//                Log.d(TAG, "initRestaurantMarker2: " + viewModel.getAllOccupiedRestaurant());
                 if (viewModel.getUserIdList().getValue() != null && !viewModel.getUserIdList().getValue().isEmpty()){
-//                if (viewModel.getAllOccupiedRestaurant().getValue() != null && !viewModel.getAllOccupiedRestaurant().getValue().isEmpty()) {
-//                    List<String> listId = viewModel.getAllOccupiedRestaurant().getValue();
                     List<String> listId = viewModel.getUserIdList().getValue();
-                    Log.d(TAG, "listId: " + listId);
-                    Log.d(TAG, "getRestaurantID: " + restaurant.getRestaurantID() );
                     if (listId.contains(restaurant.getRestaurantID())) {
-                        Log.w(TAG, "orange: " + restaurant.getName()+ " + " +restaurant.getRestaurantID() + " + " + listId);
                         icon = R.drawable.marker_restaurant_orange_48px;
                     }
                     else {
@@ -161,9 +139,8 @@ test push
     @SuppressLint("MissingPermission")
     private void centerCameraOnGPSLocation(LatLng locationUser) {
         if (locationUser != null && googleMap != null) {
-            Log.d(TAG, "centerCameraOnGPSLocation: " +locationUser);
-            Log.d(TAG, "centerCameraOnGPSLocation: " + googleMap);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+            float ZOOM_USER_LOCATION_VALUE = 17;
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(ZOOM_USER_LOCATION_VALUE));
             googleMap.setMyLocationEnabled(true);
         } else {
@@ -182,7 +159,6 @@ test push
             @Override
             public boolean onMarkerClick(Marker marker) {
                 String placeId = (String) marker.getTag();
-                Log.d(TAG, "onMarkerClick: " + placeId);
 
                 Intent detailIntent = new Intent(getActivity(), RestaurantDetailActivity.class);
                 detailIntent.putExtra(RESTAURANT, placeId);

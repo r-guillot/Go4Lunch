@@ -1,5 +1,6 @@
 package com.guillot.go4lunch.list;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -16,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.common.base.Strings;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.common.Utils;
 import com.guillot.go4lunch.databinding.ItemRestaurantBinding;
@@ -25,18 +25,14 @@ import com.guillot.go4lunch.model.Restaurant;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
 
 public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
     private ItemRestaurantBinding binding;
     private Context context;
     private Resources resources;
-    private final String TAG = RestaurantListViewHolder.class.getSimpleName();
-    int result = 0;
 
     RestaurantListViewHolder(@NonNull ItemRestaurantBinding binding, Context context) {
         super(binding.getRoot());
@@ -45,15 +41,14 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         resources = binding.getRoot().getResources();
     }
 
-    public void updateRestaurantInfo(Restaurant restaurant, List<String> usersRestaurantsIds){
-        Log.d(TAG, "users: " +usersRestaurantsIds);
+    @SuppressLint("DefaultLocale")
+    public void updateRestaurantInfo(Restaurant restaurant){
         binding.textViewName.setText(restaurant.getName());
 
         binding.textViewAddress.setText(restaurant.getAddress());
 
-        checkIfUsersEatingHere(usersRestaurantsIds, restaurant.getRestaurantID());
-        if (result != 0) {
-            binding.usersTextView.setText(String.valueOf(result));
+        if (restaurant.getUsersEatingHere().size() != 0) {
+            binding.usersTextView.setText(String.format("%d", restaurant.getUsersEatingHere().size()));
         } else {
             binding.usersTextView.setVisibility(View.GONE);
         }
@@ -67,7 +62,6 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
                     .error(android.R.drawable.stat_notify_error)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.imageViewRestaurant);
-            Log.d(TAG, "photo reference " + RestaurantRepository.getInstance().getPhotoRestaurant(restaurant.getPhotoReference()));
         } else {
             binding.imageViewRestaurant.setImageResource(R.drawable.image_not_avaiable);
         }
@@ -77,17 +71,13 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
                 PorterDuff.Mode.SRC_ATOP);
         binding.ratingBar.setRating(restaurant.getRating());
 
-        if (restaurant.getDistance() != null) {
-            String distanceToDisplay = String.format("%sm", restaurant.getDistance());
-            binding.textViewDistance.setText(distanceToDisplay);
-        }
-        Log.d(TAG, "restaurantDistance: " + restaurant.getDistance());
+        String distanceToDisplay = String.format("%sm", Utils.distanceToRestaurant(restaurant));
+        binding.textViewDistance.setText(distanceToDisplay);
 
         displayOpeningHours(restaurant);
     }
 
     private void displayOpeningHours(Restaurant restaurant){
-        Log.d(TAG, "displayOpeningHours: " + restaurant.getOpeningHours());
         int timeOpening = restaurant.getOpeningHours();
         switch (timeOpening){
             case R.string.closed:
@@ -112,19 +102,4 @@ public class RestaurantListViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void checkIfUsersEatingHere(List<String> usersRIds, String restaurantId) {
-        if (usersRIds != null) {
-            for (int i = 0; i < usersRIds.size(); i++) {
-                String item = usersRIds.get(i);
-                if (item.equals(restaurantId)) {
-                    result++;
-                }
-            }
-            if (result != 0) {
-                binding.usersTextView.setText(result);
-            } else {
-                binding.usersTextView.setVisibility(View.GONE);
-            }
-        }
-    }
 }

@@ -13,7 +13,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.guillot.go4lunch.R;
-import com.guillot.go4lunch.main.MainViewModel;
 import com.guillot.go4lunch.notification.NotificationEraser;
 import com.guillot.go4lunch.notification.NotificationReceiver;
 
@@ -22,9 +21,7 @@ import java.util.Calendar;
 public class NotificationHelper extends ContextWrapper {
     private final String TAG = NotificationHelper.class.getSimpleName();
 
-    private MainViewModel viewModel;
     private PendingIntent pendingIntentOn;
-    private PendingIntent pendingIntentOff;
     private static int[] TIME_NOTIFICATION = {12, 0};
     private static int[] TIME_RESET = {23, 59};
 
@@ -48,7 +45,6 @@ public class NotificationHelper extends ContextWrapper {
 
     public void configureNotification(boolean isEnable){
         configureNotificationIntent();
-        Log.d(TAG, "configureNotification: " + isEnable);
         if (isEnable) enableNotification();
         if (!isEnable) disableNotification();
     }
@@ -61,7 +57,6 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public void enableNotification() {
-        Log.d(TAG, "enableNotification: ");
         Calendar notificationTime = Calendar.getInstance();
         notificationTime.set(Calendar.HOUR_OF_DAY,TIME_NOTIFICATION[0]);
         notificationTime.set(Calendar.MINUTE, TIME_NOTIFICATION[1]);
@@ -83,7 +78,6 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public void disableNotification() {
-        Log.d(TAG, "disableNotification: ");
         AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         assert manager != null;
         manager.cancel(pendingIntentOn);
@@ -98,7 +92,7 @@ public class NotificationHelper extends ContextWrapper {
 
     public void resetRestaurantData(){
         Intent notificationIntent = new Intent(this, NotificationEraser.class);
-        pendingIntentOff = PendingIntent.getBroadcast(this, 0,
+        PendingIntent pendingIntentOff = PendingIntent.getBroadcast(this, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar resetTime = Calendar.getInstance();

@@ -8,7 +8,6 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,20 +40,14 @@ import com.guillot.go4lunch.settings.SettingsActivity;
 
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Objects;
 
 public class CoreActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private final String TAG = CoreActivity.class.getSimpleName();
 
     private ActivityCoreBinding binding;
     private static int AUTOCOMPLETE_REQUEST_CODE = 12;
-//    public final static String RESTAURANT = "RESTAURANT_ID";
     private MainViewModel viewModel;
     private NotificationHelper notification;
-    private PendingIntent pendingIntentOn;
-    private PendingIntent pendingIntentOff;
-    private static int[] TIME_NOTIFICATION = {12, 0};
-    private static int[] TIME_RESET = {23, 59};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +118,9 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
                 if (!viewModel.getChosenRestaurant().equals("")) {
                     intent = new Intent(this, RestaurantDetailActivity.class);
                     intent.putExtra(Constants.RESTAURANT, viewModel.getChosenRestaurant());
+                } else {
+                    Toast.makeText(this, R.string.no_lunch, Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(this, R.string.no_lunch, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.settings:
                 intent = new Intent(this, SettingsActivity.class);
@@ -211,18 +205,15 @@ public class CoreActivity extends AppCompatActivity implements NavigationView.On
         Log.d("Intent", "onActivityResult: " + data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Place requestPlace = Autocomplete.getPlaceFromIntent(data);
-                Log.d("Intent", "onActivityResult: " + requestPlace);
+                Place requestPlace = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
                 if (requestPlace.getTypes() != null) {
-                    for (Place.Type type : requestPlace.getTypes()) {
-                        if (type == Place.Type.RESTAURANT) {
+                        if (requestPlace.getTypes().contains(Place.Type.RESTAURANT)){
                             Intent detailIntent = new Intent(this, RestaurantDetailActivity.class);
                             detailIntent.putExtra(Constants.RESTAURANT, requestPlace.getId());
-                            Log.d("Intent", "start intent " + requestPlace.getName());
                             startActivity(detailIntent);
+                        } else {
+                            Toast.makeText(this, R.string.not_restaurant, Toast.LENGTH_SHORT).show();
                         }
-
-                    }
                 }
             }
         }

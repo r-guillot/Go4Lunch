@@ -1,6 +1,5 @@
 package com.guillot.go4lunch.mates;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.common.ItemClickListener;
@@ -77,11 +75,10 @@ public class MatesFragment extends Fragment {
             List<User> noFriendsList= new ArrayList<>();
             User user = new User();
             user.setUrlProfilePicture("https://dupasquier.ch/wp-content/uploads/2017/05/marais10.jpg");
-            user.setUsername("no soul treads these lands!");
+            user.setUsername(getString(R.string.no_friends));
             noFriendsList.add(user);
             this.users = noFriendsList;
         }
-        Log.d("MatesFragment", "initUserList: " + this.users);
         adapter.update(this.users);
         configureOnClickRecyclerView();
     }

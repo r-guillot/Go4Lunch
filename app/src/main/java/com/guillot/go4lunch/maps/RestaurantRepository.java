@@ -4,13 +4,10 @@ import android.util.Log;
 
 import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.api.ApiDetails;
-import com.guillot.go4lunch.api.ApiDistanceMatrix;
 import com.guillot.go4lunch.api.ApiInterface;
 import com.guillot.go4lunch.api.RetrofitService;
-import com.guillot.go4lunch.base.BaseFragment;
 import com.guillot.go4lunch.common.Utils;
 import com.guillot.go4lunch.model.ApiDetailsRestaurantResponse;
-import com.guillot.go4lunch.model.distance.ApiDistanceResponse;
 import com.guillot.go4lunch.model.ApiRestaurantResponse;
 import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.RestaurantApi;
@@ -26,11 +23,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class RestaurantRepository {
 
-    private final String TAG = RestaurantRepository.class.getSimpleName();
-
     private ApiInterface apiInterface;
     private ApiDetails apiDetails;
-    private ApiDistanceMatrix apiDistance;
 
     private static RestaurantRepository newsRepository;
 
@@ -44,7 +38,6 @@ public class RestaurantRepository {
     public RestaurantRepository() {
         apiInterface = RetrofitService.getInterface();
         apiDetails = RetrofitService.getDetails();
-        apiDistance = RetrofitService.getDistance();
     }
 
     public Observable<ApiRestaurantResponse> streamFetchRestaurantsCloseToMe(String location){
@@ -61,16 +54,7 @@ public class RestaurantRepository {
                 .timeout(15, TimeUnit.SECONDS);
     }
 
-    public Observable<ApiDistanceResponse> streamFetchDistanceFromRestaurant(String placeLocation) {
-        Log.d(TAG, "streamFetchDistanceFromRestaurant: "+ Utils.convertLocationForApi(BaseFragment.locationUser) + "place location " + placeLocation);
-        return apiDistance.getDistanceMatrix(placeLocation, Utils.convertLocationForApi(BaseFragment.locationUser))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(15, TimeUnit.SECONDS);
-    }
-
     public Observable<List<ApiDetailsRestaurantResponse>> streamFetchRestaurantsDetailsLst(String location) {
-        Log.d(TAG, "streamFetchRestaurantsDetailsLst: ");
         return streamFetchRestaurantsCloseToMe(location)
                 .map(new Function<ApiRestaurantResponse, List<RestaurantApi>>() {
                     @Override

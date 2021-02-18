@@ -5,17 +5,11 @@
     <string name="facebook_application_id" translatable="false">2604788743184222</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb2604788743184222</string>
 
-    <!-- TWITTER PURPOSE-->
-    <string name="twitter_consumer_key" translatable="false"> ZQxLdmoa47QREqlzDCBxUOiRI </string>
-    <string name="twitter_consumer_secret" translatable="false"> pzsWKcA4A8csSTE0GmyJvvtfUqqpIDnwnjU03Lcp5hDRDMbWz1 </string>
-
     <!-- BOTTOM NAVIGATION VIEW-->
-    <string name="bottom_view_map">Map View</string>
-    <string name="bottom_view_list">List View</string>
+    <string name="bottom_view_map">Map</string>
+    <string name="bottom_view_list">Restaurant List</string>
     <string name="bottom_view_mates">Workmates</string>
     <string name="title_activity_maps">Map</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- DRAWER MENU-->
     <string name="chosen_restaurant">YOUR LUNCH</string>
@@ -29,10 +23,11 @@
     <string name="no_lunch">You don\'t have select a place to lunch</string>
 
     <!-- CONTENT DESCRIPTION-->
-    <string name="desc_img_recyclerview">Photo restaurant</string>
+    <string name="desc_img_recyclerview" translatable="false">Photo restaurant</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="expanded_image_notification">Image of your restaurant for lunch</string>
+    <string name="app_icon">Icon of the application</string>
 
     <!-- SETTINGS XML-->
     <string name="switch_text">Enable/Disable notifications</string>
@@ -70,6 +65,8 @@
     <string name="log_with_social_media">Log you with social media (preferable)</string>
     <string name="log_with_email">Log you with your email</string>
     <string name="log_with_email_button">Log you with an Email</string>
+    <string name="no_name">Unnamed</string>
+    <string name="valid_mail_password">please fill with a valid email address and password</string>
 
     <!-- RESTAURANT LIST -->
     <string name="closing_soon">Close soon</string>
@@ -82,5 +79,9 @@
     <string name="no_friends">no soul treads these lands! </string>
     <string name="place_mates_eating">%s is eating at %s</string>
     <string name="mates_not_place">%s hasn\'t decided yet</string>
+    <string name="not_restaurant">The place you searched is not a restaurant </string>
+    <string name="no_website">This restaurant don\'t have a website</string>
+    <string name="no_phone">This restaurant don\'t have a Phone Number</string>
+    <string name="authentication_failed" translatable="false">Authentication Failed</string>
 
 </resources>

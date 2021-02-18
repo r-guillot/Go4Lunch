@@ -1,10 +1,6 @@
 package com.guillot.go4lunch.details;
 
-import android.util.Log;
-
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -26,11 +22,9 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 
 
 public class RestaurantDetailsViewModel extends ViewModel {
-    private final String TAG = RestaurantDetailsViewModel.class.getSimpleName();
 
     private RestaurantRepository mRestaurantRepository;
     private UserRepository userRepository;
-    private Disposable disposable;
     private Restaurant restaurant;
     private String userId;
     private User fetchedUser;
@@ -45,30 +39,25 @@ public class RestaurantDetailsViewModel extends ViewModel {
     public LiveData<User> getCurrentUserLiveData() {return currentUser;}
 
     public void init() {
-        Log.d(TAG, "init: 1");
         mRestaurantRepository = RestaurantRepository.getInstance();
         userRepository = UserRepository.getInstance();
-        Log.d(TAG, "init: 2");
     }
 
     public void getUserId() {
         userId = userRepository.getCurrentUserId();
-        Log.d(TAG, "userId: " + userId);
     }
 
     public void getCurrentUser(String placeId) {
-        Log.d(TAG, "getCurrentUser 1: " + userRepository.getCurrentUserId());
-        assert userRepository.getCurrentUserId() != null;
+        if (userRepository.getCurrentUserId() == null) throw new AssertionError();
         UserHelper.getUser(userRepository.getCurrentUserId()).addOnSuccessListener(documentSnapshot -> {
                 fetchedUser = documentSnapshot.toObject(User.class);
                 currentUser.setValue(fetchedUser);
-            Log.d(TAG, "getCurrentUser 2: " + fetchedUser + currentUser);
         });
         executeNetworkRequest(placeId);
     }
 
     public void executeNetworkRequest(String placeId) {
-        this.disposable = mRestaurantRepository.streamFetchRestaurantDetails(placeId).subscribeWith(new DisposableObserver<ApiDetailsRestaurantResponse>() {
+        Disposable disposable = mRestaurantRepository.streamFetchRestaurantDetails(placeId).subscribeWith(new DisposableObserver<ApiDetailsRestaurantResponse>() {
             @Override
             public void onNext(@NonNull ApiDetailsRestaurantResponse apiDetailsRestaurantResponse) {
                 createRestaurant(apiDetailsRestaurantResponse, placeId);
@@ -93,7 +82,6 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     private void createRestaurant(ApiDetailsRestaurantResponse results, String placeId) {
-//    ApiDetailsRestaurantResponse detailsResult = results;
         if(results.getResult() != null) {
             restaurant = mRestaurantRepository.createRestaurant(results.getResult());
         }
@@ -107,6 +95,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
                     List<User> usersList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         User userFetched = documentSnapshot.toObject(User.class);
+                        assert userFetched != null;
                         if (!userFetched.getId().equals(userId)) {
                             usersList.add(userFetched);
                         }
@@ -116,39 +105,31 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     public boolean checkIfRestaurantIsChosen() {
-        if (getCurrentUserLiveData().getValue().getRestaurantId() != null && getCurrentUserLiveData().getValue().getRestaurantId().equals(getRestaurantDetails().getValue().getRestaurantID())) {
-            Log.d(TAG, "checkIfRestaurantIsChosen: userRestoId " + getCurrentUserLiveData().getValue().getRestaurantId() + "restoId" + getRestaurantDetails().getValue().getRestaurantID());
-            state = true;
-        } else{ state = false;}
-        Log.d(TAG, "checkIfRestaurantIsChosen: " + state);
+        state = Objects.requireNonNull(getCurrentUserLiveData().getValue()).getRestaurantId() != null && getCurrentUserLiveData().getValue().getRestaurantId().equals(Objects.requireNonNull(getRestaurantDetails().getValue()).getRestaurantID());
         return state;
     }
 
     public boolean checkIfRestaurantIsLiked() {
-        if (getCurrentUserLiveData().getValue().getRestaurantLiked() != null && getCurrentUserLiveData().getValue().getRestaurantLiked().contains(getRestaurantDetails().getValue().getRestaurantID())) {
-            Log.d(TAG, "checkIfRestaurantIsChosen: userRestoId " + getCurrentUserLiveData().getValue().getRestaurantId() + "restoId" + getRestaurantDetails().getValue().getRestaurantID());
-            state = true;
-        } else{ state = false;}
-        Log.d(TAG, "checkIfRestaurantIsChosen: " + state);
+        state = Objects.requireNonNull(getCurrentUserLiveData().getValue()).getRestaurantLiked() != null && getCurrentUserLiveData().getValue().getRestaurantLiked().contains(Objects.requireNonNull(getRestaurantDetails().getValue()).getRestaurantID());
         return state;
     }
 
     public void setRestaurantSelected() {
-        UserHelper.updateRestaurantInfo(getCurrentUserLiveData().getValue().getId(), getRestaurantDetails().getValue().getRestaurantID(), getRestaurantDetails().getValue().getName(), getRestaurantDetails().getValue().getAddress());
+        UserHelper.updateRestaurantInfo(Objects.requireNonNull(getCurrentUserLiveData().getValue()).getId(), Objects.requireNonNull(getRestaurantDetails().getValue()).getRestaurantID(), getRestaurantDetails().getValue().getName(), getRestaurantDetails().getValue().getAddress());
 }
 
     public void setRestaurantUnselected() {
-        UserHelper.updateRestaurantInfo(getCurrentUserLiveData().getValue().getId(), "", "", "");
+        UserHelper.updateRestaurantInfo(Objects.requireNonNull(getCurrentUserLiveData().getValue()).getId(), "", "", "");
     }
 
     public void setRestaurantLiked(List<String> restaurantLiked){
-        restaurantLiked.add(getRestaurantDetails().getValue().getRestaurantID());
-        UserHelper.updateRestaurantLiked(getCurrentUserLiveData().getValue().getId(), restaurantLiked);
+        restaurantLiked.add(Objects.requireNonNull(getRestaurantDetails().getValue()).getRestaurantID());
+        UserHelper.updateRestaurantLiked(Objects.requireNonNull(getCurrentUserLiveData().getValue()).getId(), restaurantLiked);
     }
 
     public void setRestaurantUnliked(List<String> restaurantLiked){
-        restaurantLiked.remove(getRestaurantDetails().getValue().getRestaurantID());
-        UserHelper.updateRestaurantLiked(getCurrentUserLiveData().getValue().getId(), restaurantLiked);
+        restaurantLiked.remove(Objects.requireNonNull(getRestaurantDetails().getValue()).getRestaurantID());
+        UserHelper.updateRestaurantLiked(Objects.requireNonNull(getCurrentUserLiveData().getValue()).getId(), restaurantLiked);
     }
 
 

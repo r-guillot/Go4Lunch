@@ -3,23 +3,14 @@ package com.guillot.go4lunch.authentication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.facebook.FacebookSdk;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -40,6 +31,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.guillot.go4lunch.BuildConfig;
 import com.guillot.go4lunch.common.Constants;
 import com.guillot.go4lunch.R;
 import com.guillot.go4lunch.main.CoreActivity;
@@ -54,22 +46,17 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 
-import java.util.Objects;
-
 public class SignInActivity extends AppCompatActivity implements BottomSheetDialog.BottomSheetListener{
-    private final String TAG = SignInActivity.class.getSimpleName();
     private ActivitySignInBinding binding;
     private SignInViewModel mViewModel;
     private static final int RC_SIGN_IN = 1337;
     private GoogleSignInClient googleSignInClient;
-    private FirebaseAuth mAuth;
     private CallbackManager fbCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Twitter.initialize(this);
         twitterSignInBuilder();
         viewBinding();
         initViewModel();
@@ -83,9 +70,7 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         onClickSignIn();
         OnClickCancel();
 
-        mAuth = FirebaseAuth.getInstance();
-        //Initiate FB SDK
-        FacebookSdk.sdkInitialize(this);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -132,21 +117,15 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         super.onActivityResult(requestCode, resultCode, data);
         fbCallback.onActivityResult(requestCode, resultCode, data);
         binding.socialButtonLayout.twitterSignInButton.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: " + requestCode);
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d("SignInActivity", "firebaseAuthWithGoogle:" + account.getId());
-                if (account != null) {
-                    firebaseAuthWithGoogle(account);
-                }
+                firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Log.w("SignInActivity", "Google sign in failed", e);
             }
         }
     }
@@ -159,15 +138,12 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
 
     private void signInWithGoogleAuthCredential(AuthCredential googleAuthCredential) {
         mViewModel.signInWithGoogle(googleAuthCredential);
-        Log.d("user value", "test ");
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
-                Log.d("SignInActivity", "signInGoogleWithCredential:success");
                 coreActivityIntent(authenticatedUser);
-//                saveData();
                 finish();
             } else {
-                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), getString(R.string.authentication_failed), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -179,22 +155,19 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         // Initialize Facebook Login button
         fbCallback = CallbackManager.Factory.create();
         LoginButton loginButton = binding.socialButtonLayout.facebookSignInButton;
-        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.setPermissions("email", "public_profile");
         loginButton.registerCallback(fbCallback, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d("SignInActivity", "facebook:onSuccess:" + loginResult);
                 firebaseAuthWithFacebook(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-                Log.d("SignInActivity", "facebook:onCancel");
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d("SignInActivity", "facebook:onError", error);
             }
         });
     }
@@ -209,12 +182,10 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         mViewModel.signInWithFacebook(facebookAuthCredential);
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
-                Log.d("SignInActivity", "signInFacebookWithCredential:success");
                 coreActivityIntent(authenticatedUser);
-//                saveData();
                 finish();
             } else {
-                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), getString(R.string.authentication_failed), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -223,8 +194,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
      * Twitter authentication
      */
     private void twitterSignInBuilder(){
-        TwitterAuthConfig mTwitterAuthConfig = new TwitterAuthConfig(getString(R.string.twitter_consumer_key),
-                getString(R.string.twitter_consumer_secret));
+        TwitterAuthConfig mTwitterAuthConfig = new TwitterAuthConfig(BuildConfig.twitter_consumer_key,
+                BuildConfig.twitter_consumer_secret);
         TwitterConfig twitterConfig = new TwitterConfig.Builder(this)
                 .twitterAuthConfig(mTwitterAuthConfig)
                 .build();
@@ -232,11 +203,9 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
     }
 
     private void onClickTwitterButton(){
-        Log.d(TAG, "onClickTwitterButton: ");
         binding.socialButtonLayout.twitterSignInButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Log.d(TAG, "success: " + result);
                 firebaseAuthWithTwitter(result.data);
                 binding.socialButtonLayout.twitterSignInButton.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -250,7 +219,6 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
     }
 
     private void firebaseAuthWithTwitter(TwitterSession session) {
-        Log.d(TAG, "firebaseAuthWithTwitter: ");
         AuthCredential credential = TwitterAuthProvider.getCredential(session.getAuthToken().token,
                 session.getAuthToken().secret);
         signInWithTwitterAuthCredential(credential);
@@ -260,12 +228,10 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         mViewModel.signInWithTwitter(twitterAuthCredential);
         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
             if (authenticatedUser != null) {
-                Log.d("SignInActivity", "signInTwitterWithCredential:success");
                 coreActivityIntent(authenticatedUser);
-//                saveData();
                 finish();
             } else {
-                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), getString(R.string.authentication_failed), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -316,34 +282,28 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
         binding.signInMailLayout.mailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClickSignIn: " );
                 getMailAndPassword(0);
             }
         });
     }
 
     private void getMailAndPassword(int check) {
-        Log.d(TAG, "getMailAndPassword: ");
                 String email = binding.edittextMailLayout.mailEditText.getText().toString().trim();
                 String password = binding.edittextMailLayout.passwordEditText.getText().toString();
                 if (!email.isEmpty() && !password.isEmpty()) {
                     if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        Log.d(TAG, "onEditorAction: " +check);
                         mViewModel.checkLogOrSignWithMail(email, password, check, getApplicationContext());
-                        Log.d(TAG, "LD: "+ mViewModel.authenticatedUserLiveData.getValue());
                         mViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
                             if (authenticatedUser != null) {
-                                Log.d("SignInActivity", "signInTwitterWithCredential:success");
                                 coreActivityIntent(authenticatedUser);
-//                                saveData();
                                 finish();
                             } else {
-                                Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(binding.getRoot(), getString(R.string.authentication_failed), Snackbar.LENGTH_SHORT).show();
                             }
                         });
                     }
                 } else{
-                    Toast.makeText(getApplicationContext(),"veuillez remplir une adresse mail et un mot de passe valide", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.valid_mail_password, Toast.LENGTH_SHORT).show();
                 }
     }
 
@@ -357,7 +317,7 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
             }
         });
 
-        binding.logInMailLayout.mailLogInButton.setOnClickListener(new View.OnClickListener() {
+        binding.logInMailLayout.mailCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 binding.socialButtonLayout.getRoot().setVisibility(View.VISIBLE);
@@ -380,17 +340,8 @@ public class SignInActivity extends AppCompatActivity implements BottomSheetDial
                 coreActivityIntent.putExtra(Constants.USER_INTENT, authenticatedUser);
                 startActivity(coreActivityIntent);
             }
-        }, 500);
+        }, 600);
     }
 
-//    public void saveData() {
-//        SharedPreferences sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE);
-//        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
-//
-//        editor.putString(Constants.USER_ID, Objects.requireNonNull(mViewModel.authenticatedUserLiveData.getValue()).getId()).apply();
-//        editor.putString(Constants.USER_USERNAME, mViewModel.authenticatedUserLiveData.getValue().getUsername()).apply();
-//        editor.putString(Constants.URL_PROFILE_PICTURE, mViewModel.authenticatedUserLiveData.getValue().getUrlProfilePicture().toString()).apply();
-//        editor.putString(Constants.USER_LOCATION, mViewModel.authenticatedUserLiveData.getValue().getUserLocation().toString()).apply();
-//    }
 
 }

@@ -70,7 +70,16 @@
         android:layout_gravity="start"
         android:foregroundGravity="left"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu" >
+
+        <ImageView
+            android:layout_width="208dp"
+            android:layout_height="126dp"
+            android:layout_gravity="center|bottom"
+            android:src="@drawable/app_icon"
+            android:contentDescription="@string/app_icon" />
+
+        </com.google.android.material.navigation.NavigationView>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

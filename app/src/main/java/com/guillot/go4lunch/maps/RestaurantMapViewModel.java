@@ -17,18 +17,15 @@ import com.guillot.go4lunch.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class RestaurantMapViewModel extends ViewModel {
-    private final String TAG = RestaurantMapViewModel.class.getSimpleName();
 
     private RestaurantRepository mRestaurantRepository;
-    private UserRepository mUserRepository;
-    private Disposable disposable;
-    private List<Restaurant> mRestaurants;
     private List<String> restaurantIdList;
     private String userId;
 
@@ -44,23 +41,22 @@ public class RestaurantMapViewModel extends ViewModel {
 
     public void init() {
         mRestaurantRepository = RestaurantRepository.getInstance();
-        mUserRepository = UserRepository.getInstance();
-        userId = mUserRepository.getCurrentUserId();
+        UserRepository userRepository = UserRepository.getInstance();
+        userId = userRepository.getCurrentUserId();
         getAllOccupiedRestaurant();
     }
 
     public void executeNetworkRequest(LatLng location) {
-        this.disposable = mRestaurantRepository.streamFetchRestaurantsDetailsLst(Utils.convertLocationForApi(location)).subscribeWith(new DisposableObserver<List<ApiDetailsRestaurantResponse>>() {
+        Disposable disposable = mRestaurantRepository.streamFetchRestaurantsDetailsLst(Utils.convertLocationForApi(location)).subscribeWith(new DisposableObserver<List<ApiDetailsRestaurantResponse>>() {
             @Override
             public void onNext(@NonNull List<ApiDetailsRestaurantResponse> apiDetailsRestaurantResponses) {
-                Log.d(TAG, "apiDetailsRestaurantResponses: " +apiDetailsRestaurantResponses);
                 createRestaurantList(apiDetailsRestaurantResponses);
 
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                    System.out.println("error executeNetworkRequest" + e);
+                System.out.println("error executeNetworkRequest" + e);
 
             }
 
@@ -73,14 +69,14 @@ public class RestaurantMapViewModel extends ViewModel {
     }
 
     private void createRestaurantList(List<ApiDetailsRestaurantResponse> results) {
-        mRestaurants = new ArrayList<>();
+        List<Restaurant> restaurants = new ArrayList<>();
         for (ApiDetailsRestaurantResponse detailsResult : results){
             if(detailsResult.getResult() != null) {
                 Restaurant restaurant = mRestaurantRepository.createRestaurant(detailsResult.getResult());
-                mRestaurants.add(restaurant);
+                restaurants.add(restaurant);
             }
         }
-        restaurantsList.setValue(mRestaurants);
+        restaurantsList.setValue(restaurants);
     }
 
     public void getAllOccupiedRestaurant() {
@@ -89,28 +85,15 @@ public class RestaurantMapViewModel extends ViewModel {
                     restaurantIdList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         User userFetched = documentSnapshot.toObject(User.class);
-                        Log.d(TAG, "userFetched: " +userFetched);
-                        assert userFetched != null;
-                        if (userFetched.getRestaurantId() != null) {
-                            Log.d(TAG, "restaurantId " + userFetched.getRestaurantId());
+                        if (Objects.requireNonNull(userFetched).getRestaurantId() != null) {
                             if (!userFetched.getId().equals(userId)) {
                                 restaurantIdList.add(userFetched.getRestaurantId());
                             }
-                            Log.d(TAG, "getAllOccupiedRestaurantList1: " + restaurantIdList);
                         }
                     }
                     userList.setValue(restaurantIdList);
-                    Log.d(TAG, "userList: " +userList.getValue());
                 });
     }
-
-//    public List<String> getIdList(){
-//        List<String> idList = new ArrayList<>();
-//        idList = getUserIdList().getValue();
-//
-//        return idList;
-//    }
-
 
     public void updateUserLocation(String locationUser){
         UserHelper.updateUserLocation(userId, locationUser);

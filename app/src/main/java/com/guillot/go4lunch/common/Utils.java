@@ -1,21 +1,18 @@
 package com.guillot.go4lunch.common;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
+import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.common.base.Joiner;
 import com.guillot.go4lunch.R;
+import com.guillot.go4lunch.base.BaseFragment;
+import com.guillot.go4lunch.model.Restaurant;
 import com.guillot.go4lunch.model.details.OpeningHours;
 import com.guillot.go4lunch.model.details.OpeningPeriods;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,34 +21,8 @@ import java.util.Locale;
 public class Utils {
 
     /**
-     * Resize a given bitmap.
-     *
-     * @param bitmap
-     * @param newWidth
-     * @param newHeight
-     */
-    public static Bitmap scaleBitmap(Bitmap bitmap, int newWidth, int newHeight) {
-        Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
-        float scaleX = newWidth / (float) bitmap.getWidth();
-        float scaleY = newHeight / (float) bitmap.getHeight();
-        float pivotX = 0;
-        float pivotY = 0;
-
-        Matrix scaleMatrix = new Matrix();
-        scaleMatrix.setScale(scaleX, scaleY, pivotX, pivotY);
-
-        Canvas canvas = new Canvas(scaledBitmap);
-        canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bitmap, 0, 0, new Paint(Paint.FILTER_BITMAP_FLAG));
-
-        return scaledBitmap;
-    }
-
-    /**
      * Convert user location to string.
      *
-     * @param position
-     * @return
      */
     public static String convertLocationForApi(LatLng position) {
         if (position != null) {
@@ -102,6 +73,20 @@ public class Utils {
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    public static int distanceToRestaurant(Restaurant restaurant){
+        Location locationUser = new Location("point A");
+
+        locationUser.setLatitude(BaseFragment.locationUser.latitude);
+        locationUser.setLongitude(BaseFragment.locationUser.longitude);
+
+        Location locationRestaurant = new Location("point B");
+
+        locationRestaurant.setLatitude(restaurant.getLatitude());
+        locationRestaurant.setLongitude(restaurant.getLongitude());
+
+        return Math.round(locationUser.distanceTo(locationRestaurant));
     }
 
 }
